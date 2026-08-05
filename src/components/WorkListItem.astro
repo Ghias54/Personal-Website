@@ -9,61 +9,71 @@ interface Props {
 const { eyebrow, title, summary, href } = Astro.props;
 ---
 
-<li class="work-item">
-  <a class="work-link" href={href}>
-    <p class="work-eyebrow">{eyebrow}</p>
-    <h3 class="work-title">{title}</h3>
-    <p class="work-summary">{summary}</p>
+<li class="work-entry">
+  <a class="work-entry-link" href={href}>
+    <p class="eyebrow">{eyebrow}</p>
+    <h3 class="title">{title}</h3>
+    <p class="summary">{summary}</p>
   </a>
 </li>
 
 <style>
-  .work-item + .work-item {
-    border-top: 1px solid var(--color-border);
+  .work-entry + .work-entry {
+    border-top: 1px solid #e1e4ea;
   }
 
-  .work-link {
+  .work-entry-link {
     display: block;
+    width: 100%;
     padding: 24px 0 22px;
     text-decoration: none;
     color: inherit;
     background: transparent;
   }
 
-  .work-link:hover {
+  .work-entry-link:hover {
     background: transparent;
     text-decoration: none;
   }
 
-  .work-link:hover .work-title {
-    color: var(--color-dark);
-  }
-
-  .work-eyebrow {
+  .eyebrow {
+    display: block;
+    width: 100%;
     margin: 0 0 8px;
-    font-family: var(--font-mono);
+    font-family: "IBM Plex Mono", monospace;
     font-size: 11px;
+    font-weight: 400;
     letter-spacing: 0.05em;
     text-transform: uppercase;
-    color: var(--color-muted);
+    color: #7a8195;
     line-height: 1.4;
   }
 
-  .work-title {
-    margin: 0 0 10px;
-    font-family: var(--font-sans);
+  .title {
+    display: block;
+    width: 100%;
+    margin: 0 0 8px;
+    font-family: "Manrope", sans-serif;
     font-size: 21px;
     font-weight: 600;
     letter-spacing: -0.015em;
     line-height: 1.3;
-    color: var(--color-heading);
+    color: #1f2430;
   }
 
-  .work-summary {
+  .work-entry-link:hover .title {
+    color: #1f2a36;
+  }
+
+  .summary {
+    display: block;
+    width: 100%;
     margin: 0;
-    max-width: var(--measure);
+    max-width: 56ch;
+    font-family: "Manrope", sans-serif;
     font-size: 16px;
+    font-weight: 400;
     line-height: 1.6;
-    color: var(--color-dimmed);
+    color: #4a5064;
   }
 </style>
