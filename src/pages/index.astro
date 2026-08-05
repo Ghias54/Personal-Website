@@ -36,13 +36,12 @@ const seekingHtml = paragraphs[4] ?? "";
     </RailSection>
 
     <section class="work-block" id="selected-work" aria-labelledby="work-heading">
-      <hr class="rule-strong" />
-      <h2 id="work-heading" class="work-label">Work</h2>
+      <hr class="rule-strong work-rule" />
+      <p id="work-heading" class="work-label">Work</p>
       <ul class="work-list">
         {
-          cards.map((card, index) => (
+          cards.map((card) => (
             <WorkListItem
-              index={index + 1}
               eyebrow={card.eyebrow}
               title={card.title}
               summary={card.summary}
@@ -81,8 +80,12 @@ const seekingHtml = paragraphs[4] ?? "";
   .contact-links {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.35em 0.5em;
     align-items: center;
+    gap: 8px 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
     font-family: var(--font-mono);
     font-size: 12px;
     letter-spacing: 0.05em;
@@ -95,6 +98,7 @@ const seekingHtml = paragraphs[4] ?? "";
     text-decoration-color: var(--color-link-underline);
     text-decoration-thickness: 1px;
     text-underline-offset: 0.25em;
+    background: transparent;
   }
 
   .contact-links a:hover {
@@ -102,21 +106,29 @@ const seekingHtml = paragraphs[4] ?? "";
   }
 
   .sep {
+    margin: 0 20px;
     color: var(--color-muted);
+    text-decoration: none;
   }
 
   .work-block {
     margin-top: 56px;
   }
 
+  .work-rule {
+    margin: 0;
+  }
+
   .work-label {
     margin: 14px 0 0;
+    padding: 0;
     font-family: var(--font-mono);
     font-size: 11px;
     font-weight: 400;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--color-muted);
+    line-height: 1.4;
   }
 
   .work-list {

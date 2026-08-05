@@ -1,26 +1,19 @@
 ---
 interface Props {
-  index: number;
   eyebrow: string;
   title: string;
   summary: string;
   href: string;
 }
 
-const { index, eyebrow, title, summary, href } = Astro.props;
-const number = String(index).padStart(2, "0");
+const { eyebrow, title, summary, href } = Astro.props;
 ---
 
 <li class="work-item">
   <a class="work-link" href={href}>
-    <div class="work-rail">
-      <span class="work-rail-num">{number} /</span>
-      <span class="work-rail-eyebrow">{eyebrow}</span>
-    </div>
-    <div class="work-body">
-      <h3 class="work-title">{title}</h3>
-      <p class="work-summary">{summary}</p>
-    </div>
+    <p class="work-eyebrow">{eyebrow}</p>
+    <h3 class="work-title">{title}</h3>
+    <p class="work-summary">{summary}</p>
   </a>
 </li>
 
@@ -30,18 +23,15 @@ const number = String(index).padStart(2, "0");
   }
 
   .work-link {
-    display: grid;
-    grid-template-columns: var(--rail-width) minmax(0, 1fr);
-    gap: var(--rail-gap);
-    align-items: start;
+    display: block;
     padding: 24px 0 22px;
     text-decoration: none;
     color: inherit;
-    transition: background-color 0.15s ease;
+    background: transparent;
   }
 
   .work-link:hover {
-    background: var(--color-surface);
+    background: transparent;
     text-decoration: none;
   }
 
@@ -49,11 +39,8 @@ const number = String(index).padStart(2, "0");
     color: var(--color-dark);
   }
 
-  .work-rail {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    padding-top: 4px;
+  .work-eyebrow {
+    margin: 0 0 8px;
     font-family: var(--font-mono);
     font-size: 11px;
     letter-spacing: 0.05em;
@@ -64,6 +51,7 @@ const number = String(index).padStart(2, "0");
 
   .work-title {
     margin: 0 0 10px;
+    font-family: var(--font-sans);
     font-size: 21px;
     font-weight: 600;
     letter-spacing: -0.015em;
@@ -77,12 +65,5 @@ const number = String(index).padStart(2, "0");
     font-size: 16px;
     line-height: 1.6;
     color: var(--color-dimmed);
-  }
-
-  @media (max-width: 700px) {
-    .work-link {
-      grid-template-columns: 1fr;
-      gap: 8px;
-    }
   }
 </style>

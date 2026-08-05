@@ -13,13 +13,12 @@ const { cards } = home.frontmatter;
 >
   <main class="container page">
     <section class="work-block" aria-labelledby="work-heading">
-      <hr class="rule-strong" />
-      <h2 id="work-heading" class="work-label">Work</h2>
+      <hr class="rule-strong work-rule" />
+      <p id="work-heading" class="work-label">Work</p>
       <ul class="work-list">
         {
-          cards.map((card, index) => (
+          cards.map((card) => (
             <WorkListItem
-              index={index + 1}
               eyebrow={card.eyebrow}
               title={card.title}
               summary={card.summary}
@@ -33,14 +32,20 @@ const { cards } = home.frontmatter;
 </BaseLayout>
 
 <style>
+  .work-rule {
+    margin: 0;
+  }
+
   .work-label {
     margin: 14px 0 0;
+    padding: 0;
     font-family: var(--font-mono);
     font-size: 11px;
     font-weight: 400;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--color-muted);
+    line-height: 1.4;
   }
 
   .work-list {

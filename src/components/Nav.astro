@@ -41,14 +41,18 @@ const links = [
 <style>
   .site-nav {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     align-items: center;
     justify-content: space-between;
-    gap: 12px 24px;
+    gap: 16px;
     padding: 14px 0;
+    width: 100%;
+    background: transparent;
+    border: 0;
   }
 
   .site-nav-mark {
+    flex-shrink: 0;
     font-family: var(--font-mono);
     font-size: 12px;
     font-weight: 500;
@@ -56,35 +60,53 @@ const links = [
     text-transform: uppercase;
     color: var(--color-on-dark);
     text-decoration: none;
+    background: transparent;
   }
 
   .site-nav-mark:hover {
     color: var(--color-on-dark);
     text-decoration: none;
+    background: transparent;
   }
 
   .site-nav-links {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     align-items: center;
-    gap: 8px 18px;
+    justify-content: flex-end;
+    gap: 14px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    min-width: 0;
   }
 
   .site-nav-link {
+    flex-shrink: 0;
     font-family: var(--font-mono);
     font-size: 11px;
     letter-spacing: 0.05em;
     text-transform: uppercase;
     color: var(--color-on-dark-muted);
     text-decoration: none;
+    background: transparent;
+    border: 0;
+    padding: 0;
   }
 
   .site-nav-link:hover {
     color: var(--color-on-dark);
     text-decoration: none;
+    background: transparent;
   }
 
   .site-nav-link.active {
     color: var(--color-on-dark);
+  }
+
+  @media (max-width: 700px) {
+    .site-nav-links {
+      gap: 10px;
+    }
   }
 </style>

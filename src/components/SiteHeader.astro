@@ -43,8 +43,13 @@ const { home = false, title, meta } = Astro.props;
     color: var(--color-on-dark);
   }
 
+  .site-header :global(.container) {
+    background: transparent;
+  }
+
   .header-body {
     padding: 46px 0 48px;
+    background: transparent;
   }
 
   .header-title {
