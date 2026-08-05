@@ -1,41 +1,36 @@
-# Cursor Output — Redesign regression fixes
+# Cursor Output — Work list layout fix
 Date: 2026-08-05
 Status: Complete
 
 ## Commit
-`25b17d0a21b3b3a69ea79811168b14c32bed8e4f` (`25b17d0`)
+`74e6a48b8e2306f684b3ce6442f4fb4e9116cdf7` (`74e6a48`)
 
 ## Build
 `npm run build` compiles clean. 6 pages built.
 
-## Fixes
+## What was wrong
+`WorkListItem.astro` source had already been changed to `display: block`, but the Vite dev server was still injecting a **stale stylesheet** for the component that kept:
 
-### 1. Nav
-Fixed. Nav background is transparent over the dark band (`rgba(0,0,0,0)`). All four links render on one line: Profile · Projects · Certifications · Resume. Profile is present and white when active (it was previously invisible when a white wrapper sat behind white active text). RG and links share the header `.container` with the name; measured left-edge delta vs name: **0px**. Verified in Chromium at 1280px and 375px (all four links same row, no horizontal overflow).
+```css
+.work-link {
+  display: grid;
+  grid-template-columns: var(--rail-width) minmax(0, 1fr);
+}
+```
 
-### 2. Contact links
-Fixed. Separators use `margin: 0 20px` and color `#7A8195`. Underline only on each `<a>` (`text-decoration: underline` / `#B7C0C9`). Contact `<nav>` has no border and no underline. No full-width rule under the contact row.
+That put the eyebrow and summary into the 96px first column and only the title into the wide column. Because those stale rules also lacked `font-family` on the eyebrow, it inherited Manrope from `body`.
 
-### 3. WORK heading
-Fixed. Changed from styled `h2` to a mono `<p class="work-label">` — IBM Plex Mono 11px, uppercase, letter-spacing 0.08em, `#7A8195`, under a 1px `#1F2A36` rule. Browser computed: IBM Plex Mono / 11px.
+## What changed
+Rewrote `WorkListItem.astro` with new class names (`work-entry-link`, `eyebrow`, `title`, `summary`) and an explicit stacked block layout — no flex, no grid, no fixed-width children. Eyebrow forced to `"IBM Plex Mono", monospace`. Cleared Vite cache so the stale module could not linger.
 
-### 4. List bullets
-Fixed. `.work-list` resets `list-style: none` plus zero margin/padding in page styles and globally. Browser computed `listStyleType: none`.
-
-### 5. Work list rail
-Fixed. Removed numbered rail. Each entry is full-width: eyebrow above title, then summary. No hover background. `WorkListItem` no longer accepts/renders an index. Confirmed `.work-rail` absent from DOM.
-
-### 6. Rail label alignment
-Fixed / confirmed. Header band and page content share `.container` with identical `--container-pad-x`. Measured RG left vs ABOUT rail label left: **0px**.
-
-## Could not reproduce as separate bugs
-- White nav box: not present after rebuild; root cause was almost certainly active Profile (white) on a light surface. Explicit transparent backgrounds left in place.
-- Permanent hover fill on second work item: removed by deleting hover background entirely.
+## Browser verification
+| Check | Home | /work |
+| --- | --- | --- |
+| Link `display` | `block` | `block` |
+| Link `grid-template-columns` | `none` | `none` |
+| Eyebrow font | IBM Plex Mono | IBM Plex Mono |
+| Summary width | 560px (~56ch) | 560px (~56ch) |
+| WORK label left = ABOUT rail left | yes (304px) | n/a |
 
 ## Files changed
-- `src/components/Nav.astro`
-- `src/components/SiteHeader.astro`
 - `src/components/WorkListItem.astro`
-- `src/pages/index.astro`
-- `src/pages/work/index.astro`
-- `src/styles/global.css`
