@@ -1,0 +1,141 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const certifications = [
+  {
+    name: "C++ Proficiency Certificate",
+    issuer: "College of DuPage",
+    date: "May 2026",
+  },
+  {
+    name: "Extract, Transform and Load Data in Power BI",
+    issuer: "Microsoft",
+    date: "February 2026",
+  },
+  {
+    name: "Web3 and Blockchain Fundamentals",
+    issuer: "INSEAD",
+    date: "December 2025",
+  },
+  {
+    name: "Google Prompting Essentials Specialization",
+    issuer: "Google",
+    date: "August 2025",
+  },
+  {
+    name: "Harnessing the Power of Data with Power BI",
+    issuer: "Microsoft",
+    date: "July 2025",
+  },
+  {
+    name: "Google AI Essentials Specialization",
+    issuer: "Google",
+    date: "June 2025",
+  },
+  {
+    name: "Preparing Data for Analysis with Microsoft Excel",
+    issuer: "Microsoft",
+    date: "May 2025",
+  },
+] as const;
+
+type Cert = (typeof certifications)[number];
+
+const groups: { year: string; items: Cert[] }[] = [];
+for (const cert of certifications) {
+  const year = cert.date.slice(-4);
+  const current = groups[groups.length - 1];
+  if (current && current.year === year) {
+    current.items.push(cert);
+  } else {
+    groups.push({ year, items: [cert] });
+  }
+}
+---
+
+<BaseLayout
+  title="Certifications — Rehan Ghias"
+  description="Certifications and coursework in programming, Power BI, Excel, and AI."
+>
+  <main class="page">
+    <header class="page-header">
+      <h1>Certifications</h1>
+    </header>
+
+    {
+      groups.map((group) => (
+        <section class="year-group" aria-labelledby={`year-${group.year}`}>
+          <h2 id={`year-${group.year}`} class="meta year-label">
+            {group.year}
+          </h2>
+          <ul class="cert-list">
+            {group.items.map((cert, index) => (
+              <li class="cert-item">
+                {index > 0 && <hr class="hairline" />}
+                <div class="cert-body">
+                  <h3 class="cert-name">{cert.name}</h3>
+                  <p class="cert-meta">
+                    <span>{cert.issuer}</span>
+                    <span class="sep" aria-hidden="true">
+                      ·
+                    </span>
+                    <span>{cert.date}</span>
+                  </p>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))
+    }
+  </main>
+</BaseLayout>
+
+<style>
+  .page-header {
+    margin-bottom: 40px;
+  }
+
+  .year-group + .year-group {
+    margin-top: 40px;
+  }
+
+  .year-label {
+    margin: 0 0 16px;
+  }
+
+  .cert-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-width: var(--measure);
+  }
+
+  .cert-item .hairline {
+    margin: 0;
+  }
+
+  .cert-body {
+    padding: 18px 0;
+  }
+
+  .cert-name {
+    margin: 0 0 6px;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1.4;
+    color: var(--color-heading);
+  }
+
+  .cert-meta {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--color-muted);
+  }
+
+  .sep {
+    margin: 0 0.35em;
+  }
+</style>

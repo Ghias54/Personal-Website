@@ -1,0 +1,9 @@
+---
+import CaseStudyLayout from "../../layouts/CaseStudyLayout.astro";
+import * as study from "../../content/work/die-cutter-capacity.md";
+
+const { title, meta, description } = study.frontmatter;
+const html = await study.compiledContent();
+---
+
+<CaseStudyLayout title={title} meta={meta} description={description} html={html} />

@@ -1,0 +1,34 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import MarkdownBody from "../components/MarkdownBody.astro";
+
+interface Props {
+  title: string;
+  description: string;
+  meta: string;
+  html: string;
+}
+
+const { title, description, meta, html } = Astro.props;
+---
+
+<BaseLayout title={`${title} — Rehan Ghias`} description={description}>
+  <main class="page">
+    <header class="case-header">
+      <h1>{title}</h1>
+      <p class="meta case-meta">{meta}</p>
+      <hr class="hairline" />
+    </header>
+    <MarkdownBody html={html} />
+  </main>
+</BaseLayout>
+
+<style>
+  .case-header {
+    margin-bottom: 2.5em;
+  }
+
+  .case-meta {
+    margin: 12px 0 20px;
+  }
+</style>

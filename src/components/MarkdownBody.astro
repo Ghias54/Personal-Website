@@ -1,0 +1,47 @@
+---
+import Figure from "./Figure.astro";
+
+interface Props {
+  html: string;
+}
+
+const { html } = Astro.props;
+
+const IMAGE_RE = /<p>\[IMAGE:\s*([^|<]+)\s*\|\s*([^\]]+)\]<\/p>/g;
+
+type Segment =
+  | { type: "html"; content: string }
+  | { type: "figure"; description: string; caption: string };
+
+const segments: Segment[] = [];
+let lastIndex = 0;
+let match: RegExpExecArray | null;
+
+while ((match = IMAGE_RE.exec(html)) !== null) {
+  if (match.index > lastIndex) {
+    segments.push({ type: "html", content: html.slice(lastIndex, match.index) });
+  }
+  segments.push({
+    type: "figure",
+    description: match[1].trim(),
+    caption: match[2].trim(),
+  });
+  lastIndex = match.index + match[0].length;
+}
+
+if (lastIndex < html.length) {
+  segments.push({ type: "html", content: html.slice(lastIndex) });
+}
+---
+
+<div class="prose">
+  {
+    segments.map((segment) =>
+      segment.type === "html" ? (
+        <Fragment set:html={segment.content} />
+      ) : (
+        <Figure description={segment.description} caption={segment.caption} />
+      ),
+    )
+  }
+</div>

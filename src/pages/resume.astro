@@ -1,0 +1,90 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { existsSync } from "node:fs";
+import { join } from "node:path";
+
+const pdfPath = "/resume.pdf";
+const pdfExists = existsSync(join(process.cwd(), "public", "resume.pdf"));
+---
+
+<BaseLayout
+  title="Resume — Rehan Ghias"
+  description="Resume of Rehan Ghias — Data & Operations Analysis."
+>
+  <main class="page resume-page">
+    <header class="resume-header">
+      <h1>Resume</h1>
+      <p class="download">
+        <a class="meta" href={pdfPath} download={pdfExists ? "Rehan-Ghias-Resume.pdf" : undefined}
+          >Download resume (PDF)</a
+        >
+      </p>
+      {
+        !pdfExists && (
+          <p class="meta note">PDF not uploaded yet — add public/resume.pdf to enable the preview.</p>
+        )
+      }
+    </header>
+    {
+      pdfExists ? (
+        <iframe
+          class="resume-frame"
+          src={pdfPath}
+          title="Rehan Ghias resume PDF"
+        />
+      ) : (
+        <div class="resume-placeholder" role="status">
+          <p class="meta">Resume PDF preview will appear here once public/resume.pdf is added.</p>
+        </div>
+      )
+    }
+  </main>
+</BaseLayout>
+
+<style>
+  .resume-page {
+    max-width: 900px;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    padding-bottom: 32px;
+  }
+
+  .resume-header {
+    margin-bottom: 20px;
+  }
+
+  .download {
+    margin: 14px 0 0;
+  }
+
+  .download a {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.25em;
+  }
+
+  .note {
+    margin: 12px 0 0;
+  }
+
+  .resume-frame {
+    flex: 1;
+    width: 100%;
+    min-height: calc(100vh - 200px);
+    border: 1px solid var(--color-border);
+    background: var(--color-card);
+  }
+
+  .resume-placeholder {
+    flex: 1;
+    min-height: calc(100vh - 200px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px;
+    text-align: center;
+    background: var(--color-figure);
+    border: 0.5px dashed var(--color-border);
+  }
+</style>
