@@ -29,7 +29,7 @@ const { eyebrow, title, summary, href } = Astro.props;
     padding: 22px 20px;
     background: var(--color-card);
     border: 1px solid var(--color-border);
-    border-radius: 10px;
+    border-radius: var(--radius-card);
     text-decoration: none;
     color: inherit;
     transition:
@@ -38,12 +38,13 @@ const { eyebrow, title, summary, href } = Astro.props;
   }
 
   .card:hover {
-    border-color: rgba(0, 0, 0, 0.28);
+    border-color: var(--color-accent);
     transform: translateY(-1px);
+    color: inherit;
   }
 
   .card:hover .card-cta {
-    color: var(--color-heading);
+    color: var(--color-accent);
   }
 
   .card-body {
@@ -67,11 +68,12 @@ const { eyebrow, title, summary, href } = Astro.props;
     margin: 0;
     font-size: 15px;
     line-height: 1.65;
-    color: var(--color-text);
+    color: var(--color-dimmed);
   }
 
   .card-cta {
     display: block;
     margin-top: 24px;
+    color: var(--color-muted);
   }
 </style>

@@ -69,6 +69,10 @@ const links = [
     text-decoration: none;
   }
 
+  .site-nav-mark:hover {
+    color: var(--color-accent);
+  }
+
   .site-nav-links {
     display: flex;
     flex-wrap: wrap;
@@ -78,16 +82,17 @@ const links = [
 
   .site-nav-link {
     text-decoration: none;
+    color: var(--color-muted);
     border-bottom: 1px solid transparent;
     padding-bottom: 1px;
   }
 
   .site-nav-link:hover {
-    color: var(--color-heading);
+    color: var(--color-accent);
   }
 
   .site-nav-link.active {
-    color: var(--color-heading);
-    border-bottom-color: var(--color-heading);
+    color: var(--color-accent);
+    border-bottom-color: var(--color-accent);
   }
 </style>

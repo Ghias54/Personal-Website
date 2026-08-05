@@ -1,141 +1,318 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import IssuerLogo from "../components/IssuerLogo.astro";
 
-const certifications = [
-  {
-    name: "C++ Proficiency Certificate",
-    issuer: "College of DuPage",
-    date: "May 2026",
-  },
-  {
-    name: "Extract, Transform and Load Data in Power BI",
-    issuer: "Microsoft",
-    date: "February 2026",
-  },
-  {
-    name: "Web3 and Blockchain Fundamentals",
-    issuer: "INSEAD",
-    date: "December 2025",
-  },
-  {
-    name: "Google Prompting Essentials Specialization",
-    issuer: "Google",
-    date: "August 2025",
-  },
-  {
-    name: "Harnessing the Power of Data with Power BI",
-    issuer: "Microsoft",
-    date: "July 2025",
-  },
-  {
-    name: "Google AI Essentials Specialization",
-    issuer: "Google",
-    date: "June 2025",
-  },
-  {
-    name: "Preparing Data for Analysis with Microsoft Excel",
-    issuer: "Microsoft",
-    date: "May 2025",
-  },
-] as const;
+interface CertEntry {
+  name: string;
+  issuer: string;
+  date: string;
+  credentialUrl: string;
+}
 
-type Cert = (typeof certifications)[number];
+interface CertGroup {
+  name: string;
+  color: string;
+  headerText: string;
+  items: CertEntry[];
+}
 
-const groups: { year: string; items: Cert[] }[] = [];
-for (const cert of certifications) {
-  const year = cert.date.slice(-4);
-  const current = groups[groups.length - 1];
-  if (current && current.year === year) {
-    current.items.push(cert);
-  } else {
-    groups.push({ year, items: [cert] });
-  }
+const groups: CertGroup[] = [
+  {
+    name: "Data & Analytics",
+    color: "#1E7F6B",
+    headerText: "#166B59",
+    items: [
+      {
+        name: "Extract, Transform and Load Data in Power BI",
+        issuer: "Microsoft",
+        date: "Feb 2026",
+        credentialUrl: "",
+      },
+      {
+        name: "Harnessing the Power of Data with Power BI",
+        issuer: "Microsoft",
+        date: "Jul 2025",
+        credentialUrl: "",
+      },
+      {
+        name: "Preparing Data for Analysis with Microsoft Excel",
+        issuer: "Microsoft",
+        date: "May 2025",
+        credentialUrl: "",
+      },
+    ],
+  },
+  {
+    name: "Artificial Intelligence",
+    color: "#375570",
+    headerText: "#2C4359",
+    items: [
+      {
+        name: "Google Prompting Essentials Specialization",
+        issuer: "Google",
+        date: "Aug 2025",
+        credentialUrl: "",
+      },
+      {
+        name: "Google AI Essentials Specialization",
+        issuer: "Google",
+        date: "Jun 2025",
+        credentialUrl: "",
+      },
+    ],
+  },
+  {
+    name: "Programming & Other",
+    color: "#7A8195",
+    headerText: "#4A5064",
+    items: [
+      {
+        name: "C++ Proficiency Certificate",
+        issuer: "College of DuPage",
+        date: "May 2026",
+        credentialUrl: "",
+      },
+      {
+        name: "Web3 and Blockchain Fundamentals",
+        issuer: "INSEAD",
+        date: "Dec 2025",
+        credentialUrl: "",
+      },
+    ],
+  },
+];
+
+function groupId(name: string) {
+  return `group-${name.replace(/\W+/g, "-").toLowerCase()}`;
 }
 ---
 
 <BaseLayout
   title="Certifications — Rehan Ghias"
-  description="Certifications and coursework in programming, Power BI, Excel, and AI."
+  description="Certifications and coursework in data analytics, AI, and programming."
 >
   <main class="container page">
     <header class="page-header">
       <h1>Certifications</h1>
     </header>
 
-    {
-      groups.map((group) => (
-        <section class="year-group" aria-labelledby={`year-${group.year}`}>
-          <h2 id={`year-${group.year}`} class="meta year-label">
-            {group.year}
-          </h2>
-          <ul class="cert-list">
-            {group.items.map((cert, index) => (
-              <li class="cert-item">
-                {index > 0 && <hr class="hairline" />}
-                <div class="cert-body">
-                  <h3 class="cert-name">{cert.name}</h3>
-                  <p class="cert-meta">
-                    <span>{cert.issuer}</span>
-                    <span class="sep" aria-hidden="true">
-                      ·
-                    </span>
-                    <span>{cert.date}</span>
-                  </p>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </section>
-      ))
-    }
+    <div class="groups">
+      {
+        groups.map((group) => (
+          <section class="cert-group" aria-labelledby={groupId(group.name)}>
+            <div class="group-header">
+              <span
+                class="group-swatch"
+                style={`background:${group.color}`}
+                aria-hidden="true"
+              />
+              <h2
+                id={groupId(group.name)}
+                class="group-title"
+                style={`color:${group.headerText}`}
+              >
+                {group.name}
+              </h2>
+              <span class="group-rule" aria-hidden="true" />
+              <span class="group-count meta">{group.items.length}</span>
+            </div>
+
+            <ul class="cert-card">
+              {group.items.map((cert) => {
+                const expandable = cert.credentialUrl.trim().length > 0;
+                const meta = `${cert.issuer} · ${cert.date}`;
+
+                return (
+                  <li class="cert-item">
+                    {expandable ? (
+                      <details class="cert-details">
+                        <summary class="cert-row interactive">
+                          <IssuerLogo issuer={cert.issuer} />
+                          <span class="cert-text">
+                            <span class="cert-name">{cert.name}</span>
+                            <span class="cert-meta">{meta}</span>
+                          </span>
+                          <span class="cert-chevron" aria-hidden="true">
+                            ›
+                          </span>
+                        </summary>
+                        <div class="cert-panel">
+                          <a
+                            class="credential-link"
+                            href={cert.credentialUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            View credential ↗
+                          </a>
+                        </div>
+                      </details>
+                    ) : (
+                      <div class="cert-row">
+                        <IssuerLogo issuer={cert.issuer} />
+                        <span class="cert-text">
+                          <span class="cert-name">{cert.name}</span>
+                          <span class="cert-meta">{meta}</span>
+                        </span>
+                      </div>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+          </section>
+        ))
+      }
+    </div>
   </main>
 </BaseLayout>
 
 <style>
   .page-header {
-    margin-bottom: 40px;
+    margin-bottom: 36px;
   }
 
-  .year-group + .year-group {
-    margin-top: 40px;
+  .groups {
+    display: flex;
+    flex-direction: column;
+    gap: 36px;
   }
 
-  .year-label {
-    margin: 0 0 16px;
+  .group-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
   }
 
-  .cert-list {
+  .group-swatch {
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  .group-title {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  .group-rule {
+    flex: 1;
+    height: 0;
+    border-top: 1px solid var(--color-border);
+    min-width: 16px;
+  }
+
+  .group-count {
+    flex-shrink: 0;
+  }
+
+  .cert-card {
     list-style: none;
     margin: 0;
     padding: 0;
-    max-width: var(--measure);
+    background: var(--color-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    overflow: hidden;
   }
 
-  .cert-item .hairline {
+  .cert-item + .cert-item {
+    border-top: 1px solid var(--color-border-soft);
+  }
+
+  .cert-details {
     margin: 0;
   }
 
-  .cert-body {
-    padding: 18px 0;
+  .cert-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+  }
+
+  .cert-row.interactive {
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .cert-row.interactive::-webkit-details-marker {
+    display: none;
+  }
+
+  .cert-row.interactive:hover .cert-name {
+    color: var(--color-accent);
+  }
+
+  .cert-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+    flex: 1;
   }
 
   .cert-name {
-    margin: 0 0 6px;
-    font-size: 16px;
+    font-family: var(--font-sans);
+    font-size: 15px;
     font-weight: 600;
-    letter-spacing: -0.01em;
-    line-height: 1.4;
+    line-height: 1.35;
     color: var(--color-heading);
   }
 
   .cert-meta {
-    margin: 0;
-    font-size: 15px;
-    line-height: 1.5;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
     color: var(--color-muted);
+    line-height: 1.4;
   }
 
-  .sep {
-    margin: 0 0.35em;
+  .cert-chevron {
+    font-family: var(--font-mono);
+    font-size: 16px;
+    color: var(--color-muted);
+    line-height: 1;
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+  }
+
+  .cert-details[open] .cert-chevron {
+    transform: rotate(90deg);
+  }
+
+  .cert-panel {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s ease;
+  }
+
+  .cert-details[open] .cert-panel {
+    max-height: 64px;
+  }
+
+  .credential-link {
+    display: inline-block;
+    margin: 0 16px 14px;
+    padding-left: 48px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    text-underline-offset: 3px;
+  }
+
+  .credential-link:hover {
+    color: var(--color-accent-deep);
   }
 </style>

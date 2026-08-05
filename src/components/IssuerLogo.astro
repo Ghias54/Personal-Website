@@ -1,0 +1,89 @@
+---
+interface Props {
+  issuer: string;
+}
+
+const { issuer } = Astro.props;
+
+const monograms: Record<string, string> = {
+  Microsoft: "MS",
+  Google: "G",
+  "College of DuPage": "CD",
+  INSEAD: "IN",
+};
+
+const iconKeys: Record<string, string> = {
+  Microsoft: "siMicrosoft",
+  Google: "siGoogle",
+};
+
+let svgPath: string | null = null;
+
+try {
+  const icons = await import("simple-icons");
+  const key = iconKeys[issuer];
+  if (key) {
+    const icon = (icons as Record<string, { path?: string } | undefined>)[key];
+    if (icon?.path) {
+      svgPath = icon.path;
+    }
+  }
+} catch {
+  svgPath = null;
+}
+
+const monogram =
+  monograms[issuer] ??
+  issuer
+    .split(/\s+/)
+    .map((part) => part[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+---
+
+<span class="issuer-logo" aria-hidden="true">
+  {
+    svgPath ? (
+      <svg
+        class="issuer-glyph"
+        role="img"
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path d={svgPath} fill="currentColor" />
+      </svg>
+    ) : (
+      <span class="issuer-monogram">{monogram}</span>
+    )
+  }
+</span>
+
+<style>
+  .issuer-logo {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    flex-shrink: 0;
+    border-radius: 8px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    color: var(--color-dimmed);
+  }
+
+  .issuer-glyph {
+    width: 18px;
+    height: 18px;
+    display: block;
+  }
+
+  .issuer-monogram {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.02em;
+    color: var(--color-muted);
+    line-height: 1;
+  }
+</style>

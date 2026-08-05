@@ -1,16 +1,23 @@
 :root {
-  --color-bg: #fdfcfa;
+  --color-bg: #f7f8fa;
   --color-card: #ffffff;
-  --color-text: #3a3835;
-  --color-heading: #1c1b19;
-  --color-muted: #7a7873;
-  --color-border: rgba(0, 0, 0, 0.12);
-  --color-figure: #f7f5f0;
+  --color-surface: #edeff3;
+  --color-border: #e1e4ea;
+  --color-border-soft: #edeff3;
+  --color-text: #1f2430;
+  --color-heading: #1f2430;
+  --color-dimmed: #4a5064;
+  --color-muted: #7a8195;
+  --color-accent: #375570;
+  --color-accent-deep: #2c4359;
+  --color-accent-secondary: #1e7f6b;
+  --color-figure: #edeff3;
   --font-sans: "Manrope", sans-serif;
   --font-mono: "IBM Plex Mono", monospace;
   --measure: 56ch;
   --container-max: 720px;
   --container-pad-x: 24px;
+  --radius-card: 14px;
 }
 
 .container {
@@ -56,9 +63,13 @@ h1 {
 }
 
 a {
-  color: inherit;
+  color: var(--color-accent);
   text-decoration-thickness: 1px;
   text-underline-offset: 0.2em;
+}
+
+a:hover {
+  color: var(--color-accent-deep);
 }
 
 .meta {
@@ -131,7 +142,7 @@ a {
   content: "";
   display: block;
   width: 60px;
-  border-top: 1px solid rgba(0, 0, 0, 0.15);
+  border-top: 1px solid var(--color-border);
   margin-bottom: 12px;
 }
 
