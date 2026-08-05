@@ -1,24 +1,50 @@
-# Cursor Output — Tagline & contrast
+# Cursor Output — Dark header + left-rail redesign
 Date: 2026-08-05
 Status: Complete
 
 ## Commit
-`402051bd78807d180fea0078364c371bffc8db79` (`402051b`)
+`81ac5fd8ddc87eb7bb15fa5578b98dcc22764802` (`81ac5fd`)
 
 ## Build
 `npm run build` compiles clean. 6 pages built.
 
-## Changes
-1. **Tagline text** — `src/content/home.md`: `INFORMATION SCIENCE & ECONOMICS`
-2. **Tagline style** (home only) — accent `#375570`, 13px, weight 500, letter-spacing 0.05em, IBM Plex Mono uppercase retained via `.meta`
-3. **Contrast** — `#7A8195` on `#F7F8FA` measures **3.66:1** (fails 4.5:1). Darkened `--color-muted` to `#6B7285` (**4.52:1**).
+## What shipped
+1. **Palette** — Navy `#1F2A36` header, white page, greys only. Teal/mint removed. Cert group markers use navy / slate / muted greys. Radius capped at 4px (logos 2px).
+2. **Header band** — Full-bleed dark band with nav + page title on every page via `SiteHeader.astro`. Home: two-line name, rule, degree meta. Other pages: title + rule + optional meta.
+3. **Rail layout** — `RailSection.astro` (96px rail + 34px gap). Collapses to stacked label/content below 700px.
+4. **Work list** — `WorkListItem.astro` replaces `CaseStudyCard.astro` on home and `/work`.
+5. **Case studies** — Title/meta in band; markdown `h2`s become rail labels beside each section body.
+6. **Certifications** — Title in band; card chrome replaced with top/bottom hairlines; group colors updated; logo radius 2px.
+7. **Resume** — Title in band; download + embed in content column.
 
-## “Data Science” search
-No occurrences in site content, components, or copy docs. Matches only in `cursor_task.md` (this task’s instructions). Hero paragraph already says “Information Science and Economics.”
+## 375px
+- Rail collapses to single column (label above content, 8px gap).
+- Home name stays 52px on two lines; fits within padded container.
+- Non-home band titles scale to 30px below 700px so long case-study titles wrap cleanly.
+- Nav links wrap under RG; work entry rails stack above titles.
 
-Note: `docs/home-page-copy.md` and `docs/Cursor Build Task.md` still document the old tagline “DATA & OPERATIONS ANALYSIS” as historical build notes — not live site copy. Live tagline is in `src/content/home.md`.
+## Spec conflicts / resolutions
+- Prior sticky nav + warm off-white palette replaced entirely by the approved mockup system.
+- Case study section labels can be longer than 96px (“What I would do differently”) — they wrap in the rail as allowed by the spec.
+- Projects / Certifications / Resume have no secondary meta line in the band (only the rule under the title), since none was defined for those pages.
+
+## Files created
+- `src/components/SiteHeader.astro`
+- `src/components/RailSection.astro`
+- `src/components/WorkListItem.astro`
+- `src/lib/processMarkdownHtml.ts`
 
 ## Files changed
-- `src/content/home.md`
-- `src/pages/index.astro`
 - `src/styles/global.css`
+- `src/layouts/BaseLayout.astro`
+- `src/layouts/CaseStudyLayout.astro`
+- `src/components/Nav.astro`
+- `src/components/MarkdownBody.astro`
+- `src/components/IssuerLogo.astro`
+- `src/pages/index.astro`
+- `src/pages/work/index.astro`
+- `src/pages/certifications.astro`
+- `src/pages/resume.astro`
+
+## Files deleted
+- `src/components/CaseStudyCard.astro`
