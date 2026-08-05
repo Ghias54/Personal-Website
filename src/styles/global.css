@@ -1,7 +1,7 @@
 :root {
   --color-dark: #1f2a36;
   --color-on-dark: #ffffff;
-  --color-on-dark-muted: #8494a4;
+  --color-on-dark-muted: #a9b6c2;
   --color-on-dark-rule: #5c7186;
   --color-bg: #ffffff;
   --color-card: #ffffff;
@@ -10,6 +10,7 @@
   --color-heading: #1f2430;
   --color-dimmed: #4a5064;
   --color-muted: #7a8195;
+  --color-label: #4a5064;
   --color-border: #e1e4ea;
   --color-border-soft: #e1e4ea;
   --color-rule-strong: #1f2a36;
@@ -17,8 +18,12 @@
   --color-figure: #f7f8fa;
   --font-sans: "Manrope", sans-serif;
   --font-mono: "IBM Plex Mono", monospace;
-  --font-size-body: 16px;
-  --font-size-meta: 11px;
+  --fs-page-title: 38px;
+  --fs-heading: 21px;
+  --fs-lead: 18px;
+  --fs-body: 17px;
+  --fs-body-sm: 16px;
+  --fs-label: 13px;
   --measure: 56ch;
   --container-max: 720px;
   --container-pad-x: 24px;
@@ -51,7 +56,7 @@ body {
   background: var(--color-bg);
   color: var(--color-text);
   font-family: var(--font-sans);
-  font-size: var(--font-size-body);
+  font-size: var(--fs-body);
   line-height: 1.8;
   font-weight: 400;
 }
@@ -79,13 +84,14 @@ a:hover {
   text-decoration-color: var(--color-dark);
 }
 
-.meta {
+.meta,
+.label {
   font-family: var(--font-mono);
-  font-size: var(--font-size-meta);
-  font-weight: 400;
-  letter-spacing: 0.05em;
+  font-size: var(--fs-label);
+  font-weight: 500;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--color-muted);
+  color: var(--color-label);
 }
 
 .page {
@@ -103,7 +109,7 @@ a:hover {
 
 .prose p {
   margin: 0;
-  font-size: 16px;
+  font-size: var(--fs-body);
   line-height: 1.75;
   color: var(--color-dimmed);
 }
@@ -124,12 +130,6 @@ a:hover {
 .hairline {
   border: 0;
   border-top: 1px solid var(--color-border);
-  margin: 0;
-}
-
-.rule-strong {
-  border: 0;
-  border-top: 1px solid var(--color-rule-strong);
   margin: 0;
 }
 

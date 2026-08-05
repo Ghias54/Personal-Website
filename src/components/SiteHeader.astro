@@ -17,18 +17,12 @@ const { home = false, title, meta } = Astro.props;
       {
         home ? (
           <>
-            <h1 class="header-title home-title">
-              Rehan
-              <br />
-              Ghias
-            </h1>
-            <div class="header-rule" aria-hidden="true" />
+            <h1 class="header-title home-title">Rehan A Ghias</h1>
             <p class="header-meta">Information Science & Economics · UIUC</p>
           </>
         ) : (
           <>
             <h1 class="header-title">{title}</h1>
-            <div class="header-rule" aria-hidden="true" />
             {meta && <p class="header-meta">{meta}</p>}
           </>
         )
@@ -58,38 +52,25 @@ const { home = false, title, meta } = Astro.props;
     font-family: var(--font-sans);
     font-weight: 700;
     letter-spacing: -0.03em;
-    font-size: 38px;
-    line-height: 1.1;
+    font-size: var(--fs-page-title);
+    line-height: 1.15;
   }
 
   .home-title {
-    font-size: 52px;
-    letter-spacing: -0.04em;
-    line-height: 1;
-  }
-
-  .header-rule {
-    width: 44px;
-    height: 2px;
-    margin: 18px 0;
-    background: var(--color-on-dark-rule);
+    font-size: clamp(32px, 6vw, 46px);
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    white-space: nowrap;
   }
 
   .header-meta {
-    margin: 0;
+    margin: 16px 0 0;
     font-family: var(--font-mono);
-    font-size: 12px;
-    font-weight: 400;
-    letter-spacing: 0.1em;
+    font-size: var(--fs-label);
+    font-weight: 500;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--color-on-dark-muted);
     line-height: 1.5;
-  }
-
-  @media (max-width: 700px) {
-    .header-title:not(.home-title) {
-      font-size: 30px;
-      line-height: 1.15;
-    }
   }
 </style>

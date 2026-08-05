@@ -1,36 +1,46 @@
-# Cursor Output — Work list layout fix
+# Cursor Output — Type scale & mono labels
 Date: 2026-08-05
-Status: Complete
+
+## Done
+
+1. **Name** — “Rehan A Ghias” on one line; `clamp(32px, 6vw, 46px)`; Manrope 700; `white-space: nowrap`. Confirmed at 375px: 32px, single line, no overflow.
+2. **Type scale** — six tokens in `global.css`; all component/page font sizes use them (except home name clamp, intentional).
+3. **Mono labels** — 13px / `#4A5064` / 500 / 0.06em / uppercase; dark band uses `#A9B6C2`. Cert group counts keep `#7A8195`.
+4. **Rules removed** — band rule under name; strong rule above WORK; trailing list borders. Kept between-item rules and cert group header hairlines.
+5. **Rail spacing** — 38px between ABOUT / SEEKING / CONTACT.
+
+## Font-size mapping
+
+| Previous / location | Mapped to |
+|---|---|
+| Body default ~17px | `--fs-body` (17px) |
+| Page titles in band (30–38px) | `--fs-page-title` (38px) |
+| Home name (52px / wrap) | `clamp(32px, 6vw, 46px)` *(exception)* |
+| Lead about paragraph | `--fs-lead` (18px) |
+| Work titles / cert names (~17–21px) | `--fs-heading` (21px) |
+| Work summaries | `--fs-body-sm` (16px) |
+| Rail labels, WORK, eyebrows, nav, contact, cert meta/group titles, header meta, resume download, credential links, figure captions (`.meta`), issuer monograms | `--fs-label` (13px) |
+| Cert group count | `--fs-label` size; color stays `--color-muted` (#7A8195) |
+| RG wordmark | `--fs-label`; letter-spacing remains 0.14em (wordmark, not a rail label) |
+| Cert chevron / logo slot pixel boxes | text → `--fs-label`; box dimensions unchanged (not type scale) |
+
+## Did not map cleanly
+
+- **Home name** — required `clamp(32px, 6vw, 46px)` outside the six-token list so it stays one line at 375px.
+- **RG letter-spacing** — kept at 0.14em (wordmark), not 0.06em.
+
+## Rules removed
+
+- 44px horizontal rule under the name in the dark band
+- Full-width / strong rule above the WORK label (home + projects)
+- Trailing `border-bottom` on certification lists
+
+## Checks
+
+- 375px home: name one line, no wrap/overflow — **pass**
+- `/`, `/work`, `/certifications` type scale + label colors — **pass**
+- `npm run build` — **clean**
 
 ## Commit
-`74e6a48b8e2306f684b3ce6442f4fb4e9116cdf7` (`74e6a48`)
 
-## Build
-`npm run build` compiles clean. 6 pages built.
-
-## What was wrong
-`WorkListItem.astro` source had already been changed to `display: block`, but the Vite dev server was still injecting a **stale stylesheet** for the component that kept:
-
-```css
-.work-link {
-  display: grid;
-  grid-template-columns: var(--rail-width) minmax(0, 1fr);
-}
-```
-
-That put the eyebrow and summary into the 96px first column and only the title into the wide column. Because those stale rules also lacked `font-family` on the eyebrow, it inherited Manrope from `body`.
-
-## What changed
-Rewrote `WorkListItem.astro` with new class names (`work-entry-link`, `eyebrow`, `title`, `summary`) and an explicit stacked block layout — no flex, no grid, no fixed-width children. Eyebrow forced to `"IBM Plex Mono", monospace`. Cleared Vite cache so the stale module could not linger.
-
-## Browser verification
-| Check | Home | /work |
-| --- | --- | --- |
-| Link `display` | `block` | `block` |
-| Link `grid-template-columns` | `none` | `none` |
-| Eyebrow font | IBM Plex Mono | IBM Plex Mono |
-| Summary width | 560px (~56ch) | 560px (~56ch) |
-| WORK label left = ABOUT rail left | yes (304px) | n/a |
-
-## Files changed
-- `src/components/WorkListItem.astro`
+See hash below after push.

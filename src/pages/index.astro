@@ -12,7 +12,7 @@ const seekingHtml = paragraphs[4] ?? "";
 ---
 
 <BaseLayout
-  title="Rehan Ghias — Information Science & Economics"
+  title="Rehan A Ghias — Information Science & Economics"
   description={description}
   homeBand
 >
@@ -36,7 +36,6 @@ const seekingHtml = paragraphs[4] ?? "";
     </RailSection>
 
     <section class="work-block" id="selected-work" aria-labelledby="work-heading">
-      <hr class="rule-strong work-rule" />
       <p id="work-heading" class="work-label">Work</p>
       <ul class="work-list">
         {
@@ -55,14 +54,14 @@ const seekingHtml = paragraphs[4] ?? "";
 </BaseLayout>
 
 <style>
-  .about-copy :global(p:first-child) {
-    font-size: 17px;
-    color: var(--color-text);
+  .about-copy :global(p) {
+    font-size: var(--fs-body);
+    color: var(--color-dimmed);
   }
 
-  .about-copy :global(p) {
-    font-size: 16px;
-    color: var(--color-dimmed);
+  .about-copy :global(p:first-child) {
+    font-size: var(--fs-lead);
+    color: var(--color-text);
   }
 
   .about-copy :global(p + p) {
@@ -72,7 +71,7 @@ const seekingHtml = paragraphs[4] ?? "";
   .seeking-copy :global(p) {
     margin: 0;
     max-width: var(--measure);
-    font-size: 17px;
+    font-size: var(--fs-body);
     line-height: 1.7;
     color: var(--color-text);
   }
@@ -87,8 +86,9 @@ const seekingHtml = paragraphs[4] ?? "";
     border: 0;
     background: transparent;
     font-family: var(--font-mono);
-    font-size: 12px;
-    letter-spacing: 0.05em;
+    font-size: var(--fs-label);
+    font-weight: 500;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
   }
 
@@ -107,33 +107,29 @@ const seekingHtml = paragraphs[4] ?? "";
 
   .sep {
     margin: 0 20px;
-    color: var(--color-muted);
+    color: var(--color-label);
     text-decoration: none;
   }
 
   .work-block {
-    margin-top: 56px;
-  }
-
-  .work-rule {
-    margin: 0;
+    margin-top: 48px;
   }
 
   .work-label {
-    margin: 14px 0 0;
+    margin: 0;
     padding: 0;
     font-family: var(--font-mono);
-    font-size: 11px;
-    font-weight: 400;
-    letter-spacing: 0.08em;
+    font-size: var(--fs-label);
+    font-weight: 500;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: var(--color-muted);
+    color: var(--color-label);
     line-height: 1.4;
   }
 
   .work-list {
     list-style: none;
-    margin: 18px 0 0;
+    margin: 12px 0 0;
     padding: 0;
   }
 </style>

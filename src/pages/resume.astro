@@ -45,8 +45,9 @@ const pdfExists = existsSync(join(process.cwd(), "public", "resume.pdf"));
   .download {
     margin: 0 0 16px;
     font-family: var(--font-mono);
-    font-size: 12px;
-    letter-spacing: 0.05em;
+    font-size: var(--fs-label);
+    font-weight: 500;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
   }
 

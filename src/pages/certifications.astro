@@ -184,8 +184,8 @@ function groupId(name: string) {
   .group-title {
     margin: 0;
     font-family: var(--font-mono);
-    font-size: 12px;
-    font-weight: 400;
+    font-size: var(--fs-label);
+    font-weight: 500;
     letter-spacing: 0.06em;
     text-transform: uppercase;
     line-height: 1;
@@ -201,6 +201,7 @@ function groupId(name: string) {
 
   .group-count {
     flex-shrink: 0;
+    color: var(--color-muted);
   }
 
   .cert-list {
@@ -208,7 +209,6 @@ function groupId(name: string) {
     margin: 12px 0 0;
     padding: 0;
     border-top: 1px solid var(--color-border);
-    border-bottom: 1px solid var(--color-border);
   }
 
   .cert-item + .cert-item {
@@ -249,7 +249,7 @@ function groupId(name: string) {
 
   .cert-name {
     font-family: var(--font-sans);
-    font-size: 17px;
+    font-size: var(--fs-heading);
     font-weight: 600;
     line-height: 1.35;
     color: var(--color-heading);
@@ -257,17 +257,18 @@ function groupId(name: string) {
 
   .cert-meta {
     font-family: var(--font-mono);
-    font-size: 11px;
-    letter-spacing: 0.03em;
+    font-size: var(--fs-label);
+    font-weight: 500;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: var(--color-muted);
+    color: var(--color-label);
     line-height: 1.4;
   }
 
   .cert-chevron {
     font-family: var(--font-mono);
-    font-size: 16px;
-    color: var(--color-muted);
+    font-size: var(--fs-label);
+    color: var(--color-label);
     line-height: 1;
     transition: transform 0.2s ease;
     flex-shrink: 0;
@@ -292,8 +293,9 @@ function groupId(name: string) {
     margin: 0 0 14px;
     padding-left: 52px;
     font-family: var(--font-mono);
-    font-size: 11px;
-    letter-spacing: 0.04em;
+    font-size: var(--fs-label);
+    font-weight: 500;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--color-dark);
     text-decoration: underline;

@@ -5,55 +5,80 @@ Repo: /home/rehan-ghias/personal-website
 Priority: HIGH
 
 ## Context
-The work list entries are broken. The rail grid was supposed to be removed from them but is still applied: the eyebrow and the summary are being placed in the 96px rail column while only the title sits in the wide content column. The result is a 120px-wide strip of text running down the page. The eyebrow is also rendering in Manrope instead of IBM Plex Mono.
+Adding a work history section to the home page and renaming the existing WORK section to PROJECTS. Both get a section header treatment with a separating rule. Experience entries now include real dates and bullet descriptions.
 
 ## Task
 
 STANDING RULE: when finished, run `npm run build`, then `git add -A`, commit, and `git push`. Record the commit hash in cursor_output.md.
 
-## FIX THE WORK LIST
+## 1. SECTION HEADER TREATMENT
 
-Open `WorkListItem.astro` (or whatever the work entry component is now called) and remove ALL grid and rail layout from it. The work list entries do not use the rail. Not for the eyebrow, not for the summary, not for anything.
+Create a reusable `SectionHeader.astro` taking a label string:
 
-Each entry is a single full-width block. All three elements stack vertically at the SAME full content width:
+- A 1px #E1E4EA rule spanning the full content width
+- Below it, ~14px gap, the label in IBM Plex Mono `--fs-label` (13px), uppercase, letter-spacing 0.06em, weight 500, color #4A5064
+- ~20px below the label before the section content starts
+- ~48px above the rule to separate it from the previous section
 
-```
-<a>                                 <- whole entry is the link, display: block
-  <p class="eyebrow">TRULY ENGAGING</p>
-  <h3 class="title">Finding the real capacity of a die-cutting machine</h3>
-  <p class="summary">Management wanted to know…</p>
-</a>
-```
+## 2. RENAME WORK TO PROJECTS
 
-Styling:
-- Eyebrow: IBM Plex Mono, 11px, uppercase, letter-spacing 0.05em, color #7A8195, margin-bottom 8px. It must be MONO — it is currently rendering in Manrope.
-- Title: Manrope, 21px, weight 600, letter-spacing -0.015em, line-height 1.3, color #1F2430, margin-bottom 8px
-- Summary: Manrope, 16px, line-height 1.6, color #4A5064, max-width 56ch
-- Entry padding: 24px top, 22px bottom
-- 1px #E1E4EA rule between entries, none after the last
-- Hover: title color to #1F2A36. Nothing else changes.
+Replace the bare WORK label on the home page with SectionHeader using the label PROJECTS. The list itself is unchanged.
 
-The `<a>` must be `display: block` and full width. No flex, no grid, no fixed-width children anywhere in this component.
+## 3. NEW EXPERIENCE SECTION
 
-Verify in a browser that the summary paragraph runs the full width of the content column — roughly 56 characters per line — and not a narrow strip.
+Add a section BELOW Projects using SectionHeader with the label EXPERIENCE.
 
-## ALSO CHECK
+Build from a data array in the page frontmatter. Each entry: role, company, location, dates, and an array of bullet points.
 
-The WORK label and its rule above the list should span the full content width and sit at the same left edge as the ABOUT / SEEKING / CONTACT labels.
+Entry layout — full width, no rail:
+- Role in Manrope `--fs-heading` (21px) weight 600 color #1F2430
+- Company and location below in Manrope `--fs-body-sm` (16px) color #4A5064, ~4px gap
+- Dates in IBM Plex Mono `--fs-label` uppercase color #4A5064, ~6px gap
+- Bullets below, Manrope `--fs-body-sm` (16px) line-height 1.6 color #4A5064, max-width 56ch, ~12px gap above
+- Bullets use a simple hanging indent with a small middot or en dash marker in #7A8195 — NOT default browser list bullets. Reset list-style.
+- 26px top and 24px bottom padding, 1px #E1E4EA rule between entries, none after the last
 
-Confirm /work uses the same component and is not separately broken.
+Entries, most recent first:
 
-Everything else stays as it is.
+**1. Data Analyst Intern (Internal Project)** · Truly Engaging · Carol Stream, IL · JUL 2025 – SEP 2025
+- Selected by the CFO and COO for a six-week analytics project
+- Analyzed machine-level production data in Excel to identify bottlenecks and reduce downtime
+- Cleaned and prepared large, inconsistent machine datasets
+- Established true production capacity to improve planning accuracy
+- Built Power BI dashboards to present findings
+
+**2. Machine Operator** · Truly Engaging · Carol Stream, IL · AUG 2023 – PRESENT
+- Operate CNC and die-cutting equipment
+- Troubleshoot machine issues and assist other operators
+- Handle packaging and shipping through FedEx, UPS and USPS systems
+- Lead small teams to keep production moving
+
+**3. Supervisor** · Glitz Decor LLC · Chicago, IL · JUL 2023 – PRESENT
+- Oversee team operations and resolve workflow conflicts
+- Manage project timelines to hit delivery dates
+- Coordinate events with clients, vendors and venues
+
+**4. Center Assistant (Operations Lead)** · Kumon North America · Glen Ellyn, IL · AUG 2022 – SEP 2023
+- Managed daily center operations and staff coordination
+- Led a team of 12+ tutors
+- Streamlined scheduling and student progress tracking
+- Analyzed student progress data to adjust instructional approach
+
+## 4. ORDER ON THE HOME PAGE
+
+ABOUT → SEEKING → CONTACT → PROJECTS → EXPERIENCE
+
+Everything else stays as it is. Check at 375px before finishing.
 
 ## Rules
-- Read the component file before editing
-- Do not change any page copy
+- Read existing files before editing
+- Do not change any existing page copy
 - Run `npm run build` and confirm it compiles clean
-- Open the home page and /work in a browser and confirm the fix visually before calling this done
+- Open the home page in a browser and confirm visually before calling this done
 - After completing, write results to cursor_output.md
 
 ## Expected Output in cursor_output.md
-What was actually wrong in the component, what was changed, confirmation the summary now runs full width on both the home page and /work, confirmation npm run build compiles clean, and the commit hash after push.
+Files created and changed, confirmation both section headers render identically, confirmation the bullets are not using default browser list styling, confirmation npm run build compiles clean, and the commit hash after push.
 
 ## Status
-[x] Complete — see cursor_output.md
+[x] Complete
