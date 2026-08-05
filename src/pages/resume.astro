@@ -11,7 +11,7 @@ const pdfExists = existsSync(join(process.cwd(), "public", "resume.pdf"));
   title="Resume — Rehan Ghias"
   description="Resume of Rehan Ghias — Data & Operations Analysis."
 >
-  <main class="page resume-page">
+  <main class="container page resume-page">
     <header class="resume-header">
       <h1>Resume</h1>
       <p class="download">
@@ -43,7 +43,6 @@ const pdfExists = existsSync(join(process.cwd(), "public", "resume.pdf"));
 
 <style>
   .resume-page {
-    max-width: 900px;
     display: flex;
     flex-direction: column;
     min-height: 100vh;

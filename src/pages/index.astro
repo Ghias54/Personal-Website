@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import CaseStudyCard from "../components/CaseStudyCard.astro";
 import * as home from "../content/home.md";
 
 const { title, tagline, description, email, github, cards } = home.frontmatter;
@@ -7,7 +8,7 @@ const heroHtml = await home.compiledContent();
 ---
 
 <BaseLayout title={`${title} — Data & Operations Analysis`} description={description}>
-  <main class="page home">
+  <main class="container page home">
     <header class="hero">
       <h1>{title}</h1>
       <p class="meta tagline">{tagline}</p>
@@ -28,16 +29,12 @@ const heroHtml = await home.compiledContent();
       <ul class="card-grid">
         {
           cards.map((card) => (
-            <li>
-              <a class="card" href={card.href}>
-                <div class="card-body">
-                  <p class="meta card-eyebrow">{card.eyebrow}</p>
-                  <h3 class="card-title">{card.title}</h3>
-                  <p class="card-summary">{card.summary}</p>
-                </div>
-                <span class="meta card-cta">Read the case study →</span>
-              </a>
-            </li>
+            <CaseStudyCard
+              eyebrow={card.eyebrow}
+              title={card.title}
+              summary={card.summary}
+              href={card.href}
+            />
           ))
         }
       </ul>
@@ -104,84 +101,9 @@ const heroHtml = await home.compiledContent();
 
   .selected-work {
     margin-top: 40px;
-    scroll-margin-top: 72px;
   }
 
   .section-label {
     margin: 0 0 20px;
-  }
-
-  .card-grid {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-  }
-
-  .card-grid > li {
-    display: flex;
-    min-height: 100%;
-  }
-
-  .card {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    min-height: 100%;
-    padding: 22px 20px;
-    background: var(--color-card);
-    border: 1px solid var(--color-border);
-    border-radius: 10px;
-    text-decoration: none;
-    color: inherit;
-    transition:
-      border-color 0.15s ease,
-      transform 0.15s ease;
-  }
-
-  .card:hover {
-    border-color: rgba(0, 0, 0, 0.28);
-    transform: translateY(-1px);
-  }
-
-  .card:hover .card-cta {
-    color: var(--color-heading);
-  }
-
-  .card-body {
-    flex: 1;
-  }
-
-  .card-eyebrow {
-    margin: 0 0 10px;
-  }
-
-  .card-title {
-    margin: 0 0 12px;
-    font-size: 17px;
-    font-weight: 600;
-    letter-spacing: -0.01em;
-    line-height: 1.35;
-    color: var(--color-heading);
-  }
-
-  .card-summary {
-    margin: 0;
-    font-size: 15px;
-    line-height: 1.65;
-    color: var(--color-text);
-  }
-
-  .card-cta {
-    display: block;
-    margin-top: 24px;
-  }
-
-  @media (max-width: 700px) {
-    .card-grid {
-      grid-template-columns: 1fr;
-    }
   }
 </style>

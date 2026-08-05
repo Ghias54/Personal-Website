@@ -1,0 +1,77 @@
+---
+interface Props {
+  eyebrow: string;
+  title: string;
+  summary: string;
+  href: string;
+}
+
+const { eyebrow, title, summary, href } = Astro.props;
+---
+
+<li>
+  <a class="card" href={href}>
+    <div class="card-body">
+      <p class="meta card-eyebrow">{eyebrow}</p>
+      <h3 class="card-title">{title}</h3>
+      <p class="card-summary">{summary}</p>
+    </div>
+    <span class="meta card-cta">Read the case study →</span>
+  </a>
+</li>
+
+<style>
+  .card {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-height: 100%;
+    padding: 22px 20px;
+    background: var(--color-card);
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    text-decoration: none;
+    color: inherit;
+    transition:
+      border-color 0.15s ease,
+      transform 0.15s ease;
+  }
+
+  .card:hover {
+    border-color: rgba(0, 0, 0, 0.28);
+    transform: translateY(-1px);
+  }
+
+  .card:hover .card-cta {
+    color: var(--color-heading);
+  }
+
+  .card-body {
+    flex: 1;
+  }
+
+  .card-eyebrow {
+    margin: 0 0 10px;
+  }
+
+  .card-title {
+    margin: 0 0 12px;
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1.35;
+    color: var(--color-heading);
+  }
+
+  .card-summary {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--color-text);
+  }
+
+  .card-cta {
+    display: block;
+    margin-top: 24px;
+  }
+</style>

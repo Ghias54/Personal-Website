@@ -9,6 +9,15 @@
   --font-sans: "Manrope", sans-serif;
   --font-mono: "IBM Plex Mono", monospace;
   --measure: 56ch;
+  --container-max: 720px;
+  --container-pad-x: 24px;
+}
+
+.container {
+  width: 100%;
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: var(--container-pad-x);
 }
 
 *,
@@ -62,10 +71,28 @@ a {
 }
 
 .page {
-  width: 100%;
-  max-width: 720px;
-  margin: 0 auto;
-  padding: 48px 24px 80px;
+  padding-top: 48px;
+  padding-bottom: 80px;
+}
+
+.card-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.card-grid > li {
+  display: flex;
+  min-height: 100%;
+}
+
+@media (max-width: 700px) {
+  .card-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .prose {

@@ -1,0 +1,44 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import CaseStudyCard from "../../components/CaseStudyCard.astro";
+import * as home from "../../content/home.md";
+
+const { cards } = home.frontmatter;
+---
+
+<BaseLayout
+  title="Projects — Rehan Ghias"
+  description="Selected work: operational analysis at Truly Engaging and a quantitative earnings research pipeline."
+>
+  <main class="container page">
+    <header class="page-header">
+      <h1>Projects</h1>
+    </header>
+
+    <section aria-labelledby="selected-work-heading">
+      <h2 id="selected-work-heading" class="meta section-label">Selected work</h2>
+      <ul class="card-grid">
+        {
+          cards.map((card) => (
+            <CaseStudyCard
+              eyebrow={card.eyebrow}
+              title={card.title}
+              summary={card.summary}
+              href={card.href}
+            />
+          ))
+        }
+      </ul>
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  .page-header {
+    margin-bottom: 40px;
+  }
+
+  .section-label {
+    margin: 0 0 20px;
+  }
+</style>
