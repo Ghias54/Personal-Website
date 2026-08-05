@@ -1,24 +1,28 @@
-# Cursor Output — Certifications
+# Cursor Output — Nav alignment & /work
 Date: 2026-08-05
 Status: Complete
 
 ## Commit
-`4e16b844dabfc1e62084df86c5fc11710707ef11` (`4e16b84`)
+`832a2abfcf6981dcfca7d4010fb8728d3e63d8fa` (`832a2ab`)
 
 ## Build
-`npm run build` compiles clean. 5 pages built (including `/certifications`).
+`npm run build` compiles clean. 6 pages built (including `/work`).
 
 ## What was done
-The `/certifications` page did not exist in the repo (no prior scaffold with a “MORE IN PROGRESS” note). Created `src/pages/certifications.astro` with a `certifications` data array of all seven entries, most recent first, fields: `name`, `issuer`, `date`. No credential IDs.
+1. **Alignment** — `--container-max` / `--container-pad-x` and a shared `.container` class. Nav, all pages, and resume use the same width and horizontal padding. Resume’s 900px override removed.
+2. **Nav wordmark** — “Rehan Ghias” → “RG” (IBM Plex Mono, uppercase, letter-spacing 0.08em). Full name remains the home h1.
+3. **/work** — Real Projects index with h1 “Projects”, mono “SELECTED WORK”, same two cards. Nav Projects → `/work`.
+4. **CaseStudyCard** — Extracted to `src/components/CaseStudyCard.astro`; used on home and `/work`.
+5. **Nav order** — Profile · Projects · Certifications · Resume.
 
-Entries are grouped by year (2026, then 2025) with mono year labels matching other section labels. Hairline rules separate entries within each group. No “MORE IN PROGRESS” note.
+## Files created
+- `src/components/CaseStudyCard.astro`
+- `src/pages/work/index.astro`
 
-Added a Certifications link in `Nav.astro` so the page is reachable (page was otherwise orphaned).
-
-## Files created / changed
-- `src/pages/certifications.astro` (created)
-- `src/components/Nav.astro` (Certifications nav item)
-- Plus prior uncommitted site work included in the same commit (home, case studies, resume, layouts, content, styles, docs, package rename, README)
-
-## Issues
-None. Build and push completed successfully.
+## Files changed
+- `src/styles/global.css`
+- `src/components/Nav.astro`
+- `src/pages/index.astro`
+- `src/pages/resume.astro`
+- `src/pages/certifications.astro`
+- `src/layouts/CaseStudyLayout.astro`
