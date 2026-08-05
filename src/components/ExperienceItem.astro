@@ -1,0 +1,88 @@
+---
+interface Props {
+  role: string;
+  company: string;
+  location: string;
+  dates: string;
+  bullets: string[];
+}
+
+const { role, company, location, dates, bullets } = Astro.props;
+---
+
+<li class="experience-entry">
+  <h3 class="experience-role">{role}</h3>
+  <p class="experience-place">{company} · {location}</p>
+  <p class="experience-dates">{dates}</p>
+  <ul class="experience-bullets">
+    {bullets.map((bullet) => <li>{bullet}</li>)}
+  </ul>
+</li>
+
+<style>
+  .experience-entry {
+    padding: 26px 0 24px;
+  }
+
+  .experience-entry + .experience-entry {
+    border-top: 1px solid var(--color-border);
+  }
+
+  .experience-role {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-size: var(--fs-heading);
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--color-heading);
+  }
+
+  .experience-place {
+    margin: 4px 0 0;
+    font-family: var(--font-sans);
+    font-size: var(--fs-body-sm);
+    font-weight: 400;
+    line-height: 1.5;
+    color: var(--color-dimmed);
+  }
+
+  .experience-dates {
+    margin: 6px 0 0;
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-label);
+    line-height: 1.4;
+  }
+
+  .experience-bullets {
+    list-style: none;
+    margin: 12px 0 0;
+    padding: 0;
+    max-width: var(--measure);
+  }
+
+  .experience-bullets li {
+    position: relative;
+    margin: 0;
+    padding-left: 1.1em;
+    font-family: var(--font-sans);
+    font-size: var(--fs-body-sm);
+    font-weight: 400;
+    line-height: 1.6;
+    color: var(--color-dimmed);
+  }
+
+  .experience-bullets li + li {
+    margin-top: 0.35em;
+  }
+
+  .experience-bullets li::before {
+    content: "·";
+    position: absolute;
+    left: 0;
+    color: var(--color-muted);
+  }
+</style>

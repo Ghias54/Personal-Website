@@ -1,0 +1,86 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import ExperienceItem from "../components/ExperienceItem.astro";
+
+const experience = [
+  {
+    role: "Data Analyst Intern (Internal Project)",
+    company: "Truly Engaging",
+    location: "Carol Stream, IL",
+    dates: "Jul 2025 – Sep 2025",
+    bullets: [
+      "Selected by the CFO and COO for a six-week analytics project",
+      "Analyzed machine-level production data in Excel to identify bottlenecks and reduce downtime",
+      "Cleaned and prepared large, inconsistent machine datasets",
+      "Established true production capacity to improve planning accuracy",
+      "Built Power BI dashboards to present findings",
+    ],
+  },
+  {
+    role: "Machine Operator",
+    company: "Truly Engaging",
+    location: "Carol Stream, IL",
+    dates: "Aug 2023 – Present",
+    bullets: [
+      "Operate CNC and die-cutting equipment",
+      "Troubleshoot machine issues and assist other operators",
+      "Handle packaging and shipping through FedEx, UPS and USPS systems",
+      "Lead small teams to keep production moving",
+    ],
+  },
+  {
+    role: "Supervisor",
+    company: "Glitz Decor LLC",
+    location: "Chicago, IL",
+    dates: "Jul 2023 – Present",
+    bullets: [
+      "Oversee team operations and resolve workflow conflicts",
+      "Manage project timelines to hit delivery dates",
+      "Coordinate events with clients, vendors and venues",
+    ],
+  },
+  {
+    role: "Center Assistant (Operations Lead)",
+    company: "Kumon North America",
+    location: "Glen Ellyn, IL",
+    dates: "Aug 2022 – Sep 2023",
+    bullets: [
+      "Managed daily center operations and staff coordination",
+      "Led a team of 12+ tutors",
+      "Streamlined scheduling and student progress tracking",
+      "Analyzed student progress data to adjust instructional approach",
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title="Experience — Rehan Ghias"
+  description="Work history: analytics, manufacturing operations, supervision, and center leadership."
+  bandTitle="Experience"
+  bandMeta="Work History"
+>
+  <main class="container page">
+    <ul class="experience-list">
+      {
+        experience.map((entry) => (
+          <ExperienceItem
+            role={entry.role}
+            company={entry.company}
+            location={entry.location}
+            dates={entry.dates}
+            bullets={entry.bullets}
+          />
+        ))
+      }
+    </ul>
+  </main>
+</BaseLayout>
+
+<style>
+  .experience-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+</style>

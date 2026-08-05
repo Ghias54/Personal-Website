@@ -10,57 +10,6 @@ const heroHtml = await home.compiledContent();
 const paragraphs = heroHtml.match(/<p>[\s\S]*?<\/p>/g) ?? [];
 const aboutHtml = paragraphs.slice(0, 4).join("");
 const seekingHtml = paragraphs[4] ?? "";
-
-const experience = [
-  {
-    role: "Data Analyst Intern (Internal Project)",
-    company: "Truly Engaging",
-    location: "Carol Stream, IL",
-    dates: "Jul 2025 – Sep 2025",
-    bullets: [
-      "Selected by the CFO and COO for a six-week analytics project",
-      "Analyzed machine-level production data in Excel to identify bottlenecks and reduce downtime",
-      "Cleaned and prepared large, inconsistent machine datasets",
-      "Established true production capacity to improve planning accuracy",
-      "Built Power BI dashboards to present findings",
-    ],
-  },
-  {
-    role: "Machine Operator",
-    company: "Truly Engaging",
-    location: "Carol Stream, IL",
-    dates: "Aug 2023 – Present",
-    bullets: [
-      "Operate CNC and die-cutting equipment",
-      "Troubleshoot machine issues and assist other operators",
-      "Handle packaging and shipping through FedEx, UPS and USPS systems",
-      "Lead small teams to keep production moving",
-    ],
-  },
-  {
-    role: "Supervisor",
-    company: "Glitz Decor LLC",
-    location: "Chicago, IL",
-    dates: "Jul 2023 – Present",
-    bullets: [
-      "Oversee team operations and resolve workflow conflicts",
-      "Manage project timelines to hit delivery dates",
-      "Coordinate events with clients, vendors and venues",
-    ],
-  },
-  {
-    role: "Center Assistant (Operations Lead)",
-    company: "Kumon North America",
-    location: "Glen Ellyn, IL",
-    dates: "Aug 2022 – Sep 2023",
-    bullets: [
-      "Managed daily center operations and staff coordination",
-      "Led a team of 12+ tutors",
-      "Streamlined scheduling and student progress tracking",
-      "Analyzed student progress data to adjust instructional approach",
-    ],
-  },
-];
 ---
 
 <BaseLayout
@@ -98,28 +47,6 @@ const experience = [
               summary={card.summary}
               href={card.href}
             />
-          ))
-        }
-      </ul>
-    </section>
-
-    <section class="experience-block" aria-labelledby="experience-heading">
-      <SectionHeader label="Experience" id="experience-heading" />
-      <ul class="experience-list">
-        {
-          experience.map((entry) => (
-            <li class="experience-entry">
-              <h3 class="experience-role">{entry.role}</h3>
-              <p class="experience-place">
-                {entry.company} · {entry.location}
-              </p>
-              <p class="experience-dates">{entry.dates}</p>
-              <ul class="experience-bullets">
-                {entry.bullets.map((bullet) => (
-                  <li>{bullet}</li>
-                ))}
-              </ul>
-            </li>
           ))
         }
       </ul>
@@ -189,77 +116,5 @@ const experience = [
     list-style: none;
     margin: 0;
     padding: 0;
-  }
-
-  .experience-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-
-  .experience-entry {
-    padding: 26px 0 24px;
-  }
-
-  .experience-entry + .experience-entry {
-    border-top: 1px solid var(--color-border);
-  }
-
-  .experience-role {
-    margin: 0;
-    font-family: var(--font-sans);
-    font-size: var(--fs-heading);
-    font-weight: 600;
-    line-height: 1.3;
-    color: var(--color-heading);
-  }
-
-  .experience-place {
-    margin: 4px 0 0;
-    font-family: var(--font-sans);
-    font-size: var(--fs-body-sm);
-    font-weight: 400;
-    line-height: 1.5;
-    color: var(--color-dimmed);
-  }
-
-  .experience-dates {
-    margin: 6px 0 0;
-    font-family: var(--font-mono);
-    font-size: var(--fs-label);
-    font-weight: 500;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--color-label);
-    line-height: 1.4;
-  }
-
-  .experience-bullets {
-    list-style: none;
-    margin: 12px 0 0;
-    padding: 0;
-    max-width: var(--measure);
-  }
-
-  .experience-bullets li {
-    position: relative;
-    margin: 0;
-    padding-left: 1.1em;
-    font-family: var(--font-sans);
-    font-size: var(--fs-body-sm);
-    font-weight: 400;
-    line-height: 1.6;
-    color: var(--color-dimmed);
-  }
-
-  .experience-bullets li + li {
-    margin-top: 0.35em;
-  }
-
-  .experience-bullets li::before {
-    content: "·";
-    position: absolute;
-    left: 0;
-    color: var(--color-muted);
   }
 </style>

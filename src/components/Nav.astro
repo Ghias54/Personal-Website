@@ -9,6 +9,11 @@ const links = [
     active: pathname.startsWith("/work"),
   },
   {
+    href: "/experience",
+    label: "Experience",
+    active: pathname.startsWith("/experience"),
+  },
+  {
     href: "/certifications",
     label: "Certifications",
     active: pathname.startsWith("/certifications"),
@@ -71,10 +76,10 @@ const links = [
 
   .site-nav-links {
     display: flex;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: flex-end;
-    gap: 14px;
+    gap: 10px 14px;
     margin: 0;
     padding: 0;
     border: 0;
@@ -108,7 +113,7 @@ const links = [
 
   @media (max-width: 700px) {
     .site-nav-links {
-      gap: 10px;
+      gap: 8px 10px;
     }
   }
 </style>
