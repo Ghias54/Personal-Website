@@ -5,51 +5,44 @@ Repo: /home/rehan-ghias/personal-website
 Priority: MEDIUM
 
 ## Context
-Certifications page design is approved. Type is running too small across the site — the certification names in particular are smaller than body text elsewhere, which makes the page feel cramped. Bumping sizes site-wide so everything stays in proportion. No copy or layout changes.
+The tagline under the name on the home page is too light to read comfortably and is being changed to the degree. Also making sure "Information Science and Economics" is the wording used everywhere — LinkedIn currently says "Data Science and Economics" and that is being corrected separately by Rehan.
 
 ## Task
 
 STANDING RULE: when finished, run `npm run build`, then `git add -A`, commit, and `git push`. Record the commit hash in cursor_output.md.
 
-Increase type sizes. Apply these globally through the CSS custom properties in global.css wherever possible rather than editing each component, so the scale stays consistent.
+1. TAGLINE TEXT
+Change the home page tagline from "DATA & OPERATIONS ANALYSIS" to:
 
-CERTIFICATIONS PAGE
-- Certification name: 15px → 17px
-- Issuer / date meta line: 10px → 11px
-- Group header label: 11px → 12px
-- Group count on the right: 11px → 12px
-- Increase row vertical padding from 15px to 18px to match the larger text
-- Increase the logo slot from 34px to 38px, glyph and monogram scale with it
+INFORMATION SCIENCE & ECONOMICS
 
-BODY TEXT SITE-WIDE
-- Base body text: 16px → 17px
-- Keep the lead paragraph on the home page one step above body, so 18px → 19px
-- Line-height stays as it is
+2. TAGLINE STYLING
+The tagline currently uses the faint metadata color (#7A8195), which is too low-contrast for a line this prominent.
 
-METADATA SITE-WIDE
-All IBM Plex Mono metadata (section labels, case study meta lines, figure captions, nav links, the links row): 11px → 12px
+- Change its color to the accent, #375570
+- Bump it one step larger than standard metadata: 13px
+- Keep IBM Plex Mono, uppercase, letter-spacing 0.05em
+- Weight 500 so it holds against the large name above it
 
-CASE STUDY CARDS
-- Card title: 17px → 18px
-- Card summary: 15px → 16px
+This applies to the home page tagline only. Do NOT change other metadata across the site — section labels, case study meta lines, figure captions, nav links and the links row all keep the existing faint color.
 
-NAV
-- Nav links: 11px → 12px
-- RG wordmark: scale up proportionally
+3. CONTRAST CHECK
+Confirm the faint metadata color #7A8195 on the #F7F8FA background meets at least 4.5:1 contrast for any text 12px or smaller. If it does not, darken the faint token to #6B7285 site-wide rather than leaving small text under-contrast.
 
-Check at 375px afterwards and confirm nothing overflows or wraps badly, particularly the nav and the certification meta lines.
+4. CONSISTENCY CHECK
+Search the repo for "Data Science" and report any occurrences. The degree should read "Information Science and Economics" everywhere. Do not change the wording of the hero paragraph itself — just report anything inconsistent.
 
 Everything else stays as it is.
 
 ## Rules
 - Read existing files before editing
 - Keep changes minimal and localized
-- Do not change any page copy
+- Do not change any page copy other than the tagline specified above
 - Run `npm run build` and confirm it compiles clean before finishing
 - After completing, write results to cursor_output.md
 
 ## Expected Output in cursor_output.md
-Files changed, confirmation of how it looks at 375px, confirmation npm run build compiles clean, and the commit hash after push.
+Files changed, the measured contrast ratio for the faint metadata color and whether it was darkened, any "Data Science" occurrences found, confirmation npm run build compiles clean, and the commit hash after push.
 
 ## Status
 [x] Complete — see cursor_output.md

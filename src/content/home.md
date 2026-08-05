@@ -1,6 +1,6 @@
 ---
 title: Rehan Ghias
-tagline: DATA & OPERATIONS ANALYSIS
+tagline: INFORMATION SCIENCE & ECONOMICS
 description: Data and operations analyst. Dual degree in Information Science and Economics at UIUC. Seeking internships as a Data Analyst, Operations Analyst, or Data Scientist.
 email: rehanghias54@gmail.com
 github: https://github.com/Ghias54
