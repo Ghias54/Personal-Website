@@ -9,29 +9,23 @@ const pdfExists = existsSync(join(process.cwd(), "public", "resume.pdf"));
 
 <BaseLayout
   title="Resume — Rehan Ghias"
-  description="Resume of Rehan Ghias — Data & Operations Analysis."
+  description="Resume of Rehan Ghias — Information Science & Economics."
+  bandTitle="Resume"
 >
   <main class="container page resume-page">
-    <header class="resume-header">
-      <h1>Resume</h1>
-      <p class="download">
-        <a class="meta" href={pdfPath} download={pdfExists ? "Rehan-Ghias-Resume.pdf" : undefined}
-          >Download resume (PDF)</a
-        >
-      </p>
-      {
-        !pdfExists && (
-          <p class="meta note">PDF not uploaded yet — add public/resume.pdf to enable the preview.</p>
-        )
-      }
-    </header>
+    <p class="download">
+      <a href={pdfPath} download={pdfExists ? "Rehan-Ghias-Resume.pdf" : undefined}
+        >Download resume (PDF)</a
+      >
+    </p>
+    {
+      !pdfExists && (
+        <p class="meta note">PDF not uploaded yet — add public/resume.pdf to enable the preview.</p>
+      )
+    }
     {
       pdfExists ? (
-        <iframe
-          class="resume-frame"
-          src={pdfPath}
-          title="Rehan Ghias resume PDF"
-        />
+        <iframe class="resume-frame" src={pdfPath} title="Rehan Ghias resume PDF" />
       ) : (
         <div class="resume-placeholder" role="status">
           <p class="meta">Resume PDF preview will appear here once public/resume.pdf is added.</p>
@@ -45,39 +39,40 @@ const pdfExists = existsSync(join(process.cwd(), "public", "resume.pdf"));
   .resume-page {
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
-    padding-bottom: 32px;
-  }
-
-  .resume-header {
-    margin-bottom: 20px;
+    min-height: calc(100vh - 280px);
   }
 
   .download {
-    margin: 14px 0 0;
+    margin: 0 0 16px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
   }
 
   .download a {
+    color: var(--color-dark);
     text-decoration: underline;
+    text-decoration-color: var(--color-link-underline);
     text-decoration-thickness: 1px;
     text-underline-offset: 0.25em;
   }
 
   .note {
-    margin: 12px 0 0;
+    margin: 0 0 16px;
   }
 
   .resume-frame {
     flex: 1;
     width: 100%;
-    min-height: calc(100vh - 200px);
+    min-height: calc(100vh - 320px);
     border: 1px solid var(--color-border);
     background: var(--color-card);
   }
 
   .resume-placeholder {
     flex: 1;
-    min-height: calc(100vh - 200px);
+    min-height: calc(100vh - 320px);
     display: flex;
     align-items: center;
     justify-content: center;

@@ -1,13 +1,16 @@
 ---
 import "../styles/global.css";
-import Nav from "../components/Nav.astro";
+import SiteHeader from "../components/SiteHeader.astro";
 
 interface Props {
   title: string;
   description: string;
+  homeBand?: boolean;
+  bandTitle?: string;
+  bandMeta?: string;
 }
 
-const { title, description } = Astro.props;
+const { title, description, homeBand = false, bandTitle, bandMeta } = Astro.props;
 ---
 
 <!doctype html>
@@ -28,7 +31,7 @@ const { title, description } = Astro.props;
     <title>{title}</title>
   </head>
   <body>
-    <Nav />
+    <SiteHeader home={homeBand} title={bandTitle} meta={bandMeta} />
     <slot />
   </body>
 </html>

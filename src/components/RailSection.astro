@@ -1,0 +1,54 @@
+---
+interface Props {
+  label: string;
+  as?: "section" | "div";
+}
+
+const { label, as: Tag = "section" } = Astro.props;
+---
+
+<Tag class="rail-section">
+  <div class="rail-label">{label}</div>
+  <div class="rail-content">
+    <slot />
+  </div>
+</Tag>
+
+<style>
+  .rail-section {
+    display: grid;
+    grid-template-columns: var(--rail-width) minmax(0, 1fr);
+    gap: var(--rail-gap);
+    align-items: start;
+  }
+
+  .rail-section + .rail-section {
+    margin-top: 40px;
+  }
+
+  .rail-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+    padding-top: 4px;
+    line-height: 1.4;
+  }
+
+  .rail-content {
+    min-width: 0;
+  }
+
+  @media (max-width: 700px) {
+    .rail-section {
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+
+    .rail-label {
+      padding-top: 0;
+      margin-bottom: 0;
+    }
+  }
+</style>

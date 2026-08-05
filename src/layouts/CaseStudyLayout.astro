@@ -1,6 +1,8 @@
 ---
 import BaseLayout from "./BaseLayout.astro";
+import RailSection from "../components/RailSection.astro";
 import MarkdownBody from "../components/MarkdownBody.astro";
+import { splitCaseSections } from "../lib/processMarkdownHtml";
 
 interface Props {
   title: string;
@@ -10,25 +12,26 @@ interface Props {
 }
 
 const { title, description, meta, html } = Astro.props;
+const sections = splitCaseSections(html);
 ---
 
-<BaseLayout title={`${title} — Rehan Ghias`} description={description}>
+<BaseLayout
+  title={`${title} — Rehan Ghias`}
+  description={description}
+  bandTitle={title}
+  bandMeta={meta}
+>
   <main class="container page">
-    <header class="case-header">
-      <h1>{title}</h1>
-      <p class="meta case-meta">{meta}</p>
-      <hr class="hairline" />
-    </header>
-    <MarkdownBody html={html} />
+    {
+      sections.map((section) =>
+        section.label ? (
+          <RailSection label={section.label}>
+            <MarkdownBody html={section.html} />
+          </RailSection>
+        ) : (
+          <MarkdownBody html={section.html} />
+        ),
+      )
+    }
   </main>
 </BaseLayout>
-
-<style>
-  .case-header {
-    margin-bottom: 2.5em;
-  }
-
-  .case-meta {
-    margin: 12px 0 20px;
-  }
-</style>

@@ -1,0 +1,90 @@
+---
+import Nav from "./Nav.astro";
+
+interface Props {
+  home?: boolean;
+  title?: string;
+  meta?: string;
+}
+
+const { home = false, title, meta } = Astro.props;
+---
+
+<header class="site-header">
+  <div class="container">
+    <Nav />
+    <div class="header-body">
+      {
+        home ? (
+          <>
+            <h1 class="header-title home-title">
+              Rehan
+              <br />
+              Ghias
+            </h1>
+            <div class="header-rule" aria-hidden="true" />
+            <p class="header-meta">Information Science & Economics · UIUC</p>
+          </>
+        ) : (
+          <>
+            <h1 class="header-title">{title}</h1>
+            <div class="header-rule" aria-hidden="true" />
+            {meta && <p class="header-meta">{meta}</p>}
+          </>
+        )
+      }
+    </div>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    background: var(--color-dark);
+    color: var(--color-on-dark);
+  }
+
+  .header-body {
+    padding: 46px 0 48px;
+  }
+
+  .header-title {
+    margin: 0;
+    color: var(--color-on-dark);
+    font-family: var(--font-sans);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    font-size: 38px;
+    line-height: 1.1;
+  }
+
+  .home-title {
+    font-size: 52px;
+    letter-spacing: -0.04em;
+    line-height: 1;
+  }
+
+  .header-rule {
+    width: 44px;
+    height: 2px;
+    margin: 18px 0;
+    background: var(--color-on-dark-rule);
+  }
+
+  .header-meta {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-on-dark-muted);
+    line-height: 1.5;
+  }
+
+  @media (max-width: 700px) {
+    .header-title:not(.home-title) {
+      font-size: 30px;
+      line-height: 1.15;
+    }
+  }
+</style>

@@ -1,6 +1,6 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import CaseStudyCard from "../../components/CaseStudyCard.astro";
+import WorkListItem from "../../components/WorkListItem.astro";
 import * as home from "../../content/home.md";
 
 const { cards } = home.frontmatter;
@@ -9,18 +9,17 @@ const { cards } = home.frontmatter;
 <BaseLayout
   title="Projects — Rehan Ghias"
   description="Selected work: operational analysis at Truly Engaging and a quantitative earnings research pipeline."
+  bandTitle="Projects"
 >
   <main class="container page">
-    <header class="page-header">
-      <h1>Projects</h1>
-    </header>
-
-    <section aria-labelledby="selected-work-heading">
-      <h2 id="selected-work-heading" class="meta section-label">Selected work</h2>
-      <ul class="card-grid">
+    <section class="work-block" aria-labelledby="work-heading">
+      <hr class="rule-strong" />
+      <h2 id="work-heading" class="work-label">Work</h2>
+      <ul class="work-list">
         {
-          cards.map((card) => (
-            <CaseStudyCard
+          cards.map((card, index) => (
+            <WorkListItem
+              index={index + 1}
               eyebrow={card.eyebrow}
               title={card.title}
               summary={card.summary}
@@ -34,11 +33,19 @@ const { cards } = home.frontmatter;
 </BaseLayout>
 
 <style>
-  .page-header {
-    margin-bottom: 40px;
+  .work-label {
+    margin: 14px 0 0;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-muted);
   }
 
-  .section-label {
-    margin: 0 0 20px;
+  .work-list {
+    list-style: none;
+    margin: 18px 0 0;
+    padding: 0;
   }
 </style>

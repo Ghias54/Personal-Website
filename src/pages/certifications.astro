@@ -12,15 +12,13 @@ interface CertEntry {
 interface CertGroup {
   name: string;
   color: string;
-  headerText: string;
   items: CertEntry[];
 }
 
 const groups: CertGroup[] = [
   {
     name: "Data & Analytics",
-    color: "#1E7F6B",
-    headerText: "#166B59",
+    color: "#1F2A36",
     items: [
       {
         name: "Extract, Transform and Load Data in Power BI",
@@ -44,8 +42,7 @@ const groups: CertGroup[] = [
   },
   {
     name: "Artificial Intelligence",
-    color: "#375570",
-    headerText: "#2C4359",
+    color: "#5C7186",
     items: [
       {
         name: "Google Prompting Essentials Specialization",
@@ -63,8 +60,7 @@ const groups: CertGroup[] = [
   },
   {
     name: "Programming & Other",
-    color: "#7A8195",
-    headerText: "#4A5064",
+    color: "#8494A4",
     items: [
       {
         name: "C++ Proficiency Certificate",
@@ -90,12 +86,9 @@ function groupId(name: string) {
 <BaseLayout
   title="Certifications — Rehan Ghias"
   description="Certifications and coursework in data analytics, AI, and programming."
+  bandTitle="Certifications"
 >
   <main class="container page">
-    <header class="page-header">
-      <h1>Certifications</h1>
-    </header>
-
     <div class="groups">
       {
         groups.map((group) => (
@@ -109,7 +102,7 @@ function groupId(name: string) {
               <h2
                 id={groupId(group.name)}
                 class="group-title"
-                style={`color:${group.headerText}`}
+                style={`color:${group.color}`}
               >
                 {group.name}
               </h2>
@@ -117,7 +110,7 @@ function groupId(name: string) {
               <span class="group-count meta">{group.items.length}</span>
             </div>
 
-            <ul class="cert-card">
+            <ul class="cert-list">
               {group.items.map((cert) => {
                 const expandable = cert.credentialUrl.trim().length > 0;
                 const meta = `${cert.issuer} · ${cert.date}`;
@@ -168,21 +161,17 @@ function groupId(name: string) {
 </BaseLayout>
 
 <style>
-  .page-header {
-    margin-bottom: 36px;
-  }
-
   .groups {
     display: flex;
     flex-direction: column;
-    gap: 36px;
+    gap: 40px;
   }
 
   .group-header {
     display: flex;
     align-items: center;
     gap: 10px;
-    margin-bottom: 12px;
+    margin-bottom: 0;
   }
 
   .group-swatch {
@@ -212,21 +201,18 @@ function groupId(name: string) {
 
   .group-count {
     flex-shrink: 0;
-    font-size: 12px;
   }
 
-  .cert-card {
+  .cert-list {
     list-style: none;
-    margin: 0;
+    margin: 12px 0 0;
     padding: 0;
-    background: var(--color-card);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-card);
-    overflow: hidden;
+    border-top: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
   }
 
   .cert-item + .cert-item {
-    border-top: 1px solid var(--color-border-soft);
+    border-top: 1px solid var(--color-border);
   }
 
   .cert-details {
@@ -237,7 +223,7 @@ function groupId(name: string) {
     display: flex;
     align-items: center;
     gap: 14px;
-    padding: 18px 16px;
+    padding: 18px 0;
   }
 
   .cert-row.interactive {
@@ -250,7 +236,7 @@ function groupId(name: string) {
   }
 
   .cert-row.interactive:hover .cert-name {
-    color: var(--color-accent);
+    color: var(--color-dark);
   }
 
   .cert-text {
@@ -303,17 +289,19 @@ function groupId(name: string) {
 
   .credential-link {
     display: inline-block;
-    margin: 0 16px 14px;
+    margin: 0 0 14px;
     padding-left: 52px;
     font-family: var(--font-mono);
-    font-size: var(--font-size-meta);
+    font-size: 11px;
     letter-spacing: 0.04em;
     text-transform: uppercase;
-    color: var(--color-accent);
+    color: var(--color-dark);
+    text-decoration: underline;
+    text-decoration-color: var(--color-link-underline);
     text-underline-offset: 3px;
   }
 
   .credential-link:hover {
-    color: var(--color-accent-deep);
+    text-decoration-color: var(--color-dark);
   }
 </style>
