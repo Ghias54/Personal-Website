@@ -2,54 +2,58 @@
 Date: 2026-08-05
 From: Claude (claude.ai)
 Repo: /home/rehan-ghias/personal-website
-Priority: HIGH
+Priority: MEDIUM
 
 ## Context
-The Experience section makes the home page too long. Moving it to its own page. The home page ends after the two project entries.
+Two changes: remove the redundant WORK label on the projects page, and rename the route from /work to /projects so the URL matches the page name.
 
 ## Task
 
 STANDING RULE: when finished, run `npm run build`, then `git add -A`, commit, and `git push`. Record the commit hash in cursor_output.md.
 
-## 1. CREATE /experience
+## 1. REMOVE THE WORK LABEL
 
-New page at `/experience` using the standard dark header band:
-- Band title: Experience
-- Band meta line below the rule: WORK HISTORY
+On the projects index page, remove the WORK mono label and the rule above it entirely. The project list starts directly below the header band.
 
-Move the entire Experience section — the data array and the entry markup — off the home page and onto this page. Keep the entry layout, spacing, bullets and rules exactly as they are now. Nothing about how an entry looks should change.
+Keep the spacing between the band and the first entry consistent with /experience and /certifications, which start their content directly after the band.
 
-The page does not need a SectionHeader above the list, since the band already names the page. Start the list directly.
+Leave the PROJECTS section header on the home page alone — that one still separates the projects from the sections above it.
 
-Extract the entry markup into `ExperienceItem.astro` if it is not already a component.
+## 2. RENAME /work TO /projects
 
-## 2. REMOVE EXPERIENCE FROM THE HOME PAGE
+Rename the route and every reference to it:
 
-The home page now ends after the second project entry. Delete the EXPERIENCE section header, the data array, and the entries from the home page.
+- `src/pages/work/index.astro` → `src/pages/projects/index.astro`
+- `src/pages/work/die-cutter-capacity.astro` → `src/pages/projects/die-cutter-capacity.astro`
+- `src/pages/work/earnings-factor-model.astro` → `src/pages/projects/earnings-factor-model.astro`
 
-Home page order becomes: ABOUT → SEEKING → CONTACT → PROJECTS → end.
+New URLs:
+- /projects
+- /projects/die-cutter-capacity
+- /projects/earnings-factor-model
 
-Make sure there is no leftover trailing rule or empty section wrapper after the last project entry.
+Update every internal link, including:
+- The Projects nav item
+- Both project entry links on the home page
+- Both project entry links on the projects index
+- Any back links or cross-references on the case study pages
+- Any `href` in content files or data arrays
 
-## 3. NAV
+Search the whole repo for the string `/work` and confirm nothing still points at the old path. Report anything found.
 
-Add Experience to the nav. New order:
-
-Profile · Projects · Experience · Certifications · Resume
-
-Check that five items still fit on one line at desktop width and wrap acceptably at 375px. If five items are too tight at smaller widths, reduce the gap between nav links rather than shrinking the font size.
+The site has not been deployed to a public domain yet and is not indexed, so no redirects are needed.
 
 Everything else stays as it is.
 
 ## Rules
 - Read existing files before editing
-- Do not change any page copy or any entry content
+- Do not change any page copy
 - Run `npm run build` and confirm it compiles clean
-- Open the home page and /experience in a browser and confirm visually before calling this done
+- Click through every nav item and both project links in a browser and confirm nothing 404s before calling this done
 - After completing, write results to cursor_output.md
 
 ## Expected Output in cursor_output.md
-Files created and changed, confirmation the home page ends cleanly after the projects with no stray rule, how the five nav items behave at 375px, confirmation npm run build compiles clean, and the commit hash after push.
+Files renamed and changed, every location where a /work reference was updated, confirmation no /work references remain, confirmation all links resolve, confirmation npm run build compiles clean, and the commit hash after push.
 
 ## Status
 [x] Complete

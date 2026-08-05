@@ -1,6 +1,6 @@
 # Testing Whether Earnings Volatility Can Be Traded
 
-Slug: /work/earnings-factor-model
+Slug: /projects/earnings-factor-model
 Meta line: PERSONAL PROJECT · QUANTITATIVE RESEARCH · PYTHON, PANDAS, STREAMLIT, LINUX
 
 Final copy. Use exactly as written — do not rewrite or paraphrase. Bold lead-ins are load-bearing; preserve them. Do not soften the negative result.

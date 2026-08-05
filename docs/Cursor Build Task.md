@@ -20,8 +20,8 @@ Astro static site, minimal template already scaffolded and pushed to `main`. Dep
 ## Scope — four pages, nothing more
 
 1. `/` — home
-2. `/work/die-cutter-capacity` — MOLL case study
-3. `/work/earnings-factor-model` — earnings model case study
+2. `/projects/die-cutter-capacity` — MOLL case study
+3. `/projects/earnings-factor-model` — earnings model case study
 4. `/resume` — embedded PDF
 
 Explicitly out of scope: blog, CMS, dark mode toggle, animation libraries, analytics, contact form. Do not add them.

@@ -1,20 +1,37 @@
-# Cursor Output — Experience page
+# Cursor Output — /work → /projects
 Date: 2026-08-05
 
-## Files created
-- `src/pages/experience.astro` — `/experience` with band title Experience / meta Work History; list starts with no SectionHeader
-- `src/components/ExperienceItem.astro` — entry layout (role, place, dates, middot bullets, between-item rules)
+## Files renamed
+- `src/pages/work/index.astro` → `src/pages/projects/index.astro` (WORK label removed; list starts directly)
+- `src/pages/work/die-cutter-capacity.astro` → `src/pages/projects/die-cutter-capacity.astro`
+- `src/pages/work/earnings-factor-model.astro` → `src/pages/projects/earnings-factor-model.astro`
 
 ## Files changed
-- `src/pages/index.astro` — removed Experience data, header, and entries; home ends after Projects
-- `src/components/Nav.astro` — Experience added; order Profile · Projects · Experience · Certifications · Resume; tighter gaps + wrap on small screens
+- `src/components/Nav.astro` — Projects href `/projects`
+- `src/content/home.md` — card hrefs → `/projects/...`
+- `docs/case-study-moll.md`, `docs/case-study-earnings-model.md`, `docs/home-page-copy.md`, `docs/Cursor Build Task.md` — slug/link docs updated
+
+## `/work` references updated
+| Location | Change |
+|---|---|
+| Nav Projects link | `/work` → `/projects` |
+| home.md card 1 | `/work/die-cutter-capacity` → `/projects/die-cutter-capacity` |
+| home.md card 2 | `/work/earnings-factor-model` → `/projects/earnings-factor-model` |
+| docs slug/copy mentions | updated to `/projects/...` |
+
+## Remaining `/work` string matches (not route links)
+- `src/content/work/*.md` — content folder path; imports from project pages still use `../../content/work/...` (filesystem, not a public URL)
+- `cursor_task.md` — this task’s instructions describing the rename
+- `package-lock.json` — unrelated `tests/projects/workspace/...` path fragment
+
+No live site hrefs still point at `/work`. Old routes 404.
 
 ## Confirmations
-- **Home ends cleanly** — About → Seeking → Contact → Projects → end; 2 project entries; no experience block; no trailing rule or empty wrapper after projects
-- **Nav at 375px** — five links wrap to 2 rows with `gap: 8px 10px`; no horizontal overflow. At 1280px all five stay on one row (`gap: 10px 14px`)
-- **`/experience`** — 4 entries; same padding/borders/bullets as before; no SectionHeader
-- **`npm run build`** — clean
+- Projects index: no WORK label; list margin 0 (same band→content spacing pattern as experience)
+- Home PROJECTS SectionHeader unchanged
+- All nav items + both project links from home and `/projects` resolve 200
+- `npm run build` — clean (7 pages under `/projects/...`)
 
 ## Commit
 
-`720cf40c1a8a4c5f0becc37870c87f333d35d78e`
+Pending push.

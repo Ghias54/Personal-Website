@@ -1,0 +1,36 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import WorkListItem from "../../components/WorkListItem.astro";
+import * as home from "../../content/home.md";
+
+const { cards } = home.frontmatter;
+---
+
+<BaseLayout
+  title="Projects — Rehan Ghias"
+  description="Selected work: operational analysis at Truly Engaging and a quantitative earnings research pipeline."
+  bandTitle="Projects"
+>
+  <main class="container page">
+    <ul class="work-list">
+      {
+        cards.map((card) => (
+          <WorkListItem
+            eyebrow={card.eyebrow}
+            title={card.title}
+            summary={card.summary}
+            href={card.href}
+          />
+        ))
+      }
+    </ul>
+  </main>
+</BaseLayout>
+
+<style>
+  .work-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+</style>

@@ -22,7 +22,7 @@ Links row: Email · GitHub · Resume
 
 ## Selected work
 
-### Card 1 — links to /work/die-cutter-capacity
+### Card 1 — links to /projects/die-cutter-capacity
 
 Eyebrow: TRULY ENGAGING
 
@@ -32,7 +32,7 @@ Management wanted to know the daily capacity of two industrial die cutters. A ye
 
 Link: Read the case study →
 
-### Card 2 — links to /work/earnings-factor-model
+### Card 2 — links to /projects/earnings-factor-model
 
 Eyebrow: PERSONAL PROJECT
 

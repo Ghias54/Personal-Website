@@ -1,6 +1,6 @@
 # Finding the Real Capacity of a Die-Cutting Machine
 
-Slug: /work/die-cutter-capacity
+Slug: /projects/die-cutter-capacity
 Meta line: TRULY ENGAGING · OPERATIONAL ANALYSIS · EXCEL, POWER BI
 
 Final copy. Use exactly as written — do not rewrite or paraphrase. Bold lead-ins are load-bearing; preserve them.

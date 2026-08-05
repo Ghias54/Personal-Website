@@ -4,9 +4,9 @@ const pathname = Astro.url.pathname.replace(/\/+$/, "") || "/";
 const links = [
   { href: "/", label: "Profile", active: pathname === "/" },
   {
-    href: "/work",
+    href: "/projects",
     label: "Projects",
-    active: pathname.startsWith("/work"),
+    active: pathname.startsWith("/projects"),
   },
   {
     href: "/experience",
