@@ -1,106 +1,98 @@
-# Cursor Output — Pre-deploy hardening (SIDE-6 / SIDE-14)
-Date: 2026-08-05
+# Cursor Output — Go public (SIDE-17 / SIDE-15)
+Date: 2026-08-06
 
-## 1. Build
+## 1. `public/resume.pdf`
 
-`npm run build` completed clean: **7 page(s)** + `sitemap-index.xml` / `sitemap-0.xml`.
+- Present: **yes**
+- Size: **79,991 bytes**
+- `pdffonts` — embedded fonts listed:
+  - `AAAAAA+Arial-BoldMT` (CID TrueType, emb yes)
+  - `BAAAAA+ArialMT` (CID TrueType, emb yes)
+  - `CAAAAA+Arial-ItalicMT` (CID TrueType, emb yes)
+- `pdftotext public/resume.pdf - | wc -c` → **2991** characters (≥ 2,900) — real text layer confirmed
 
-## 2. Font CDN check
+## 2. NOINDEX
 
-Grepping `dist/` for `fonts.googleapis.com` and `fonts.gstatic.com`: **ZERO matches**.
+- `src/layouts/BaseLayout.astro`: `const NOINDEX = false;`
+- Built HTML: robots meta tag **absent** on checked pages
 
-## 3. `@fontsource` weights imported
+## 3. `robots.txt` after change
 
-Verified against real `font-weight` usage (400 / 500 / 600 / 700 for Manrope; 400 / 500 for IBM Plex Mono):
+```
+User-agent: *
+Allow: /
 
-- `@fontsource/manrope/400.css`
-- `@fontsource/manrope/500.css`
-- `@fontsource/manrope/600.css`
-- `@fontsource/manrope/700.css`
-- `@fontsource/ibm-plex-mono/400.css`
-- `@fontsource/ibm-plex-mono/500.css`
+Sitemap: https://rehanghias.com/sitemap-index.xml
+```
 
-These match the weights referenced across `global.css` and components. No unused weights imported beyond what is used.
+## 4. `grep -ri "noindex" dist/`
 
-## 4. Font files in build output
+```
+$ grep -ri "noindex" dist/
+(exit code 1 — zero matches)
+```
 
-Under `dist/_astro/`: Manrope and IBM Plex Mono `.woff2` / `.woff` subsets for latin, latin-ext, cyrillic, greek, vietnamese (and mono cyrillic-ext). Latin 400–700 (Manrope) and 400–500 (IBM Plex Mono) are present.
+No output; zero matches.
 
-## 5. Canonical + OG image per route
+## 5. `/resume` renders the real embed
 
-| Route | Canonical | OG image |
-|---|---|---|
-| `/` | `https://rehanghias.com/` | `https://rehanghias.com/og-image.png` |
-| `/projects/` | `https://rehanghias.com/projects/` | `https://rehanghias.com/og-image.png` |
-| `/projects/die-cutter-capacity/` | `https://rehanghias.com/projects/die-cutter-capacity/` | `https://rehanghias.com/og-image.png` |
-| `/projects/earnings-factor-model/` | `https://rehanghias.com/projects/earnings-factor-model/` | `https://rehanghias.com/og-image.png` |
-| `/experience/` | `https://rehanghias.com/experience/` | `https://rehanghias.com/og-image.png` |
-| `/certifications/` | `https://rehanghias.com/certifications/` | `https://rehanghias.com/og-image.png` |
-| `/resume/` | `https://rehanghias.com/resume/` | `https://rehanghias.com/og-image.png` |
+In `dist/resume/index.html`:
 
-Every route emits a distinct `meta description` (already present; no new copy written).
+- Present: `<iframe class="resume-frame" src="/resume.pdf" title="Rehan Ghias resume PDF" …>`
+- Present: download link `href="/resume.pdf" download="Rehan-Ghias-Resume.pdf"`
+- Absent: `"PDF not uploaded yet"`
+- Absent: resume-placeholder markup in the body
 
-## 6. Temporary noindex
+## 6. Build
 
-- Every built page includes `<meta name="robots" content="noindex, nofollow" />`.
-- `public/robots.txt` is `Disallow: /` (still lists the sitemap URL).
-- **Remove later:** set `const NOINDEX = false;` in `src/layouts/BaseLayout.astro`, and change `robots.txt` back to allow crawling.
+- `npm run build` — clean
+- **7 page(s)** built
+- `dist/` total size: **924K** (75 files)
+- Client-side JS bundles: **none** (`find dist -name '*.js' -o -name '*.mjs'` returned empty)
 
-## 7. Heading hierarchy (from built HTML)
+## 7. `dist/resume.pdf`
 
-| Route | Headings |
-|---|---|
-| `/` | h1 Rehan A Ghias; h2 About, Seeking, Contact, Projects; h3 both project titles |
-| `/projects/` | h1 Projects; h2 both project titles |
-| `/projects/die-cutter-capacity/` | h1 case title; h2 The question, The problem with the data, What I found, What changed, What I would do differently |
-| `/projects/earnings-factor-model/` | h1 case title; h2 The question, How it works, What I found, Running it, What I would do differently |
-| `/experience/` | h1 Experience; h2 four role titles |
-| `/certifications/` | h1 Certifications; h2 three skill groups |
-| `/resume/` | h1 Resume only |
+Present in `dist/` at **79,991 bytes** (copied with the build).
 
-Exactly one `h1` per route. No skipped levels in the built output after fixes.
+## 8. Sitemap URLs (`dist/sitemap-0.xml`)
 
-## 8. NEEDS HUMAN VISUAL CHECK
+1. `https://rehanghias.com/`
+2. `https://rehanghias.com/certifications/`
+3. `https://rehanghias.com/experience/`
+4. `https://rehanghias.com/projects/`
+5. `https://rehanghias.com/projects/die-cutter-capacity/`
+6. `https://rehanghias.com/projects/earnings-factor-model/`
+7. `https://rehanghias.com/resume/`
 
-Cannot verify visually from this environment (Tailscale / IDE browser constraint). Please check:
+Spot-check: `/` and `/experience/` canonicals + `og:image` point at `https://rehanghias.com/...`.
 
-- Fonts render as Manrope + IBM Plex Mono (not fallbacks) on all routes
-- OG image (`/og-image.png`) looks correct when shared / opened directly
-- Skip link appears on keyboard focus and jumps to `#main-content`
-- Focus rings visible on dark header and light body links
-- Nav at **360 / 390 / 768 / 1440** — wrapping, no horizontal scroll, readable
-- Tap targets feel large enough on a real phone
-- Resume placeholder/iframe height on a short mobile viewport
-- Case study rail labels still look correct as `h2` (style should be unchanged)
-- Overall spacing/layout regressions after heading-level markup changes
+## 9. Deploy status
 
-## 9. Already satisfied (no redundant change)
+**Could not authenticate. Stopped.**
 
-- `aria-current="page"` already implemented in `Nav.astro`
-- No `outline: none` rules found anywhere in `src/`
-- All routes already passed distinct `description` props into `BaseLayout`
-- Issuer logos already `aria-hidden`; figure placeholders already use `aria-label`
-- Body / body-sm already ≥ 16px (`17px` / `16px`)
-- Landmarks: `<header>` (SiteHeader) + single `<main>` per page; no empty `<footer>` added (nothing to put there)
-- Design tokens remain CSS variables — no new raw hex in components (OG PNG used token colors at generation time only)
+Exact error from `npx wrangler pages deploy dist --project-name=personal-website`:
 
-## Colour contrast (reported, tokens unchanged)
+```
+✘ [ERROR] In a non-interactive environment, it's necessary to set a CLOUDFLARE_API_TOKEN environment variable for wrangler to work. Please go to https://developers.cloudflare.com/fundamentals/api/get-started/create-token/ for instructions on how to create an api token, and assign its value to CLOUDFLARE_API_TOKEN.
+```
 
-| Pair | Ratio | Notes |
-|---|---|---|
-| `--color-dimmed` / `--color-label` `#4A5064` on `#FFFFFF` | **8.01:1** | Passes AA body |
-| `#4A5064` on `--color-surface` `#FAFBFC` | **7.73:1** | Passes |
-| `--color-muted` `#7A8195` on `#FFFFFF` | **3.89:1** | Fails AA for body text (4.5:1); used for cert counts + bullet middots, not body copy. Passes large-text 3:1. **Not changed.** |
-| `--color-on-dark-muted` `#A9B6C2` on `#1F2A36` | **7.04:1** | Passes |
+No workaround attempted. No credentials requested or stored. Post-deploy curl checks were **not** run.
 
-## Commits (in order)
+To finish deploy after auth is available:
 
-1. `2efdae2` — Self-host fonts
-2. `c324237` — Set `site` URL
-3. `0dfbe62` — SEO / OG / sitemap / robots (initial allow)
-4. `3c5d732` — Temporary noindex + robots disallow
-5. `f79b424` — Semantics / responsive hardening
+```
+npx wrangler pages deploy dist --project-name=personal-website
+```
 
-## Commit hash
+DNS / custom domain left untouched (manual step for Rehan).
 
-`f79b424` (tip of hardening series; see follow-up if output commit is added)
+## 10. NEEDS HUMAN CHECK
+
+- Authenticate wrangler / set `CLOUDFLARE_API_TOKEN` and run the deploy command
+- Confirm live Pages URL returns 200 for all routes, `robots.txt` Allow, sitemap XML, and `/resume.pdf` as `application/pdf`
+- Visual check that `/resume` shows the PDF iframe (not verifiable from this environment)
+- Point `rehanghias.com` at the Pages project in the Cloudflare dashboard when ready
+
+## 11. Commit hash
+
+`229373b2ed710873e9a3f07c4873a727dbec429e`
