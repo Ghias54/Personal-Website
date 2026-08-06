@@ -8,7 +8,7 @@ const { label, as: Tag = "section" } = Astro.props;
 ---
 
 <Tag class="rail-section">
-  <div class="rail-label">{label}</div>
+  <h2 class="rail-label">{label}</h2>
   <div class="rail-content">
     <slot />
   </div>
@@ -27,6 +27,7 @@ const { label, as: Tag = "section" } = Astro.props;
   }
 
   .rail-label {
+    margin: 0;
     font-family: var(--font-mono);
     font-size: var(--fs-label);
     font-weight: 500;

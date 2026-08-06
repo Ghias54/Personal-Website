@@ -4,15 +4,18 @@ interface Props {
   title: string;
   summary: string;
   href: string;
+  /** Heading level for the title. Use 2 on pages where there is no parent section h2. */
+  headingLevel?: 2 | 3;
 }
 
-const { eyebrow, title, summary, href } = Astro.props;
+const { eyebrow, title, summary, href, headingLevel = 3 } = Astro.props;
+const TitleTag = headingLevel === 2 ? "h2" : "h3";
 ---
 
 <li class="work-entry">
   <a class="work-entry-link" href={href}>
     <p class="eyebrow">{eyebrow}</p>
-    <h3 class="title">{title}</h3>
+    <TitleTag class="title">{title}</TitleTag>
     <p class="summary">{summary}</p>
   </a>
 </li>
