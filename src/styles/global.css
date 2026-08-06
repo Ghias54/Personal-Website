@@ -145,3 +145,35 @@ a:hover {
   margin: 0;
   padding: 0;
 }
+
+.skip-link {
+  position: absolute;
+  left: 16px;
+  top: 0;
+  z-index: 1000;
+  padding: 10px 14px;
+  background: var(--color-dark);
+  color: var(--color-on-dark);
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transform: translateY(-120%);
+}
+
+.skip-link:focus {
+  transform: translateY(12px);
+  outline: 2px solid var(--color-on-dark);
+  outline-offset: 2px;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-dark);
+  outline-offset: 3px;
+}
+
+.site-header :focus-visible {
+  outline-color: var(--color-on-dark);
+}

@@ -12,7 +12,7 @@ const pdfExists = existsSync(join(process.cwd(), "public", "resume.pdf"));
   description="Resume of Rehan Ghias — Information Science & Economics."
   bandTitle="Resume"
 >
-  <main class="container page resume-page">
+  <main id="main-content" class="container page resume-page">
     <p class="download">
       <a href={pdfPath} download={pdfExists ? "Rehan-Ghias-Resume.pdf" : undefined}
         >Download resume (PDF)</a
