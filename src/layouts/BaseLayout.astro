@@ -2,6 +2,9 @@
 import "../styles/global.css";
 import SiteHeader from "../components/SiteHeader.astro";
 
+// Flip to false once public/resume.pdf exists and the site is ready to be indexed.
+const NOINDEX = true;
+
 interface Props {
   title: string;
   description: string;
@@ -26,6 +29,7 @@ const siteName = "Rehan A Ghias";
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
     <meta name="generator" content={Astro.generator} />
+    {NOINDEX && <meta name="robots" content="noindex, nofollow" />}
     <link rel="canonical" href={canonicalURL} />
 
     <meta property="og:title" content={title} />
