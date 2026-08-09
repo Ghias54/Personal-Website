@@ -67,11 +67,14 @@ Unchanged. Only `certifications/index.html` differed from the pre-build snapshot
 
 ## 8. Commit / push
 
-Pending — filled after push.
+- Hash: `820ccf5c565cb852bdb9177182cd11889f2659dc`
+- Pushed to `main` (Cloudflare Workers Build; no wrangler pages deploy)
 
 ## 9. Post-deploy
 
-Pending — filled after Cloudflare Workers Build.
+- `curl -sI https://rehanghias.com/certifications/` → **HTTP/2 200**
+- Arrow occurrences: **7** (`grep -c` reports 1 because the HTML is one minified line)
+- Parchment href live: `href="https://www.parchment.com/lp/award/19e83acb-9c51-41ee-8de4-d4584467f6b5"`
 
 ## 10. NEEDS HUMAN CHECK
 
