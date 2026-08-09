@@ -1,111 +1,122 @@
 # Cursor Task — Personal Website
-Date: 2026-08-06 12:41:23
+Date: 2026-08-08 21:35:53
 From: Claude (claude.ai)
 Repo: /home/rehan-ghias/personal-website
-Priority: urgent
+Priority: high
 
 ## Context
-Final step before the site goes public at rehanghias.com (domain already registered on Cloudflare, same account).
+Three image files were transferred to `public/images/` by scp and are already on disk. Verify they exist before doing anything else and STOP if any are missing:
 
-The resume PDF blocker is resolved. The file is being placed at `public/resume.pdf` manually via scp — verify it exists before doing anything else, and STOP if it does not.
+- `public/images/fig1-whiteboard.jpg` (~28 KB)
+- `public/images/fig2-eventlog.png` (~100 KB)
+- `public/images/fig3-summary.png` (~34 KB)
 
-The site was built with a temporary noindex because the resume page was rendering a placeholder. That placeholder state is what this task removes.
+The case study markdown currently contains `[IMAGE: description | caption]` placeholders. `src/lib/processMarkdownHtml.ts` parses these into a `figure` segment carrying only a description and a caption, and the case study page renders them as a placeholder box. There is no support for an actual image path. This task adds it.
 
-Covers Linear SIDE-17 (remove noindex, two switches) and SIDE-15 (deploy).
+STANDING CONSTRAINT: you cannot visually verify anything. Your IDE browser cannot reach the dev server over Tailscale. Do not report visual outcomes as confirmed. Everything below is verifiable from the filesystem or the build output. Flag anything you could not verify.
 
-STANDING CONSTRAINT: you cannot visually verify anything — your IDE browser cannot reach the dev server over Tailscale. Do not report visual outcomes as confirmed. Everything below is verifiable from the filesystem, build output, or curl, so verify that way and flag anything you could not.
-
-Out of scope, do not add: blog, CMS, dark mode, analytics, client-side JS frameworks, contact form.
+Out of scope, do not add: lightbox, zoom, carousel, image CDN, analytics, client-side JS, blog, CMS. `earnings-factor-model.md` is NOT part of this task. Leave its two placeholders exactly as they are.
 
 ## Task
-Do these in order. Stop and report if any verification step fails rather than continuing.
+Do these in order. Stop and report if a verification step fails rather than continuing.
 
 ---
 
-## 1. Verify the PDF is actually there
+## 1. Extend the figure syntax to support a real image
 
-Before changing anything:
+In `src/lib/processMarkdownHtml.ts`:
 
-- Confirm `public/resume.pdf` exists and is non-zero size.
-- Confirm it has a real text layer, not a flattened image. Run `pdffonts public/resume.pdf` — it must list embedded fonts. Run `pdftotext public/resume.pdf - | wc -c` — it must return roughly 2,900+ characters, not 1.
-- If either check fails, **STOP** and report. Do not proceed to the noindex removal. A flattened PDF is unreadable to applicant tracking systems and shipping it is worse than not shipping.
+Extend the `figure` variant of `HtmlSegment` with two optional fields:
 
----
-
-## 2. Remove the noindex — BOTH switches
-
-These are two independent switches. Flipping one and not the other leaves the site invisible to search engines. Do both.
-
-**Switch 1** — `src/layouts/BaseLayout.astro`: set `const NOINDEX = false;`
-
-**Switch 2** — `public/robots.txt`: replace the contents with
-
-```
-User-agent: *
-Allow: /
-
-Sitemap: https://rehanghias.com/sitemap-index.xml
+```ts
+| { type: "figure"; description: string; caption: string; src?: string; alt?: string }
 ```
 
-The current file says `Disallow: /` and simultaneously advertises the sitemap, which is self-contradictory. The replacement fixes both.
+Support a three-field form alongside the existing two-field form:
 
----
+- Three fields: `[IMAGE: /images/file.png | alt text | caption]` produces `{ src, alt, caption, description: alt }`
+- Two fields: `[IMAGE: description | caption]` is unchanged and still produces a placeholder with `src` undefined
 
-## 3. Verify the resume page actually renders the real thing
+Both forms must keep working. Do not delete the existing regex path, since the earnings case study still relies on it.
 
-`src/pages/resume.astro` checks for the PDF at build time and falls back to a placeholder when absent. Confirm the fallback is no longer firing:
+## 2. Render the image when a src is present
 
-- Build, then inspect `dist/resume/index.html`.
-- The real embed (iframe/object pointing at `/resume.pdf`) must be present.
-- The placeholder text "PDF not uploaded yet" must be absent.
-- Confirm `resume.pdf` was copied into `dist/`.
+Find the component that consumes `splitFigures` and renders the `figure` segments. Update it so that:
 
----
+- When `src` is present, render a real `<figure>` with an `<img>` and a `<figcaption>` carrying the caption
+- When `src` is absent, the existing placeholder behaviour is unchanged
 
-## 4. Full build verification
+Requirements for the `<img>`:
 
-- `npm run build` completes clean.
-- `grep -ri "noindex" dist/` returns **zero** matches. Paste the real output.
-- Zero client-side JS bundles emitted.
-- Sitemap generated; list every URL in it and confirm all six routes appear.
-- Spot-check two built pages for correct canonical URLs and OG tags pointing at the rehanghias.com origin.
+- `alt` from the parsed alt field, never empty, never the filename
+- `loading="lazy"` and `decoding="async"`
+- Explicit `width` and `height` attributes so the page does not shift as images load. Read the real intrinsic dimensions off the files rather than guessing.
+- `max-width: 100%` and `height: auto` in CSS so it scales down on mobile
 
----
+Use existing design tokens from `src/styles/global.css` for any caption or border styling. Do not introduce raw hex values.
 
-## 5. Commit
+## 3. Replace the three placeholders in `src/content/work/die-cutter-capacity.md`
 
-Commit with a clear message covering the noindex removal and resume addition. Do not force-push. Do not rewrite history.
+Replace each line exactly as given. Do not paraphrase the captions.
 
----
+Replace:
+`[IMAGE: whiteboard planning photo | Fig 1 — scoping the questions with the operations team]`
 
-## 6. Deploy to Cloudflare Pages
+With:
+`[IMAGE: /images/fig1-whiteboard.jpg | Whiteboard covered in handwritten notes grouping the analysis into changeovers, run and job length, machine speed, materials, sheet counts, and capacity by shift | Fig 1 — scoping the questions with the operations team]`
 
-```
-npx wrangler pages deploy dist --project-name=personal-website
-```
+Replace:
+`[IMAGE: raw data screenshot | Fig 2 — the event log as it came from the vendor's system]`
 
-`wrangler.jsonc` is already configured with the assets directory.
+With:
+`[IMAGE: /images/fig2-eventlog.png | Spreadsheet of timestamped machine events, showing Production rows of roughly 26 seconds alternating with Minor Stoppage rows, two consecutive Setup entries of 11 min 52 sec and 7 min 11 sec, and a job logged as NO READ | Fig 2 — the event log as it came from the vendor's system]`
 
-If this fails because wrangler is not authenticated, **do not attempt to work around it, and do not store or request any credentials.** Report the exact error and stop — authentication is handled by Rehan directly.
+Replace:
+`[IMAGE: chart showing time breakdown or No Read by job type | Fig 3 — where the machine time actually went]`
 
----
+With:
+`[IMAGE: /images/fig3-summary.png | Quarterly summary table of run times, changeover time, and sheet counts for April through June | Fig 3 — Quarterly summary, April to June. Production run time was 222 hours against 1,552 hours of total available run time, or 14%. Changeovers consumed 428 hours, nearly twice the time spent cutting.]`
+
+Note that the Fig 3 caption is long and contains commas and percent signs. Confirm the parser handles it and the caption is not truncated.
+
+## 4. One copy change in the same file
+
+In the "What I found" section, replace this paragraph:
+
+`**The 1,200 sheets per hour standard was real, but almost never reached.** The machines rarely ran long enough in one stretch to get there. Capacity was not limited by how fast the machine could cut. It was limited by how often it had to stop.`
+
+With:
+
+`**The 1,200 sheets per hour standard was close to right for pure cutting time, and nowhere near the daily reality.** Across April through June, Machine 1 averaged about 920 sheets per hour during production run time, and 131 sheets per hour measured against all available run time. Capacity was not limited by how fast the machine could cut. It was limited by how often it had to stop.`
+
+Change nothing else in the prose.
+
+## 5. Build verification
+
+- `npm run build` completes clean
+- Confirm zero occurrences of the literal string `[IMAGE:` in `dist/projects/die-cutter-capacity/index.html`. Paste the actual grep output.
+- Confirm the three `<img>` tags are present in that file with correct `src`, non-empty `alt`, and `width`/`height` set
+- Confirm the earnings case study still renders its two placeholders. Grep `dist/projects/earnings-factor-model/index.html` and confirm the placeholder markup is intact and no `<img>` was introduced.
+- Confirm all three image files were copied into `dist/images/` at their full byte sizes
+- Confirm zero client-side JS bundles are emitted
+- Report `dist/` total size before and after
+
+## 6. Commit and push
+
+Commit with a message covering the figure syntax extension, the three MOLL figures, and the sheets-per-hour copy change. Push to `main`. Do not force-push, do not rewrite history.
+
+Pushing to `main` triggers a Cloudflare Workers Build automatically. Do NOT run `npx wrangler pages deploy` under any circumstances. It fails with an opaque HTTP 500 because a Workers application named `personal-website` already exists on the account.
 
 ## 7. Post-deploy verification
 
-Only if the deploy succeeded. Against the deployment URL:
+Wait for the build, then against the live domain:
 
-- `curl -sI` the root — confirm 200.
-- `curl -s <url>/robots.txt` — confirm it shows `Allow: /`.
-- `curl -s <url>/sitemap-index.xml` — confirm it returns valid XML.
-- `curl -sI <url>/resume.pdf` — confirm 200 and `content-type: application/pdf`.
-- `curl -s <url>/resume/ | grep -i noindex` — confirm zero matches.
-- Fetch each of the six routes and confirm all return 200. Report any that do not.
+- `curl -sI https://rehanghias.com/images/fig1-whiteboard.jpg` — expect 200 and an image content-type
+- Same for `fig2-eventlog.png` and `fig3-summary.png`
+- `curl -s https://rehanghias.com/projects/die-cutter-capacity/ | grep -c "\[IMAGE:"` — expect 0
+- `curl -s https://rehanghias.com/projects/die-cutter-capacity/ | grep -o 'src="/images/[^"]*"'` — expect all three
 
----
-
-## 8. Do NOT do the DNS
-
-Do not attempt to configure the custom domain, DNS records, or anything in the Cloudflare dashboard. Pointing `rehanghias.com` at the Pages project is a manual step Rehan will do himself. Just report the `*.pages.dev` deployment URL.
+If the build has not finished yet, say so plainly rather than reporting stale results.
 
 ## Rules
 - Read existing files before editing
@@ -117,19 +128,20 @@ Do not attempt to configure the custom domain, DNS records, or anything in the C
 - After completing, write results to cursor_output.md
 
 ## Expected Output in cursor_output.md
-Write cursor_output.md covering:
+Write results to `cursor_output.md` covering:
 
-1. `public/resume.pdf` — confirmed present, byte size, and the pdffonts/pdftotext result showing a real text layer. If absent, STOP and report only this.
-2. The `NOINDEX` value now set, and confirmation the meta tag is gone from built HTML.
-3. Contents of `robots.txt` after the change.
-4. Result of the `grep -ri "noindex" dist/` check — must be zero matches. Paste the actual command output.
-5. Confirmation `/resume` renders the real embed, evidenced by the presence of the iframe/object tag and absence of the placeholder string in `dist/resume/index.html`.
-6. Build output: page count, total size, and confirmation of zero client-side JS bundles.
-7. Confirmation `dist/` contains `resume.pdf`.
-8. Sitemap contents — list every URL it emits.
-9. Deploy status: if you deployed, the deployment URL and the curl results from step 7 of the task. If you could not authenticate, say so plainly and stop there rather than guessing.
-10. An explicit "NEEDS HUMAN CHECK" section.
-11. Commit hash.
+1. Confirmation all three files exist in `public/images/` with byte sizes
+2. The diff to `processMarkdownHtml.ts`, and confirmation the two-field form still parses
+3. Which component you modified to render real images, and its path
+4. The intrinsic width and height you read off each image, and how you read them
+5. Grep output for `[IMAGE:` in the built MOLL page — must be zero, paste actual output
+6. The three `<img>` tags as they appear in built HTML
+7. Confirmation the earnings page placeholders are untouched and contain no `<img>`
+8. Build result: clean or not, page count, `dist/` size before and after, zero JS bundles
+9. Confirmation `dist/images/` contains all three at full size
+10. Commit hash and confirmation of push to `main`
+11. Post-deploy curl results, or a plain statement that the build had not finished
+12. An explicit "NEEDS HUMAN CHECK" section. Visual rendering, image legibility at display size, and mobile layout all belong there, since you cannot see them.
 
 ## Status
-[x] Complete (deploy blocked on missing CLOUDFLARE_API_TOKEN)
+[ ] Not started

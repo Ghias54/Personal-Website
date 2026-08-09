@@ -12,13 +12,13 @@ The company assumed about 1,200 sheets per hour. That number never matched what 
 
 I was brought onto the project by the CFO and COO to answer it using the raw data those sensors collected. I had also run these machines myself for hundreds of hours through busy season, which turned out to matter more than the data did.
 
-[IMAGE: whiteboard planning photo | Fig 1 — scoping the questions with the operations team]
+[IMAGE: /images/fig1-whiteboard.jpg | Whiteboard covered in handwritten notes grouping the analysis into changeovers, run and job length, machine speed, materials, sheet counts, and capacity by shift | Fig 1 — scoping the questions with the operations team]
 
 ## The problem with the data
 
 The raw data was a long log of everything the machines did, timestamped, with a file name attached to each job.
 
-[IMAGE: raw data screenshot | Fig 2 — the event log as it came from the vendor's system]
+[IMAGE: /images/fig2-eventlog.png | Spreadsheet of timestamped machine events, showing Production rows of roughly 26 seconds alternating with Minor Stoppage rows, two consecutive Setup entries of 11 min 52 sec and 7 min 11 sec, and a job logged as NO READ | Fig 2 — the event log as it came from the vendor's system]
 
 **The job names were a mess.** The company sold about 30 products, but each one had several different names depending on which sales channel the order came from. A round cornered wedding invitation might show up as DCLD, INVED, or four other codes. The code could also appear at the front or the back of the file name. I built a lookup system in Excel that pulled the code out of either position and mapped every alias back to one of 30 real product groups.
 
@@ -30,13 +30,13 @@ The raw data was a long log of everything the machines did, timestamped, with a 
 
 **Only about 14% of available machine time was spent actually cutting product.** The rest went to changeovers, setup, loading, and idle time.
 
-**The 1,200 sheets per hour standard was real, but almost never reached.** The machines rarely ran long enough in one stretch to get there. Capacity was not limited by how fast the machine could cut. It was limited by how often it had to stop.
+**The 1,200 sheets per hour standard was close to right for pure cutting time, and nowhere near the daily reality.** Across April through June, Machine 1 averaged about 920 sheets per hour during production run time, and 131 sheets per hour measured against all available run time. Capacity was not limited by how fast the machine could cut. It was limited by how often it had to stop.
 
 **Machine 2 was buried in changeovers.** It kept getting the short, high variety jobs, so it spent most of its day being reset instead of running.
 
 **Machine 1's 41% "No Read" rate was not a broken scanner.** Everyone assumed it was. When I grouped those failures by job type, almost all of them landed on sticker jobs, where the material was different enough that the scan didn't register. The scanner was fine. The job mix explained it.
 
-[IMAGE: chart showing time breakdown or No Read by job type | Fig 3 — where the machine time actually went]
+[IMAGE: /images/fig3-summary.png | Quarterly summary table of run times, changeover time, and sheet counts for April through June | Fig 3 — Quarterly summary, April to June. Production run time was 222 hours against 1,552 hours of total available run time, or 14%. Changeovers consumed 428 hours, nearly twice the time spent cutting.]
 
 ## What changed
 

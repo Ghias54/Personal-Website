@@ -1,6 +1,7 @@
 ---
 import Figure from "./Figure.astro";
 import { splitFigures } from "../lib/processMarkdownHtml";
+import { getPublicImageSize } from "../lib/imageSize";
 
 interface Props {
   html: string;
@@ -12,12 +13,23 @@ const segments = splitFigures(html);
 
 <div class="prose">
   {
-    segments.map((segment) =>
-      segment.type === "html" ? (
-        <Fragment set:html={segment.content} />
-      ) : (
-        <Figure description={segment.description} caption={segment.caption} />
-      ),
-    )
+    segments.map((segment) => {
+      if (segment.type === "html") {
+        return <Fragment set:html={segment.content} />;
+      }
+
+      const dims = segment.src ? getPublicImageSize(segment.src) : undefined;
+
+      return (
+        <Figure
+          description={segment.description}
+          caption={segment.caption}
+          src={segment.src}
+          alt={segment.alt}
+          width={dims?.width}
+          height={dims?.height}
+        />
+      );
+    })
   }
 </div>

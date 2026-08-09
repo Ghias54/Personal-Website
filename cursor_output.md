@@ -1,98 +1,93 @@
-# Cursor Output — Go public (SIDE-17 / SIDE-15)
-Date: 2026-08-06
+# Cursor Output — MOLL case study figures
+Date: 2026-08-08
 
-## 1. `public/resume.pdf`
+## 1. Source images in `public/images/`
 
-- Present: **yes**
-- Size: **79,991 bytes**
-- `pdffonts` — embedded fonts listed:
-  - `AAAAAA+Arial-BoldMT` (CID TrueType, emb yes)
-  - `BAAAAA+ArialMT` (CID TrueType, emb yes)
-  - `CAAAAA+Arial-ItalicMT` (CID TrueType, emb yes)
-- `pdftotext public/resume.pdf - | wc -c` → **2991** characters (≥ 2,900) — real text layer confirmed
+| File | Bytes |
+|---|---|
+| `fig1-whiteboard.jpg` | 28,726 |
+| `fig2-eventlog.png` | 123,630 |
+| `fig3-summary.png` | 34,228 |
 
-## 2. NOINDEX
+All three present before any edits.
 
-- `src/layouts/BaseLayout.astro`: `const NOINDEX = false;`
-- Built HTML: robots meta tag **absent** on checked pages
+## 2. `processMarkdownHtml.ts`
 
-## 3. `robots.txt` after change
+- Extended `figure` segment with optional `src?` and `alt?`
+- Parser now reads the full `[IMAGE: …]` body and splits on `|`:
+  - **3+ fields** → `{ src, alt, caption, description: alt }`
+  - **2 fields** → placeholder form unchanged (`src` undefined)
+- Confirmed two-field parse: `{ description: "whiteboard planning photo", caption: "Fig 1 — scoping" }`
+- Confirmed Fig 3 three-field caption length **201** chars, not truncated (includes `14%` and commas)
+
+## 3. Render component
+
+- Updated `src/components/Figure.astro` (real `<img>` vs placeholder)
+- Updated `src/components/MarkdownBody.astro` to pass `src` / `alt` / intrinsic dimensions
+- Added `src/lib/imageSize.ts` to read PNG/JPEG headers from `public/`
+
+## 4. Intrinsic dimensions
+
+Read via `getPublicImageSize()` (PNG IHDR / JPEG SOF markers from file bytes):
+
+| Image | Width | Height |
+|---|---|---|
+| `fig1-whiteboard.jpg` | 512 | 318 |
+| `fig2-eventlog.png` | 1604 | 744 |
+| `fig3-summary.png` | 1286 | 431 |
+
+## 5. Grep `[IMAGE:` in built MOLL page
 
 ```
-User-agent: *
-Allow: /
-
-Sitemap: https://rehanghias.com/sitemap-index.xml
-```
-
-## 4. `grep -ri "noindex" dist/`
-
-```
-$ grep -ri "noindex" dist/
+$ grep -n '\[IMAGE:' dist/projects/die-cutter-capacity/index.html
 (exit code 1 — zero matches)
 ```
 
-No output; zero matches.
+## 6. Built `<img>` tags
 
-## 5. `/resume` renders the real embed
-
-In `dist/resume/index.html`:
-
-- Present: `<iframe class="resume-frame" src="/resume.pdf" title="Rehan Ghias resume PDF" …>`
-- Present: download link `href="/resume.pdf" download="Rehan-Ghias-Resume.pdf"`
-- Absent: `"PDF not uploaded yet"`
-- Absent: resume-placeholder markup in the body
-
-## 6. Build
-
-- `npm run build` — clean
-- **7 page(s)** built
-- `dist/` total size: **924K** (75 files)
-- Client-side JS bundles: **none** (`find dist -name '*.js' -o -name '*.mjs'` returned empty)
-
-## 7. `dist/resume.pdf`
-
-Present in `dist/` at **79,991 bytes** (copied with the build).
-
-## 8. Sitemap URLs (`dist/sitemap-0.xml`)
-
-1. `https://rehanghias.com/`
-2. `https://rehanghias.com/certifications/`
-3. `https://rehanghias.com/experience/`
-4. `https://rehanghias.com/projects/`
-5. `https://rehanghias.com/projects/die-cutter-capacity/`
-6. `https://rehanghias.com/projects/earnings-factor-model/`
-7. `https://rehanghias.com/resume/`
-
-Spot-check: `/` and `/experience/` canonicals + `og:image` point at `https://rehanghias.com/...`.
-
-## 9. Deploy status
-
-**Could not authenticate. Stopped.**
-
-Exact error from `npx wrangler pages deploy dist --project-name=personal-website`:
-
-```
-✘ [ERROR] In a non-interactive environment, it's necessary to set a CLOUDFLARE_API_TOKEN environment variable for wrangler to work. Please go to https://developers.cloudflare.com/fundamentals/api/get-started/create-token/ for instructions on how to create an api token, and assign its value to CLOUDFLARE_API_TOKEN.
+```html
+<img class="figure-image" src="/images/fig1-whiteboard.jpg" alt="Whiteboard covered in handwritten notes grouping the analysis into changeovers, run and job length, machine speed, materials, sheet counts, and capacity by shift" width="512" height="318" loading="lazy" decoding="async" …>
+<img class="figure-image" src="/images/fig2-eventlog.png" alt="Spreadsheet of timestamped machine events, showing Production rows of roughly 26 seconds alternating with Minor Stoppage rows, two consecutive Setup entries of 11 min 52 sec and 7 min 11 sec, and a job logged as NO READ" width="1604" height="744" loading="lazy" decoding="async" …>
+<img class="figure-image" src="/images/fig3-summary.png" alt="Quarterly summary table of run times, changeover time, and sheet counts for April through June" width="1286" height="431" loading="lazy" decoding="async" …>
 ```
 
-No workaround attempted. No credentials requested or stored. Post-deploy curl checks were **not** run.
+Fig 3 caption in HTML (full):  
+`Fig 3 — Quarterly summary, April to June. Production run time was 222 hours against 1,552 hours of total available run time, or 14%. Changeovers consumed 428 hours, nearly twice the time spent cutting.`
 
-To finish deploy after auth is available:
+## 7. Earnings case study
 
-```
-npx wrangler pages deploy dist --project-name=personal-website
-```
+- `<img` count in `dist/projects/earnings-factor-model/index.html`: **0**
+- `figure-placeholder` markup still present (two placeholders)
+- Placeholders in `earnings-factor-model.md` left unchanged
 
-DNS / custom domain left untouched (manual step for Rehan).
+## 8. Build
 
-## 10. NEEDS HUMAN CHECK
+- Clean: **7 page(s)**
+- `dist/` size: **924K → 1.1M**
+- Client-side JS bundles: **0**
 
-- Authenticate wrangler / set `CLOUDFLARE_API_TOKEN` and run the deploy command
-- Confirm live Pages URL returns 200 for all routes, `robots.txt` Allow, sitemap XML, and `/resume.pdf` as `application/pdf`
-- Visual check that `/resume` shows the PDF iframe (not verifiable from this environment)
-- Point `rehanghias.com` at the Pages project in the Cloudflare dashboard when ready
+## 9. `dist/images/`
 
-## 11. Commit hash
+| File | Bytes |
+|---|---|
+| `fig1-whiteboard.jpg` | 28,726 |
+| `fig2-eventlog.png` | 123,630 |
+| `fig3-summary.png` | 34,228 |
 
-`229373b2ed710873e9a3f07c4873a727dbec429e`
+Full sizes match `public/images/`.
+
+## 10. Commit / push
+
+Pending — filled after push.
+
+## 11. Post-deploy
+
+Pending — filled after Cloudflare Workers Build.
+
+## 12. NEEDS HUMAN CHECK
+
+- Image legibility at display width on desktop and mobile
+- Whether Fig 2 spreadsheet / Fig 3 table text is readable without zoom
+- Caption wrapping for the long Fig 3 caption
+- Layout/spacing around the three figures in the case study
+- Visual confirmation earnings placeholders still look correct

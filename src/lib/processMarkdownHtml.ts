@@ -1,8 +1,9 @@
 export type HtmlSegment =
   | { type: "html"; content: string }
-  | { type: "figure"; description: string; caption: string };
+  | { type: "figure"; description: string; caption: string; src?: string; alt?: string };
 
-const IMAGE_RE = /<p>\[IMAGE:\s*([^|<]+)\s*\|\s*([^\]]+)\]<\/p>/g;
+/** Matches `[IMAGE: …]` paragraphs produced by the markdown compiler. */
+const IMAGE_RE = /<p>\[IMAGE:\s*([^\]]+)\]<\/p>/g;
 
 export function splitFigures(html: string): HtmlSegment[] {
   const segments: HtmlSegment[] = [];
@@ -14,11 +15,27 @@ export function splitFigures(html: string): HtmlSegment[] {
     if (match.index > lastIndex) {
       segments.push({ type: "html", content: html.slice(lastIndex, match.index) });
     }
-    segments.push({
-      type: "figure",
-      description: match[1].trim(),
-      caption: match[2].trim(),
-    });
+
+    const parts = match[1].split("|").map((part) => part.trim());
+
+    if (parts.length >= 3) {
+      const [src, alt, ...captionParts] = parts;
+      const caption = captionParts.join(" | ");
+      segments.push({
+        type: "figure",
+        src,
+        alt,
+        caption,
+        description: alt,
+      });
+    } else if (parts.length === 2) {
+      segments.push({
+        type: "figure",
+        description: parts[0],
+        caption: parts[1],
+      });
+    }
+
     lastIndex = match.index + match[0].length;
   }
 
