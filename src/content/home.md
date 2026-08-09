@@ -11,7 +11,7 @@ cards:
     href: /projects/die-cutter-capacity
   - eyebrow: PERSONAL PROJECT
     title: Testing whether earnings volatility can be traded
-    summary: I built a research pipeline to test whether filtering earnings trades by company quality improves returns. Across 58,710 simulated trades, it doesn't. Here is how I know, and why I kept the result instead of tuning it until it looked good.
+    summary: I built a research pipeline to test whether filtering earnings trades by company quality improves returns. The best run gains 79%, and almost all of that comes from a single year and a handful of outlier trades. Here is how I know, and why I reported that instead of the headline number.
     href: /projects/earnings-factor-model
 ---
 

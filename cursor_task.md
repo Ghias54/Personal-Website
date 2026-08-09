@@ -1,65 +1,91 @@
 # Cursor Task — Personal Website
-Date: 2026-08-08 22:35:13
+Date: 2026-08-08 22:57:21
 From: Claude (claude.ai)
 Repo: /home/rehan-ghias/personal-website
-Priority: medium
+Priority: high
 
 ## Context
-The certifications page is in a finished state: six Coursera credentials linked with correct mapping, underlines replaced with `↗` arrows, hover and focus states in place, dates corrected. All of that work is complete and verified. Do not redo any of it.
+The earnings factor model case study was rewritten. The new copy is already in `src/content/work/earnings-factor-model.md` and contains four three-field `[IMAGE: /images/… | alt | caption]` placeholders. The figure syntax and rendering already support this form — it was built for the MOLL case study and is working in production. No parser or component work is needed.
 
-The one remaining gap is the C++ Proficiency Certificate (College of DuPage, May 2026), which is currently the only unlinked credential on the page. It now has a verification URL.
+Four screenshots were transferred to `public/images/` by scp:
 
-After this change all seven credentials are linked, so the arrow becomes a uniform external-link indicator rather than a signal distinguishing linked from unlinked entries. No styling change is needed for that — it follows automatically once the seventh link exists.
+- `fig1-dashboard-summary.png`
+- `fig2-equity-drawdown.png`
+- `fig3-yearly-quant-tier.png`
+- `fig4-composite-scatter.png`
+
+The old version of this case study claimed the strategy lost 70.85% across 58,710 trades. That configuration is no longer the one being reported. The home page card still cites the old number and must be brought in line, or the site will contradict itself between the home page and the case study.
 
 STANDING CONSTRAINT: you cannot visually verify anything. Your IDE browser cannot reach the dev server over Tailscale. Do not report visual outcomes as confirmed.
 
-Out of scope: link styling, hover, focus, arrows, dates, categories, order, badges, issuers, the six Coursera hrefs, and every other page on the site. This task adds one anchor.
+Out of scope: the MOLL case study, the certifications page, the resume page, the figure parser, the Figure component, any new CSS. Do not rewrite, reword, or "improve" any prose beyond the two specific edits below. The copy is final.
 
 ## Task
-One change to the certifications page. Nothing else.
+Do these in order. Stop and report if a verification step fails.
 
-## 1. Link the C++ certificate
+## 1. Verify the images exist
 
-The C++ Proficiency Certificate (College of DuPage, May 2026) is the only unlinked credential on the page. Add:
+Confirm all four files are present in `public/images/` and non-zero:
 
-`https://www.parchment.com/lp/award/19e83acb-9c51-41ee-8de4-d4584467f6b5`
+- `fig1-dashboard-summary.png`
+- `fig2-equity-drawdown.png`
+- `fig3-yearly-quant-tier.png`
+- `fig4-composite-scatter.png`
 
-It must use the **exact same treatment as the six existing Coursera entries**. Read how one of those is marked up and mirror it:
+If any is missing, **STOP** and report. Do not proceed, do not rename anything, do not substitute a different file.
 
-- Same component or markup pattern
-- Same classes
-- `target="_blank"`, `rel="noopener noreferrer"`
-- Link text is the full credential title, unchanged
-- The `↗` arrow appears the same way it does on the other six, with the same `aria-hidden` handling
+## 2. One copy change in `src/content/work/earnings-factor-model.md`
 
-Write no new CSS. If you find yourself adding a style rule, you have diverged from the existing pattern and should stop and re-read how the Coursera entries are built.
+In the "How it works" section, in the paragraph beginning "The backtest simulates a real portfolio", replace:
 
-Do not change the C++ entry's title, issuer, badge, category, or date.
+`applies transaction costs on every round trip, and supports stop losses`
 
-## 2. Verification
+With:
+
+`applies a 0.2% transaction cost to every trade, and supports stop losses`
+
+Change nothing else in this file. The four `[IMAGE: …]` placeholders are already correct and must be left exactly as written.
+
+## 3. Update the home page card
+
+In `src/content/home.md`, the second card (href `/projects/earnings-factor-model`) currently has this summary:
+
+`I built a research pipeline to test whether filtering earnings trades by company quality improves returns. Across 58,710 simulated trades, it doesn't. Here is how I know, and why I kept the result instead of tuning it until it looked good.`
+
+Replace it with:
+
+`I built a research pipeline to test whether filtering earnings trades by company quality improves returns. The best run gains 79%, and almost all of that comes from a single year and a handful of outlier trades. Here is how I know, and why I reported that instead of the headline number.`
+
+Do not change the card's eyebrow, title, or href. Do not touch the first card. Do not touch the body prose below the frontmatter.
+
+## 4. Build verification
 
 - `npm run build` completes clean
-- Confirm `dist/certifications/index.html` contains exactly seven credential anchors and seven arrows
-- Confirm the Parchment href is present and character-for-character correct
-- Confirm the six Coursera hrefs are byte-identical to the previous build
-- Confirm no new CSS rules were added
-- Confirm zero client-side JS bundles and page count still 7
-- Diff the built page against the previous build. The only changes should be the C++ anchor and its arrow. Paste the diff.
-- Confirm no other file in `dist/` changed
+- Confirm zero occurrences of the literal string `[IMAGE:` in `dist/projects/earnings-factor-model/index.html`. Paste the actual grep output.
+- Confirm four `<img>` tags are present in that file, each with the correct `src`, a non-empty `alt`, and explicit `width` and `height` read from the real image files
+- Confirm zero occurrences of `58,710` and `70.85` anywhere in `dist/`
+- Confirm `dist/projects/die-cutter-capacity/index.html` and `dist/certifications/index.html` are unchanged from the previous build
+- Confirm all four new images were copied into `dist/images/` at full size, and that the three MOLL images are still there
+- Confirm zero client-side JS bundles
+- Confirm page count is still 7
 
-## 3. Commit and push
+## 5. Commit and push
 
-Commit covering the C++ credential link. Push to `main`.
+Commit with a message covering the earnings case study rewrite, the four figures, the transaction cost detail, and the home page card. Push to `main`. Do not force-push, do not rewrite history.
 
 Pushing triggers a Cloudflare Workers Build automatically. Do NOT run `npx wrangler pages deploy`. It fails with an opaque HTTP 500 because a Workers application named `personal-website` already exists on the account.
 
-## 4. Post-deploy
+## 6. Post-deploy verification
 
-- `curl -sI https://rehanghias.com/certifications/` — expect 200
-- `curl -s https://rehanghias.com/certifications/ | grep -c '↗'` — expect 7
-- `curl -s https://rehanghias.com/certifications/ | grep -o 'href="https://www.parchment.com/[^"]*"'` — expect one
+Against the live domain:
 
-Do NOT curl the parchment.com URL directly. It gates automated requests and a failure would tell you nothing about whether the link is correct.
+- `curl -sI` each of the four new image paths — expect 200 and `image/png`
+- `curl -s https://rehanghias.com/projects/earnings-factor-model/ | grep -c "\[IMAGE:"` — expect 0
+- `curl -s https://rehanghias.com/projects/earnings-factor-model/ | grep -o 'src="/images/[^"]*"'` — expect all four
+- `curl -s https://rehanghias.com/ | grep -c "58,710"` — expect 0
+- `curl -s https://rehanghias.com/projects/earnings-factor-model/ | grep -c "0.2%"` — expect at least 1
+
+If the build has not finished, say so plainly rather than reporting stale results.
 
 ## Rules
 - Read existing files before editing
@@ -73,16 +99,19 @@ Do NOT curl the parchment.com URL directly. It gates automated requests and a fa
 ## Expected Output in cursor_output.md
 Write results to `cursor_output.md` covering:
 
-1. The C++ entry's markup before and after
-2. Confirmation it now uses the same component, classes, and arrow treatment as the six Coursera entries, with no bespoke styling
-3. A table of all seven credential names against href from the built HTML
-4. Confirmation the six Coursera hrefs are byte-identical to the previous build
-5. The diff of the built certifications page against the previous build, confirming the C++ anchor and arrow are the only changes
-6. Confirmation no other page in `dist/` changed
-7. Build result, page count, zero JS bundles
-8. Commit hash and confirmation of push to `main`
-9. Post-deploy curl output
-10. A "NEEDS HUMAN CHECK" section noting that the Parchment link must be opened in a private window to confirm it resolves publicly rather than behind a Parchment login.
+1. The four image files with byte sizes and intrinsic dimensions
+2. The transaction cost sentence before and after
+3. The home page card summary before and after
+4. Grep output for `[IMAGE:` in the built earnings page — must be zero, paste actual output
+5. The four `<img>` tags from the built HTML with src, alt, width, height
+6. Confirmation zero occurrences of `58,710` and `70.85` anywhere in `dist/`
+7. Confirmation the MOLL case study page is byte-identical to the previous build
+8. Confirmation the certifications page is byte-identical to the previous build
+9. Build result, page count, `dist/` size before and after, zero JS bundles
+10. Confirmation `dist/images/` contains all seven images at full size
+11. Commit hash and confirmation of push to `main`
+12. Post-deploy curl results, or a plain statement that the build had not finished
+13. An explicit "NEEDS HUMAN CHECK" section. Include: legibility of the four dashboard screenshots at display width, particularly the quant tier table in fig3 and the axis labels in fig4; mobile rendering of all four; and the fact that these are dark-background screenshots placed on a light page, which may need a border or background treatment that has not been applied.
 
 ## Status
 [x] Complete
