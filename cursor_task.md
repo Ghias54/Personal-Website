@@ -1,122 +1,83 @@
 # Cursor Task — Personal Website
-Date: 2026-08-08 21:35:53
+Date: 2026-08-08 22:16:45
 From: Claude (claude.ai)
 Repo: /home/rehan-ghias/personal-website
 Priority: high
 
 ## Context
-Three image files were transferred to `public/images/` by scp and are already on disk. Verify they exist before doing anything else and STOP if any are missing:
+The certifications page already exists with a working structure: credentials grouped into categories (Data & Analytics, Artificial Intelligence, Programming & Other), each with an issuer badge, issuer name, and completion date.
 
-- `public/images/fig1-whiteboard.jpg` (~28 KB)
-- `public/images/fig2-eventlog.png` (~100 KB)
-- `public/images/fig3-summary.png` (~34 KB)
+**This task adds hyperlinks and nothing else.** Do not restructure, do not reorder, do not recategorize, do not restyle. The page is in a good state. The only thing missing is that the six Coursera credential titles are not clickable.
 
-The case study markdown currently contains `[IMAGE: description | caption]` placeholders. `src/lib/processMarkdownHtml.ts` parses these into a `figure` segment carrying only a description and a caption, and the case study page renders them as a placeholder box. There is no support for an actual image path. This task adds it.
+The URL-to-credential mapping below is confirmed correct by the site owner. An earlier draft of this task had every pairing wrong, so treat the mapping as the thing most worth getting right.
 
-STANDING CONSTRAINT: you cannot visually verify anything. Your IDE browser cannot reach the dev server over Tailscale. Do not report visual outcomes as confirmed. Everything below is verifiable from the filesystem or the build output. Flag anything you could not verify.
+The C++ Proficiency Certificate (College of DuPage, May 2026) is not a Coursera credential and has no verification URL. Leave it completely untouched.
 
-Out of scope, do not add: lightbox, zoom, carousel, image CDN, analytics, client-side JS, blog, CMS. `earnings-factor-model.md` is NOT part of this task. Leave its two placeholders exactly as they are.
+STANDING CONSTRAINT: you cannot visually verify anything. Your IDE browser cannot reach the dev server over Tailscale. Do not report visual outcomes as confirmed.
+
+Out of scope: reordering, recategorizing, badge changes, certificate thumbnails, client-side JS, filtering UI, moving to a content collection.
+
+If a previous run of this task already added links, do not redo the work. Verify the existing hrefs against the mapping below, correct only what is wrong, and report what you found.
 
 ## Task
-Do these in order. Stop and report if a verification step fails rather than continuing.
+## 1. Read before writing
 
----
+Locate and read the certifications page. Report its current contents in `cursor_output.md` before making changes. Match its existing markup and class conventions exactly.
 
-## 1. Extend the figure syntax to support a real image
+## 2. Make the six Coursera credential titles into links
 
-In `src/lib/processMarkdownHtml.ts`:
+Leave every credential's position, category, badge, issuer, and date exactly as it is. The only change is wrapping the title text in an anchor.
 
-Extend the `figure` variant of `HtmlSegment` with two optional fields:
+| Credential title (already on page) | href |
+|---|---|
+| Extract, Transform and Load Data in Power BI | `https://coursera.org/share/79546c1e8f0de09844c77bb2bff73f3a` |
+| Harnessing the Power of Data with Power BI | `https://coursera.org/share/ebecc79313353debd13fdb2028670e23` |
+| Preparing Data for Analysis with Microsoft Excel | `https://coursera.org/share/0a5460d67af9a3e77535ab96754fd293` |
+| Google Prompting Essentials Specialization | `https://coursera.org/share/ada2680658bde44de8948fa1d038bb90` |
+| Google AI Essentials Specialization | `https://coursera.org/share/f35e8cb86431e1a48a9c9f3be2a09ef7` |
+| Web3 and Blockchain Fundamentals | `https://coursera.org/share/fd53fe8d6cd438f156b2b9946fa5755b` |
 
-```ts
-| { type: "figure"; description: string; caption: string; src?: string; alt?: string }
-```
+Match each row by title text. If a title on the page does not match one of these exactly, stop and report the difference rather than guessing which credential it is.
 
-Support a three-field form alongside the existing two-field form:
+## 3. One date correction
 
-- Three fields: `[IMAGE: /images/file.png | alt text | caption]` produces `{ src, alt, caption, description: alt }`
-- Two fields: `[IMAGE: description | caption]` is unchanged and still produces a placeholder with `src` undefined
+The Harnessing the Power of Data with Power BI entry should read **July 2025**. If it currently reads anything else, including a bare year, correct it. Change no other date.
 
-Both forms must keep working. Do not delete the existing regex path, since the earnings case study still relies on it.
+## 4. Link requirements
 
-## 2. Render the image when a src is present
+- `target="_blank"`
+- `rel="noopener noreferrer"`
+- Link text is the full credential title, unchanged
+- No `nofollow`
+- The C++ Proficiency Certificate gets no link
 
-Find the component that consumes `splitFigures` and renders the `figure` segments. Update it so that:
+## 5. Styling
 
-- When `src` is present, render a real `<figure>` with an `<img>` and a `<figcaption>` carrying the caption
-- When `src` is absent, the existing placeholder behaviour is unchanged
+Use existing design tokens from `src/styles/global.css`. No raw hex values.
 
-Requirements for the `<img>`:
+The link should be visually distinguishable from unlinked titles, since one entry on the page is deliberately unlinked and a reader should be able to tell which titles are clickable. Use whatever link treatment the site already uses elsewhere. Do not invent a new one, and do not add underlines or colors that appear nowhere else on the site.
 
-- `alt` from the parsed alt field, never empty, never the filename
-- `loading="lazy"` and `decoding="async"`
-- Explicit `width` and `height` attributes so the page does not shift as images load. Read the real intrinsic dimensions off the files rather than guessing.
-- `max-width: 100%` and `height: auto` in CSS so it scales down on mobile
-
-Use existing design tokens from `src/styles/global.css` for any caption or border styling. Do not introduce raw hex values.
-
-## 3. Replace the three placeholders in `src/content/work/die-cutter-capacity.md`
-
-Replace each line exactly as given. Do not paraphrase the captions.
-
-Replace:
-`[IMAGE: whiteboard planning photo | Fig 1 — scoping the questions with the operations team]`
-
-With:
-`[IMAGE: /images/fig1-whiteboard.jpg | Whiteboard covered in handwritten notes grouping the analysis into changeovers, run and job length, machine speed, materials, sheet counts, and capacity by shift | Fig 1 — scoping the questions with the operations team]`
-
-Replace:
-`[IMAGE: raw data screenshot | Fig 2 — the event log as it came from the vendor's system]`
-
-With:
-`[IMAGE: /images/fig2-eventlog.png | Spreadsheet of timestamped machine events, showing Production rows of roughly 26 seconds alternating with Minor Stoppage rows, two consecutive Setup entries of 11 min 52 sec and 7 min 11 sec, and a job logged as NO READ | Fig 2 — the event log as it came from the vendor's system]`
-
-Replace:
-`[IMAGE: chart showing time breakdown or No Read by job type | Fig 3 — where the machine time actually went]`
-
-With:
-`[IMAGE: /images/fig3-summary.png | Quarterly summary table of run times, changeover time, and sheet counts for April through June | Fig 3 — Quarterly summary, April to June. Production run time was 222 hours against 1,552 hours of total available run time, or 14%. Changeovers consumed 428 hours, nearly twice the time spent cutting.]`
-
-Note that the Fig 3 caption is long and contains commas and percent signs. Confirm the parser handles it and the caption is not truncated.
-
-## 4. One copy change in the same file
-
-In the "What I found" section, replace this paragraph:
-
-`**The 1,200 sheets per hour standard was real, but almost never reached.** The machines rarely ran long enough in one stretch to get there. Capacity was not limited by how fast the machine could cut. It was limited by how often it had to stop.`
-
-With:
-
-`**The 1,200 sheets per hour standard was close to right for pure cutting time, and nowhere near the daily reality.** Across April through June, Machine 1 averaged about 920 sheets per hour during production run time, and 131 sheets per hour measured against all available run time. Capacity was not limited by how fast the machine could cut. It was limited by how often it had to stop.`
-
-Change nothing else in the prose.
-
-## 5. Build verification
+## 6. Build verification
 
 - `npm run build` completes clean
-- Confirm zero occurrences of the literal string `[IMAGE:` in `dist/projects/die-cutter-capacity/index.html`. Paste the actual grep output.
-- Confirm the three `<img>` tags are present in that file with correct `src`, non-empty `alt`, and `width`/`height` set
-- Confirm the earnings case study still renders its two placeholders. Grep `dist/projects/earnings-factor-model/index.html` and confirm the placeholder markup is intact and no `<img>` was introduced.
-- Confirm all three image files were copied into `dist/images/` at their full byte sizes
-- Confirm zero client-side JS bundles are emitted
-- Report `dist/` total size before and after
+- Paste a table of credential name against href from `dist/certifications/index.html`
+- Confirm the C++ entry contains no anchor
+- Confirm zero client-side JS bundles
+- Confirm page count is still 7
+- Diff the built certifications page against the previous build and confirm the only changes are the six anchors and the one date
 
-## 6. Commit and push
+## 7. Commit and push
 
-Commit with a message covering the figure syntax extension, the three MOLL figures, and the sheets-per-hour copy change. Push to `main`. Do not force-push, do not rewrite history.
+Commit with a message covering the six credential links and the Harnessing date fix. Push to `main`.
 
-Pushing to `main` triggers a Cloudflare Workers Build automatically. Do NOT run `npx wrangler pages deploy` under any circumstances. It fails with an opaque HTTP 500 because a Workers application named `personal-website` already exists on the account.
+Pushing triggers a Cloudflare Workers Build automatically. Do NOT run `npx wrangler pages deploy`. It fails with an opaque HTTP 500 because a Workers application named `personal-website` already exists on the account.
 
-## 7. Post-deploy verification
+## 8. Post-deploy verification
 
-Wait for the build, then against the live domain:
+- `curl -s https://rehanghias.com/certifications/ | grep -o 'href="https://coursera.org/share/[^"]*"'` — expect all six
+- `curl -sI https://rehanghias.com/certifications/` — expect 200
 
-- `curl -sI https://rehanghias.com/images/fig1-whiteboard.jpg` — expect 200 and an image content-type
-- Same for `fig2-eventlog.png` and `fig3-summary.png`
-- `curl -s https://rehanghias.com/projects/die-cutter-capacity/ | grep -c "\[IMAGE:"` — expect 0
-- `curl -s https://rehanghias.com/projects/die-cutter-capacity/ | grep -o 'src="/images/[^"]*"'` — expect all three
-
-If the build has not finished yet, say so plainly rather than reporting stale results.
+Do NOT curl the coursera.org URLs. Coursera blocks automated requests and a failure there would tell you nothing about whether the link is correct.
 
 ## Rules
 - Read existing files before editing
@@ -130,18 +91,18 @@ If the build has not finished yet, say so plainly rather than reporting stale re
 ## Expected Output in cursor_output.md
 Write results to `cursor_output.md` covering:
 
-1. Confirmation all three files exist in `public/images/` with byte sizes
-2. The diff to `processMarkdownHtml.ts`, and confirmation the two-field form still parses
-3. Which component you modified to render real images, and its path
-4. The intrinsic width and height you read off each image, and how you read them
-5. Grep output for `[IMAGE:` in the built MOLL page — must be zero, paste actual output
-6. The three `<img>` tags as they appear in built HTML
-7. Confirmation the earnings page placeholders are untouched and contain no `<img>`
-8. Build result: clean or not, page count, `dist/` size before and after, zero JS bundles
-9. Confirmation `dist/images/` contains all three at full size
+1. Whether Coursera links were already present before this run, and if so whether their mapping was correct
+2. Which file you modified and its path
+3. A table of credential name against href hash as it appears in the built HTML, so the mapping can be checked by eye
+4. Confirmation the category grouping, ordering, badges, issuers, and all dates other than Harnessing are byte-identical to before
+5. Confirmation the C++ Proficiency Certificate entry is unchanged and unlinked
+6. Confirmation the Harnessing date now reads July 2025
+7. Confirmation every anchor carries `rel="noopener noreferrer"` and `target="_blank"`
+8. Confirmation no raw hex colors were introduced
+9. Build result, page count, zero JS bundles
 10. Commit hash and confirmation of push to `main`
-11. Post-deploy curl results, or a plain statement that the build had not finished
-12. An explicit "NEEDS HUMAN CHECK" section. Visual rendering, image legibility at display size, and mobile layout all belong there, since you cannot see them.
+11. Post-deploy curl output showing the six hrefs live, or a plain statement that the build had not finished
+12. An explicit "NEEDS HUMAN CHECK" section, including that each of the six live links must be opened once to confirm it resolves to the named certificate, since opaque share hashes cannot be verified from the filesystem.
 
 ## Status
 [x] Complete

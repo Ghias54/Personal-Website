@@ -24,19 +24,19 @@ const groups: CertGroup[] = [
         name: "Extract, Transform and Load Data in Power BI",
         issuer: "Microsoft",
         date: "Feb 2026",
-        credentialUrl: "",
+        credentialUrl: "https://coursera.org/share/79546c1e8f0de09844c77bb2bff73f3a",
       },
       {
         name: "Harnessing the Power of Data with Power BI",
         issuer: "Microsoft",
-        date: "Jul 2025",
-        credentialUrl: "",
+        date: "July 2025",
+        credentialUrl: "https://coursera.org/share/ebecc79313353debd13fdb2028670e23",
       },
       {
         name: "Preparing Data for Analysis with Microsoft Excel",
         issuer: "Microsoft",
         date: "May 2025",
-        credentialUrl: "",
+        credentialUrl: "https://coursera.org/share/0a5460d67af9a3e77535ab96754fd293",
       },
     ],
   },
@@ -48,13 +48,13 @@ const groups: CertGroup[] = [
         name: "Google Prompting Essentials Specialization",
         issuer: "Google",
         date: "Aug 2025",
-        credentialUrl: "",
+        credentialUrl: "https://coursera.org/share/ada2680658bde44de8948fa1d038bb90",
       },
       {
         name: "Google AI Essentials Specialization",
         issuer: "Google",
         date: "Jun 2025",
-        credentialUrl: "",
+        credentialUrl: "https://coursera.org/share/f35e8cb86431e1a48a9c9f3be2a09ef7",
       },
     ],
   },
@@ -72,7 +72,7 @@ const groups: CertGroup[] = [
         name: "Web3 and Blockchain Fundamentals",
         issuer: "INSEAD",
         date: "Dec 2025",
-        credentialUrl: "",
+        credentialUrl: "https://coursera.org/share/fd53fe8d6cd438f156b2b9946fa5755b",
       },
     ],
   },
@@ -112,43 +112,30 @@ function groupId(name: string) {
 
             <ul class="cert-list">
               {group.items.map((cert) => {
-                const expandable = cert.credentialUrl.trim().length > 0;
+                const titleHref = cert.credentialUrl.trim();
                 const meta = `${cert.issuer} · ${cert.date}`;
 
                 return (
                   <li class="cert-item">
-                    {expandable ? (
-                      <details class="cert-details">
-                        <summary class="cert-row interactive">
-                          <IssuerLogo issuer={cert.issuer} />
-                          <span class="cert-text">
-                            <span class="cert-name">{cert.name}</span>
-                            <span class="cert-meta">{meta}</span>
-                          </span>
-                          <span class="cert-chevron" aria-hidden="true">
-                            ›
-                          </span>
-                        </summary>
-                        <div class="cert-panel">
-                          <a
-                            class="credential-link"
-                            href={cert.credentialUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            View credential ↗
-                          </a>
-                        </div>
-                      </details>
-                    ) : (
-                      <div class="cert-row">
-                        <IssuerLogo issuer={cert.issuer} />
-                        <span class="cert-text">
-                          <span class="cert-name">{cert.name}</span>
-                          <span class="cert-meta">{meta}</span>
+                    <div class="cert-row">
+                      <IssuerLogo issuer={cert.issuer} />
+                      <span class="cert-text">
+                        <span class="cert-name">
+                          {titleHref ? (
+                            <a
+                              href={titleHref}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              {cert.name}
+                            </a>
+                          ) : (
+                            cert.name
+                          )}
                         </span>
-                      </div>
-                    )}
+                        <span class="cert-meta">{meta}</span>
+                      </span>
+                    </div>
                   </li>
                 );
               })}
@@ -215,28 +202,11 @@ function groupId(name: string) {
     border-top: 1px solid var(--color-border);
   }
 
-  .cert-details {
-    margin: 0;
-  }
-
   .cert-row {
     display: flex;
     align-items: center;
     gap: 14px;
     padding: 18px 0;
-  }
-
-  .cert-row.interactive {
-    cursor: pointer;
-    list-style: none;
-  }
-
-  .cert-row.interactive::-webkit-details-marker {
-    display: none;
-  }
-
-  .cert-row.interactive:hover .cert-name {
-    color: var(--color-dark);
   }
 
   .cert-text {
@@ -255,6 +225,18 @@ function groupId(name: string) {
     color: var(--color-heading);
   }
 
+  .cert-name a {
+    color: var(--color-dark);
+    text-decoration: underline;
+    text-decoration-color: var(--color-link-underline);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.25em;
+  }
+
+  .cert-name a:hover {
+    text-decoration-color: var(--color-dark);
+  }
+
   .cert-meta {
     font-family: var(--font-mono);
     font-size: var(--fs-label);
@@ -263,47 +245,5 @@ function groupId(name: string) {
     text-transform: uppercase;
     color: var(--color-label);
     line-height: 1.4;
-  }
-
-  .cert-chevron {
-    font-family: var(--font-mono);
-    font-size: var(--fs-label);
-    color: var(--color-label);
-    line-height: 1;
-    transition: transform 0.2s ease;
-    flex-shrink: 0;
-  }
-
-  .cert-details[open] .cert-chevron {
-    transform: rotate(90deg);
-  }
-
-  .cert-panel {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.2s ease;
-  }
-
-  .cert-details[open] .cert-panel {
-    max-height: 64px;
-  }
-
-  .credential-link {
-    display: inline-block;
-    margin: 0 0 14px;
-    padding-left: 52px;
-    font-family: var(--font-mono);
-    font-size: var(--fs-label);
-    font-weight: 500;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--color-dark);
-    text-decoration: underline;
-    text-decoration-color: var(--color-link-underline);
-    text-underline-offset: 3px;
-  }
-
-  .credential-link:hover {
-    text-decoration-color: var(--color-dark);
   }
 </style>

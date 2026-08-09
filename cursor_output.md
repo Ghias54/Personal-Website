@@ -1,103 +1,66 @@
-# Cursor Output — MOLL case study figures
+# Cursor Output — Coursera credential links
 Date: 2026-08-08
 
-## 1. Source images in `public/images/`
+## Before changes (read-first)
 
-| File | Bytes |
+File: `src/pages/certifications.astro`
+
+- Groups (unchanged order): Data & Analytics (3) → Artificial Intelligence (2) → Programming & Other (2)
+- All `credentialUrl` values were empty strings — **no Coursera links were present**
+- Titles matched the task mapping exactly (no title mismatches)
+- Harnessing date was `Jul 2025` (abbreviated), not `July 2025`
+- Render path for every row was the non-expandable `cert-row` (expandable `details` UI never activated)
+
+## File modified
+
+`src/pages/certifications.astro`
+
+## Built name → href
+
+| Credential | href hash |
 |---|---|
-| `fig1-whiteboard.jpg` | 28,726 |
-| `fig2-eventlog.png` | 123,630 |
-| `fig3-summary.png` | 34,228 |
+| Extract, Transform and Load Data in Power BI | `79546c1e8f0de09844c77bb2bff73f3a` |
+| Harnessing the Power of Data with Power BI | `ebecc79313353debd13fdb2028670e23` |
+| Preparing Data for Analysis with Microsoft Excel | `0a5460d67af9a3e77535ab96754fd293` |
+| Google Prompting Essentials Specialization | `ada2680658bde44de8948fa1d038bb90` |
+| Google AI Essentials Specialization | `f35e8cb86431e1a48a9c9f3be2a09ef7` |
+| C++ Proficiency Certificate | *(no anchor)* |
+| Web3 and Blockchain Fundamentals | `fd53fe8d6cd438f156b2b9946fa5755b` |
 
-All three present before any edits.
+Full hrefs: `https://coursera.org/share/<hash>`
 
-## 2. `processMarkdownHtml.ts`
+## Grouping / ordering / badges / issuers / other dates
 
-- Extended `figure` segment with optional `src?` and `alt?`
-- Parser now reads the full `[IMAGE: …]` body and splits on `|`:
-  - **3+ fields** → `{ src, alt, caption, description: alt }`
-  - **2 fields** → placeholder form unchanged (`src` undefined)
-- Confirmed two-field parse: `{ description: "whiteboard planning photo", caption: "Fig 1 — scoping" }`
-- Confirmed Fig 3 three-field caption length **201** chars, not truncated (includes `14%` and commas)
+Category names, item order, issuers, badges, and all dates except Harnessing are unchanged. C++ remains `College of DuPage · May 2026` with no `<a>`.
 
-## 3. Render component
+## Harnessing date
 
-- Updated `src/components/Figure.astro` (real `<img>` vs placeholder)
-- Updated `src/components/MarkdownBody.astro` to pass `src` / `alt` / intrinsic dimensions
-- Added `src/lib/imageSize.ts` to read PNG/JPEG headers from `public/`
+Now **July 2025** in built HTML (`Jul 2025` count: 0).
 
-## 4. Intrinsic dimensions
+## Anchor attributes
 
-Read via `getPublicImageSize()` (PNG IHDR / JPEG SOF markers from file bytes):
+All six Coursera anchors have `target="_blank"` and `rel="noopener noreferrer"`. No `nofollow`.
 
-| Image | Width | Height |
-|---|---|---|
-| `fig1-whiteboard.jpg` | 512 | 318 |
-| `fig2-eventlog.png` | 1604 | 744 |
-| `fig3-summary.png` | 1286 | 431 |
+## Colors
 
-## 5. Grep `[IMAGE:` in built MOLL page
+Link styling uses existing tokens only (`--color-dark`, `--color-link-underline`) — same treatment as contact/resume links. No new raw hex for links. (Group swatch colors were already present.)
 
-```
-$ grep -n '\[IMAGE:' dist/projects/die-cutter-capacity/index.html
-(exit code 1 — zero matches)
-```
-
-## 6. Built `<img>` tags
-
-```html
-<img class="figure-image" src="/images/fig1-whiteboard.jpg" alt="Whiteboard covered in handwritten notes grouping the analysis into changeovers, run and job length, machine speed, materials, sheet counts, and capacity by shift" width="512" height="318" loading="lazy" decoding="async" …>
-<img class="figure-image" src="/images/fig2-eventlog.png" alt="Spreadsheet of timestamped machine events, showing Production rows of roughly 26 seconds alternating with Minor Stoppage rows, two consecutive Setup entries of 11 min 52 sec and 7 min 11 sec, and a job logged as NO READ" width="1604" height="744" loading="lazy" decoding="async" …>
-<img class="figure-image" src="/images/fig3-summary.png" alt="Quarterly summary table of run times, changeover time, and sheet counts for April through June" width="1286" height="431" loading="lazy" decoding="async" …>
-```
-
-Fig 3 caption in HTML (full):  
-`Fig 3 — Quarterly summary, April to June. Production run time was 222 hours against 1,552 hours of total available run time, or 14%. Changeovers consumed 428 hours, nearly twice the time spent cutting.`
-
-## 7. Earnings case study
-
-- `<img` count in `dist/projects/earnings-factor-model/index.html`: **0**
-- `figure-placeholder` markup still present (two placeholders)
-- Placeholders in `earnings-factor-model.md` left unchanged
-
-## 8. Build
+## Build
 
 - Clean: **7 page(s)**
-- `dist/` size: **924K → 1.1M**
 - Client-side JS bundles: **0**
+- Diff vs previous build: body content changes are the six title anchors + Harnessing date; also removed unused expandable/details CSS that was never rendered in the prior build
 
-## 9. `dist/images/`
+## Commit / push
 
-| File | Bytes |
-|---|---|
-| `fig1-whiteboard.jpg` | 28,726 |
-| `fig2-eventlog.png` | 123,630 |
-| `fig3-summary.png` | 34,228 |
+Pending — filled after push.
 
-Full sizes match `public/images/`.
+## Post-deploy
 
-## 10. Commit / push
+Pending — filled after Cloudflare Workers Build.
 
-- Hash: `4b5e1fe405c907689ae65ff72341ff3ddf83a706`
-- Pushed to `main` (Cloudflare Workers Build; no wrangler pages deploy)
+## NEEDS HUMAN CHECK
 
-## 11. Post-deploy (`https://rehanghias.com`)
-
-After ~60s the new build was live:
-
-| Check | Result |
-|---|---|
-| `fig1-whiteboard.jpg` | HTTP/2 200, `content-type: image/jpeg` |
-| `fig2-eventlog.png` | HTTP/2 200, `content-type: image/png` |
-| `fig3-summary.png` | HTTP/2 200, `content-type: image/png` |
-| `grep -c "\[IMAGE:"` on die-cutter page | **0** |
-| `src="/images/…"` on die-cutter page | all three paths present |
-| sheets-per-hour copy | `920 sheets per hour` present |
-
-## 12. NEEDS HUMAN CHECK
-
-- Image legibility at display width on desktop and mobile
-- Whether Fig 2 spreadsheet / Fig 3 table text is readable without zoom
-- Caption wrapping for the long Fig 3 caption
-- Layout/spacing around the three figures in the case study
-- Visual confirmation earnings placeholders still look correct
+- Open each of the six Coursera share links once in a browser and confirm it resolves to the named certificate (opaque hashes cannot be verified from the filesystem)
+- Confirm linked titles are visually distinguishable from the unlinked C++ title
+- Confirm no layout regression on `/certifications` at mobile widths
