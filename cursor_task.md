@@ -1,61 +1,58 @@
 # Cursor Task — Personal Website
-Date: 2026-08-08 23:17:16
+Date: 2026-08-09 18:30:42
 From: Claude (claude.ai)
 Repo: /home/rehan-ghias/personal-website
 Priority: medium
 
 ## Context
-The experience page now has five bullets on Glitz Decor and Kumon, four on Machine Operator, and five on the Truly Engaging analyst entry. Machine Operator reads thin next to its neighbours and is also the only entry missing the promotion arc that appears elsewhere on the site.
+An updated resume PDF was copied over the existing `public/resume.pdf` by scp. It is a Chrome export (Skia/PDF m151 producer), one page, letter size, roughly 80,458 bytes, with three embedded subsetted TrueType fonts and a real extractable text layer.
 
-This task rewrites the Machine Operator bullets only. The file is `src/pages/experience.astro` and the bullets live in the `experience` data array, rendered through `ExperienceItem.astro`. Bullets carry no trailing periods — match that.
+The only change in this task is committing and deploying that file. No source file changes. The filename is unchanged, so nothing that links to it needs updating.
 
-Explicitly unchanged: the Truly Engaging analyst entry, Glitz Decor, Kumon, all titles, employers, locations, date ranges, entry order, and every other page on the site.
+Why the file matters: an earlier version of this resume had been exported through Microsoft Print to PDF, which rasterizes the page and leaves no text layer, meaning applicant tracking systems parse a blank document. The file now on disk is a correct export. Do not regenerate, convert, compress, linearize, or optimize it at any point. Commit the bytes as received.
 
 STANDING CONSTRAINT: you cannot visually verify anything. Your IDE browser cannot reach the dev server over Tailscale. Do not report visual outcomes as confirmed.
 
-Out of scope: new CSS, new components, restructuring, links, icons, client-side JS.
+Out of scope: every source file, every page, every stylesheet, the resume page markup. Do not add a version string, date, or cache-busting query parameter to the resume link.
 
 ## Task
-One change to `src/pages/experience.astro`. Nothing else.
+## 1. Verify the file
 
-## 1. Machine Operator — replace the four bullets with these five
+Confirm `public/resume.pdf` exists, is approximately 80,458 bytes, and has a recent modification time.
 
-- Started in general assembly supporting machine operators, then trained to run CNC and die cutters
-- Operate CNC and die-cutting equipment through peak production season
-- Troubleshoot machine issues and assist other operators
-- Handle packaging and shipping through FedEx, UPS and USPS systems
-- Lead small teams to keep production moving
+If it is zero bytes, a few hundred bytes, or unchanged from the previous commit, **STOP** and report. That indicates a failed or stubbed transfer, not a real file.
 
-Keep the title, employer, location, and date range exactly as they are.
+Confirm it has an extractable text layer. If `pdftotext` is available, run it and confirm non-trivial output containing the string `linkedin.com/in/rehanghias`. If `pdftotext` is not installed, do not install it — check the file begins with `%PDF` and state plainly that deeper verification was not possible.
 
-## 2. Use the copy as written
+## 2. Do not modify the file
 
-Do not reword, shorten, expand, or reorder these bullets. No trailing periods, matching the existing convention.
+No PDF optimizer, compressor, linearizer, or converter. No re-encoding. The bytes on disk are the bytes to commit.
 
-## 3. Touch nothing else
+## 3. Do not modify anything else
 
-The Truly Engaging analyst entry, Glitz Decor, and Kumon are out of scope. Confirm explicitly that all three are unchanged.
+Run `git status` and confirm `public/resume.pdf` is the only modified path. If anything else is dirty, report what and why before proceeding.
 
-## 4. Verification
+## 4. Build verification
 
 - `npm run build` completes clean
-- Confirm the Machine Operator entry has exactly five bullets
-- Confirm the other three entries are byte-identical to the previous build
-- Confirm no new CSS rules were added
-- Diff the built experience page against the previous build. The only change should be the Machine Operator bullet list. Paste the diff.
-- Confirm no other file in `dist/` changed
-- Confirm zero client-side JS bundles and page count still 7
+- `dist/resume.pdf` exists and is byte-identical to `public/resume.pdf`
+- Page count is still 7
+- Zero client-side JS bundles
+- The seven images in `dist/images/` are still present at full size
 
 ## 5. Commit and push
 
-Commit covering the Machine Operator bullet expansion. Push to `main`.
+Commit the resume update. Push to `main`. Do not force-push, do not rewrite history.
 
 Pushing triggers a Cloudflare Workers Build automatically. Do NOT run `npx wrangler pages deploy`. It fails with an opaque HTTP 500 because a Workers application named `personal-website` already exists on the account.
 
-## 6. Post-deploy
+## 6. Post-deploy verification
 
-- `curl -sI https://rehanghias.com/experience/` — expect 200
-- `curl -s https://rehanghias.com/experience/ | grep -c "general assembly"` — expect 1
+- `curl -sI https://rehanghias.com/resume.pdf` — expect 200 and `content-type: application/pdf`
+- Confirm `content-length` matches the local byte size
+- `curl -sI https://rehanghias.com/` — expect 200
+
+If the build has not finished, say so plainly rather than reporting stale results.
 
 ## Rules
 - Read existing files before editing
@@ -69,18 +66,16 @@ Pushing triggers a Cloudflare Workers Build automatically. Do NOT run `npx wrang
 ## Expected Output in cursor_output.md
 Write results to `cursor_output.md` covering:
 
-1. The Machine Operator bullets before and after
-2. Confirmation the entry now has exactly five bullets
-3. Confirmation no bullet has a trailing period
-4. Confirmation the analyst, Glitz Decor, and Kumon entries are byte-identical to the previous build
-5. Confirmation all titles, employers, locations, dates, and entry order are unchanged
-6. Confirmation no new CSS rules were added
-7. Diff of the built experience page against the previous build, confirming only the Machine Operator bullet list changed
-8. Confirmation no other file in `dist/` changed
-9. Build result, page count, zero JS bundles
-10. Commit hash and confirmation of push to `main`
-11. Post-deploy curl output
-12. A "NEEDS HUMAN CHECK" section covering mobile wrapping on the longer first bullet.
+1. `public/resume.pdf` byte size and modification time
+2. How you verified the text layer, and the result
+3. The producer string if you could read it without installing anything
+4. `git status` output before committing, confirming `public/resume.pdf` is the only modified path
+5. Build result, page count, zero JS bundles
+6. Confirmation `dist/resume.pdf` is byte-identical to `public/resume.pdf`
+7. Confirmation the seven images in `dist/images/` are still present at full size
+8. Commit hash and confirmation of push to `main`
+9. Post-deploy curl output including status, content-type, and content-length
+10. A "NEEDS HUMAN CHECK" section noting the live PDF should be opened once in a browser to confirm it is the intended version, since byte size alone does not confirm content.
 
 ## Status
 [x] Complete
