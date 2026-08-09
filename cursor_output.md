@@ -53,11 +53,23 @@ Link styling uses existing tokens only (`--color-dark`, `--color-link-underline`
 
 ## Commit / push
 
-Pending — filled after push.
+- Hash: `58850e723c255f2482d38ffde82855d4c04bc614`
+- Pushed to `main` (Cloudflare Workers Build; no wrangler pages deploy)
 
 ## Post-deploy
 
-Pending — filled after Cloudflare Workers Build.
+`curl -sI https://rehanghias.com/certifications/` → **HTTP/2 200**
+
+Live Coursera hrefs (all six):
+
+```
+href="https://coursera.org/share/79546c1e8f0de09844c77bb2bff73f3a"
+href="https://coursera.org/share/ebecc79313353debd13fdb2028670e23"
+href="https://coursera.org/share/0a5460d67af9a3e77535ab96754fd293"
+href="https://coursera.org/share/ada2680658bde44de8948fa1d038bb90"
+href="https://coursera.org/share/f35e8cb86431e1a48a9c9f3be2a09ef7"
+href="https://coursera.org/share/fd53fe8d6cd438f156b2b9946fa5755b"
+```
 
 ## NEEDS HUMAN CHECK
 
