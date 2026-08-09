@@ -1,76 +1,65 @@
 # Cursor Task — Personal Website
-Date: 2026-08-08 22:27:34
+Date: 2026-08-08 22:35:13
 From: Claude (claude.ai)
 Repo: /home/rehan-ghias/personal-website
 Priority: medium
 
 ## Context
-The six Coursera credential links are live on the certifications page and the mapping is correct. Two cosmetic problems remain.
+The certifications page is in a finished state: six Coursera credentials linked with correct mapping, underlines replaced with `↗` arrows, hover and focus states in place, dates corrected. All of that work is complete and verified. Do not redo any of it.
 
-1. Linked titles are underlined. The underline is heavy against the editorial type treatment and competes with the section rules. It should be replaced with a small external-link arrow after the title.
-2. The Harnessing the Power of Data with Power BI entry reads `JULY 2025`. Every other entry uses a three-letter month abbreviation (`FEB 2026`, `AUG 2025`, `MAY 2025`, `JUN 2025`, `DEC 2025`). It should read `JUL 2025`.
+The one remaining gap is the C++ Proficiency Certificate (College of DuPage, May 2026), which is currently the only unlinked credential on the page. It now has a verification URL.
 
-The C++ Proficiency Certificate is deliberately unlinked. It must not receive an arrow. The arrow is the only remaining signal that distinguishes a linked credential from an unlinked one, which is exactly why the underline can be removed safely.
+After this change all seven credentials are linked, so the arrow becomes a uniform external-link indicator rather than a signal distinguishing linked from unlinked entries. No styling change is needed for that — it follows automatically once the seventh link exists.
 
 STANDING CONSTRAINT: you cannot visually verify anything. Your IDE browser cannot reach the dev server over Tailscale. Do not report visual outcomes as confirmed.
 
-Out of scope: changing the categories, order, badges, issuers, hrefs, or any other date. Do not touch any other page. Do not add an icon library or client-side JS.
+Out of scope: link styling, hover, focus, arrows, dates, categories, order, badges, issuers, the six Coursera hrefs, and every other page on the site. This task adds one anchor.
 
 ## Task
-Two changes to the certifications page only. Nothing else on the site.
+One change to the certifications page. Nothing else.
 
-## 1. Remove the underline, add an external-link arrow
+## 1. Link the C++ certificate
 
-On the six linked credential titles:
+The C++ Proficiency Certificate (College of DuPage, May 2026) is the only unlinked credential on the page. Add:
 
-- Set `text-decoration: none` at rest
-- Append a `↗` arrow immediately after the title text
-- The arrow must be `aria-hidden="true"` so screen readers do not announce it, and must not be part of the link's accessible name
-- Prevent the arrow from wrapping onto its own line. Use a non-breaking space before it, or make the trailing word and arrow a single inline-block unit.
-- Size the arrow smaller than the title, roughly 0.7em, and set it in the muted foreground color rather than the title color so it reads as an affordance and not as punctuation
-- Align it optically with the cap height, not the baseline. A small negative vertical offset is usually needed.
+`https://www.parchment.com/lp/award/19e83acb-9c51-41ee-8de4-d4584467f6b5`
 
-Insert the arrow via markup rather than a CSS `::after` on the anchor if the page uses a component that makes that straightforward. Either is acceptable, but if you use `::after`, confirm it does not end up inside the accessible name.
+It must use the **exact same treatment as the six existing Coursera entries**. Read how one of those is marked up and mirror it:
 
-## 2. Hover state
+- Same component or markup pattern
+- Same classes
+- `target="_blank"`, `rel="noopener noreferrer"`
+- Link text is the full credential title, unchanged
+- The `↗` arrow appears the same way it does on the other six, with the same `aria-hidden` handling
 
-With the underline gone, hovering needs to do something. Shift the title to the accent color already used for interactive elements elsewhere on the site, and move the arrow one or two pixels up and to the right. Use an existing transition duration token if one exists.
+Write no new CSS. If you find yourself adding a style rule, you have diverged from the existing pattern and should stop and re-read how the Coursera entries are built.
 
-Do not reintroduce an underline on hover. Do not add a background fill, box shadow, or scale transform.
+Do not change the C++ entry's title, issuer, badge, category, or date.
 
-## 3. Focus state
-
-Removing the underline must not remove keyboard focus visibility. Confirm a visible focus ring remains on tab, using the site's existing focus treatment. If the page has no focus style, add `:focus-visible` with the existing accent color as an outline. This is not optional.
-
-## 4. The C++ entry stays bare
-
-The C++ Proficiency Certificate has no verification URL. It must remain unlinked, with no arrow and no hover state. Confirm explicitly.
-
-## 5. Date fix
-
-Change `JULY 2025` to `JUL 2025` on the Harnessing the Power of Data with Power BI entry. Change no other date.
-
-## 6. Verification
+## 2. Verification
 
 - `npm run build` completes clean
-- Confirm no `text-decoration: underline` applies to the credential links in any state
-- Confirm exactly six arrows appear in `dist/certifications/index.html`, one per linked credential
-- Confirm the C++ entry contains no arrow character and no anchor tag
-- Confirm all six hrefs are unchanged from the previous build
+- Confirm `dist/certifications/index.html` contains exactly seven credential anchors and seven arrows
+- Confirm the Parchment href is present and character-for-character correct
+- Confirm the six Coursera hrefs are byte-identical to the previous build
+- Confirm no new CSS rules were added
 - Confirm zero client-side JS bundles and page count still 7
-- Diff the built page against the previous build and confirm the only changes are the arrows, the link styling, and the one date
+- Diff the built page against the previous build. The only changes should be the C++ anchor and its arrow. Paste the diff.
+- Confirm no other file in `dist/` changed
 
-## 7. Commit and push
+## 3. Commit and push
 
-Commit covering the link treatment and the date fix. Push to `main`.
+Commit covering the C++ credential link. Push to `main`.
 
 Pushing triggers a Cloudflare Workers Build automatically. Do NOT run `npx wrangler pages deploy`. It fails with an opaque HTTP 500 because a Workers application named `personal-website` already exists on the account.
 
-## 8. Post-deploy
+## 4. Post-deploy
 
 - `curl -sI https://rehanghias.com/certifications/` — expect 200
-- `curl -s https://rehanghias.com/certifications/ | grep -c '↗'` — expect 6
-- `curl -s https://rehanghias.com/certifications/ | grep -o 'href="https://coursera.org/share/[^"]*"'` — expect the same six as before
+- `curl -s https://rehanghias.com/certifications/ | grep -c '↗'` — expect 7
+- `curl -s https://rehanghias.com/certifications/ | grep -o 'href="https://www.parchment.com/[^"]*"'` — expect one
+
+Do NOT curl the parchment.com URL directly. It gates automated requests and a failure would tell you nothing about whether the link is correct.
 
 ## Rules
 - Read existing files before editing
@@ -84,18 +73,16 @@ Pushing triggers a Cloudflare Workers Build automatically. Do NOT run `npx wrang
 ## Expected Output in cursor_output.md
 Write results to `cursor_output.md` covering:
 
-1. The CSS before and after for the credential link
-2. Confirmation `text-decoration` is `none` at rest and that no underline appears in any state
-3. What the hover state does instead
-4. How the arrow is inserted and how it is hidden from screen readers
-5. Confirmation the arrow cannot wrap onto its own line
-6. Confirmation the C++ entry has no arrow and no anchor
-7. Confirmation the Harnessing date now reads `JUL 2025` and no other date changed
-8. Confirmation the six hrefs are byte-identical to before
-9. Build result, page count, zero JS bundles
-10. Commit hash and confirmation of push to `main`
-11. Post-deploy curl confirming the page returns 200 and the six hrefs are unchanged
-12. A "NEEDS HUMAN CHECK" section covering arrow size and alignment, hover appearance, and mobile rendering.
+1. The C++ entry's markup before and after
+2. Confirmation it now uses the same component, classes, and arrow treatment as the six Coursera entries, with no bespoke styling
+3. A table of all seven credential names against href from the built HTML
+4. Confirmation the six Coursera hrefs are byte-identical to the previous build
+5. The diff of the built certifications page against the previous build, confirming the C++ anchor and arrow are the only changes
+6. Confirmation no other page in `dist/` changed
+7. Build result, page count, zero JS bundles
+8. Commit hash and confirmation of push to `main`
+9. Post-deploy curl output
+10. A "NEEDS HUMAN CHECK" section noting that the Parchment link must be opened in a private window to confirm it resolves publicly rather than behind a Parchment login.
 
 ## Status
 [x] Complete

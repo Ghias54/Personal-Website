@@ -1,105 +1,79 @@
-# Cursor Output — Cert link treatment + Jul date
+# Cursor Output — C++ Parchment credential link
 Date: 2026-08-08
 
-## 1. CSS before → after (credential title links)
+## 1. Markup before → after
 
 **Before:**
-```css
-.cert-name a {
-  color: var(--color-dark);
-  text-decoration: underline;
-  text-decoration-color: var(--color-link-underline);
-  text-decoration-thickness: 1px;
-  text-underline-offset: 0.25em;
-}
-.cert-name a:hover {
-  text-decoration-color: var(--color-dark);
-}
+```html
+<span class="cert-name">C++ Proficiency Certificate</span>
 ```
 
 **After:**
-```css
-.cert-title-link {
-  color: var(--color-heading);
-  text-decoration: none;
-}
-.cert-title-link:hover,
-.cert-title-link:focus {
-  color: var(--color-dark);
-  text-decoration: none;
-}
-.cert-title-link:hover .cert-ext,
-.cert-title-link:focus-visible .cert-ext {
-  transform: translate(2px, calc(-0.12em - 2px));
-}
-.cert-ext {
-  display: inline-block;
-  font-size: 0.7em;
-  font-weight: 500;
-  color: var(--color-muted);
-  line-height: 1;
-  transform: translateY(-0.12em);
-  transition: transform 0.2s ease;
-}
-```
-
-## 2. Underline
-
-`text-decoration: none` at rest, hover, and focus. Built CSS for `.cert-title-link` contains no `underline`.
-
-## 3. Hover
-
-Title color shifts to `--color-dark` (existing interactive accent). Arrow translates 2px right and further up. No underline, fill, shadow, or scale.
-
-## 4. Arrow insertion / a11y
-
-Markup inside the anchor, after the title text:
-
 ```html
-<span class="cert-ext" aria-hidden="true">&nbsp;↗</span>
+<span class="cert-name">
+  <a class="cert-title-link"
+     href="https://www.parchment.com/lp/award/19e83acb-9c51-41ee-8de4-d4584467f6b5"
+     target="_blank"
+     rel="noopener noreferrer">
+    C++ Proficiency Certificate
+    <span class="cert-ext" aria-hidden="true">&nbsp;↗</span>
+  </a>
+</span>
 ```
 
-`aria-hidden="true"` keeps `↗` out of the accessible name. Global `:focus-visible` outline (`2px solid var(--color-dark)`) still applies.
+Source change was only `credentialUrl` on the C++ entry in `src/pages/certifications.astro`.
 
-## 5. No wrap onto own line
+## 2. Same treatment as Coursera entries
 
-Non-breaking space before `↗`, and `.cert-ext` is `display: inline-block`, so the arrow stays with the title’s trailing edge.
+Uses the existing `titleHref ? <a class="cert-title-link">…<span class="cert-ext" aria-hidden="true">` branch — same classes, same arrow, same `target`/`rel`. **No new CSS.**
 
-## 6. C++ entry
+## 3. All seven credentials (built HTML)
 
-Unlinked plain text in `.cert-name` — no `<a>`, no `↗`.
+| Credential | href |
+|---|---|
+| Extract, Transform and Load Data in Power BI | `https://coursera.org/share/79546c1e8f0de09844c77bb2bff73f3a` |
+| Harnessing the Power of Data with Power BI | `https://coursera.org/share/ebecc79313353debd13fdb2028670e23` |
+| Preparing Data for Analysis with Microsoft Excel | `https://coursera.org/share/0a5460d67af9a3e77535ab96754fd293` |
+| Google Prompting Essentials Specialization | `https://coursera.org/share/ada2680658bde44de8948fa1d038bb90` |
+| Google AI Essentials Specialization | `https://coursera.org/share/f35e8cb86431e1a48a9c9f3be2a09ef7` |
+| C++ Proficiency Certificate | `https://www.parchment.com/lp/award/19e83acb-9c51-41ee-8de4-d4584467f6b5` |
+| Web3 and Blockchain Fundamentals | `https://coursera.org/share/fd53fe8d6cd438f156b2b9946fa5755b` |
 
-## 7. Date
+Anchors: **7**. Arrows: **7**.
 
-Harnessing meta is `Microsoft · Jul 2025` (renders as `JUL 2025` via uppercase). Other dates unchanged:
-`Feb 2026`, `May 2025`, `Aug 2025`, `Jun 2025`, `May 2026`, `Dec 2025`.
+## 4. Coursera hrefs
 
-## 8. Hrefs
+Byte-identical to the previous build (`coursera identical True`).
 
-Byte-identical to previous build (all six `coursera.org/share/…` hashes unchanged).
+## 5. Diff vs previous build
 
-## 9. Build
+Only `dist/certifications/index.html` changed. Semantic body change is the C++ plain title becoming the same linked title + arrow pattern. (Full HTML is one minified line; the meaningful delta is the new Parchment `<a class="cert-title-link"…>` wrapping `C++ Proficiency Certificate` with `<span class="cert-ext" aria-hidden="true">&nbsp;↗</span>`.)
+
+Source diff:
+```diff
+-        credentialUrl: "",
++        credentialUrl:
++          "https://www.parchment.com/lp/award/19e83acb-9c51-41ee-8de4-d4584467f6b5",
+```
+
+## 6. Other `dist/` pages
+
+Unchanged. Only `certifications/index.html` differed from the pre-build snapshot.
+
+## 7. Build
 
 - Clean: **7 page(s)**
 - Client-side JS: **0**
-- Exactly **6** `↗` in `dist/certifications/index.html`
 
-## 10. Commit / push
+## 8. Commit / push
 
-- Hash: `5d3eaa6d1921c37291923bcbe7bc3072d5bbc13c`
-- Pushed to `main` (Cloudflare Workers Build; no wrangler pages deploy)
+Pending — filled after push.
 
-## 11. Post-deploy
+## 9. Post-deploy
 
-- `curl -sI https://rehanghias.com/certifications/` → **HTTP/2 200**
-- Arrow count in live HTML: **6** (note: `grep -c '↗'` reports 1 because the page is a single minified line; occurrence count is 6)
-- Six Coursera hrefs unchanged and present
-- `July 2025` absent; `Jul 2025` present once
+Pending — filled after Cloudflare Workers Build.
 
-## 12. NEEDS HUMAN CHECK
+## 10. NEEDS HUMAN CHECK
 
-- Arrow size (~0.7em) and optical alignment with cap height
-- Hover color + arrow nudge feel
-- Focus ring visibility on keyboard tab
-- Mobile wrapping of long titles with trailing arrow
-- Linked vs unlinked (C++) still distinguishable without underline
+- Open the Parchment URL in a private/incognito window and confirm it resolves publicly (not behind a Parchment login)
+- Confirm the seventh arrow matches the Coursera ones visually
