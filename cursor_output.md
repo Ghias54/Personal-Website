@@ -93,11 +93,14 @@ Unchanged — only `experience/index.html` differed from the pre-build snapshot.
 
 ## 12. Commit / push
 
-Pending — filled after push.
+- Hash: `b12eae64aaf1b020acb94c241761dd33a75b07c0`
+- Pushed to `main` (Cloudflare Workers Build; no wrangler pages deploy)
 
 ## 13. Post-deploy
 
-Pending — filled after Cloudflare Workers Build.
+- `curl -sI https://rehanghias.com/experience/` → **HTTP/2 200**
+- `grep -c "130 students"` → **1**
+- `grep -ci "promoted to supervisor"` → **1**
 
 ## 14. NEEDS HUMAN CHECK
 
