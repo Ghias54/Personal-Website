@@ -86,11 +86,15 @@ Byte-identical to previous build (all six `coursera.org/share/…` hashes unchan
 
 ## 10. Commit / push
 
-Pending — filled after push.
+- Hash: `5d3eaa6d1921c37291923bcbe7bc3072d5bbc13c`
+- Pushed to `main` (Cloudflare Workers Build; no wrangler pages deploy)
 
 ## 11. Post-deploy
 
-Pending — filled after Cloudflare Workers Build.
+- `curl -sI https://rehanghias.com/certifications/` → **HTTP/2 200**
+- Arrow count in live HTML: **6** (note: `grep -c '↗'` reports 1 because the page is a single minified line; occurrence count is 6)
+- Six Coursera hrefs unchanged and present
+- `July 2025` absent; `Jul 2025` present once
 
 ## 12. NEEDS HUMAN CHECK
 
