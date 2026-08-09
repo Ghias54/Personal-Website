@@ -1,95 +1,105 @@
-# Cursor Output — Earnings case study figures + home card
+# Cursor Output — Expand Glitz & Kumon experience bullets
 Date: 2026-08-08
 
-## 1. Image files
+## 1. Experience page contents before (verbatim from source)
 
-| File | Bytes | Intrinsic size |
-|---|---|---|
-| `fig1-dashboard-summary.png` | 164,354 | 1916 × 987 |
-| `fig2-equity-drawdown.png` | 111,681 | 1918 × 987 |
-| `fig3-yearly-quant-tier.png` | 81,820 | 1455 × 838 |
-| `fig4-composite-scatter.png` | 51,626 | 1437 × 580 |
+File: `src/pages/experience.astro` — data array before edits:
 
-Dimensions from PNG IHDR via Pillow / existing image reader.
+1. **Data Analyst Intern (Internal Project)** · Truly Engaging · Carol Stream, IL · Jul 2025 – Sep 2025  
+   - Selected by the CFO and COO for a six-week analytics project  
+   - Analyzed machine-level production data in Excel to identify bottlenecks and reduce downtime  
+   - Cleaned and prepared large, inconsistent machine datasets  
+   - Established true production capacity to improve planning accuracy  
+   - Built Power BI dashboards to present findings  
 
-## 2. Transaction cost sentence
+2. **Machine Operator** · Truly Engaging · Carol Stream, IL · Aug 2023 – Present  
+   - Operate CNC and die-cutting equipment  
+   - Troubleshoot machine issues and assist other operators  
+   - Handle packaging and shipping through FedEx, UPS and USPS systems  
+   - Lead small teams to keep production moving  
 
-**Before:** `applies transaction costs on every round trip, and supports stop losses`  
-**After:** `applies a 0.2% transaction cost to every trade, and supports stop losses`
+3. **Supervisor** · Glitz Decor LLC · Chicago, IL · Jul 2023 – Present  
+   - Oversee team operations and resolve workflow conflicts  
+   - Manage project timelines to hit delivery dates  
+   - Coordinate events with clients, vendors and venues  
 
-## 3. Home card summary (earnings-factor-model)
+4. **Center Assistant (Operations Lead)** · Kumon North America · Glen Ellyn, IL · Aug 2022 – Sep 2023  
+   - Managed daily center operations and staff coordination  
+   - Led a team of 12+ tutors  
+   - Streamlined scheduling and student progress tracking  
+   - Analyzed student progress data to adjust instructional approach  
 
-**Before:**  
-`I built a research pipeline to test whether filtering earnings trades by company quality improves returns. Across 58,710 simulated trades, it doesn't. Here is how I know, and why I kept the result instead of tuning it until it looked good.`
+Markup: `ExperienceItem.astro` via `experience.map` → role / place / dates / `experience-bullets` list.  
+**Punctuation convention:** no trailing periods on bullets (matched for new copy).
 
-**After:**  
-`I built a research pipeline to test whether filtering earnings trades by company quality improves returns. The best run gains 79%, and almost all of that comes from a single year and a handful of outlier trades. Here is how I know, and why I reported that instead of the headline number.`
+## 2. File modified
 
-Eyebrow, title, href unchanged.
+`src/pages/experience.astro` (bullet arrays only)
 
-## 4. Grep `[IMAGE:` in built earnings page
+## 3. Glitz Decor bullets
 
-```
-$ grep -n '\[IMAGE:' dist/projects/earnings-factor-model/index.html
-(no matches)
-exit 1
-```
+**Before (3):**
+- Oversee team operations and resolve workflow conflicts
+- Manage project timelines to hit delivery dates
+- Coordinate events with clients, vendors and venues
 
-## 5. Built `<img>` tags
+**After (5):**
+- Started as a crew member and was promoted to supervisor
+- Lead crews of 3 to 5 on event setups and takedowns
+- Serve as the point of contact between the owner and the crew on site
+- Manage project timelines to hit delivery dates on fixed, non-negotiable event days
+- Coordinate with clients, vendors and venues for South Asian weddings and large-scale events
 
-```html
-<img … src="/images/fig1-dashboard-summary.png" alt="Dashboard summary metrics panel showing 4,040 total trades, $17,906.23 final equity, 79.06% total return, 12.68% CAGR, 48.66% win rate, 1.18% average trade return, negative 0.35% median trade return, and negative 63.78% maximum drawdown" width="1916" height="987" loading="lazy" decoding="async" …>
-<img … src="/images/fig2-equity-drawdown.png" alt="Equity curve and drawdown chart from 2021 to 2026, showing the portfolio falling from ten thousand dollars to roughly four thousand by 2022, drifting sideways below its starting value for three years, then rising sharply at the end of the window" width="1918" height="987" loading="lazy" decoding="async" …>
-<img … src="/images/fig3-yearly-quant-tier.png" alt="Yearly returns bar chart from 2021 to 2026 with a single dominant positive bar in 2025, a monthly returns heatmap, and a performance table broken out by quant tier" width="1455" height="838" loading="lazy" decoding="async" …>
-<img … src="/images/fig4-composite-scatter.png" alt="Scatter plot of composite rating against net return for every trade, showing a flat horizontal band with no visible slope, alongside a histogram of net returns clustered tightly around zero with a long right tail" width="1437" height="580" loading="lazy" decoding="async" …>
-```
+## 4. Kumon bullets
 
-## 6. Old numbers gone from `dist/`
+**Before (4):**
+- Managed daily center operations and staff coordination
+- Led a team of 12+ tutors
+- Streamlined scheduling and student progress tracking
+- Analyzed student progress data to adjust instructional approach
 
-- `58,710`: **zero** files  
-- `70.85`: **zero** files
+**After (5):**
+- Promoted to operations lead within three months of starting as a tutor
+- Managed daily center operations and coordinated a team of 12+ tutors
+- Owned progress tracking and parent communication for roughly 100 of the center's 130 students
+- Analyzed student progress data to adjust instructional approach
+- Assisted the owner with monthly reporting and inventory tracking
 
-## 7–8. Unchanged pages
+## 5. Unchanged entries (byte-identical HTML blocks)
 
-- `dist/projects/die-cutter-capacity/index.html` byte-identical to previous build  
-- `dist/certifications/index.html` byte-identical to previous build
+- Data Analyst Intern (Internal Project): **identical** (591 bytes normalized)
+- Machine Operator: **identical** (439 bytes normalized)
 
-## 9. Build
+## 6–7. Titles / employers / locations / dates / order
+
+All four roles keep the same title, company, location, dates, and order (Analyst → Machine Operator → Supervisor → Kumon).
+
+## 8. CSS
+
+No new CSS rules. Diff is data-only (`+9 / -6` lines in the bullets arrays).
+
+## 9. Built page diff
+
+Only `dist/experience/index.html` changed. Body diff replaces the Glitz 3-bullet list and Kumon 4-bullet list with the five-bullet lists; Analyst and Machine Operator markup unchanged on that line.
+
+## 10. Other `dist/` files
+
+Unchanged — only `experience/index.html` differed from the pre-build snapshot.
+
+## 11. Build
 
 - Clean: **7 page(s)**
-- `dist/` size: **1.2M → 1.6M**
 - Client-side JS: **0**
 
-## 10. `dist/images/` (seven files, full size)
+## 12. Commit / push
 
-| File | Bytes |
-|---|---|
-| fig1-dashboard-summary.png | 164,354 |
-| fig1-whiteboard.jpg | 28,726 |
-| fig2-equity-drawdown.png | 111,681 |
-| fig2-eventlog.png | 123,630 |
-| fig3-summary.png | 34,228 |
-| fig3-yearly-quant-tier.png | 81,820 |
-| fig4-composite-scatter.png | 51,626 |
+Pending — filled after push.
 
-## 11. Commit / push
+## 13. Post-deploy
 
-- Hash: `1dfaa88f00d3d1cd238c36f19974dcc13cf8143b`
-- Pushed to `main` (Cloudflare Workers Build; no wrangler pages deploy)
+Pending — filled after Cloudflare Workers Build.
 
-## 12. Post-deploy (`https://rehanghias.com`)
+## 14. NEEDS HUMAN CHECK
 
-| Check | Result |
-|---|---|
-| fig1–fig4 image HEAD | HTTP/2 200, `content-type: image/png` |
-| `[IMAGE:` on earnings page | **0** |
-| `src="/images/…"` on earnings page | all four present |
-| home `58,710` | **0** |
-| earnings `0.2%` | **1** |
-
-## 13. NEEDS HUMAN CHECK
-
-- Legibility of the four dashboard screenshots at display width (especially fig3 quant tier table and fig4 axis labels)
-- Mobile rendering of all four figures
-- Dark-background screenshots on a light page — may need a border/background treatment that has not been applied
-- Home card summary reads correctly against the case study
+- Bullet wrapping at mobile width with five lines each on Glitz and Kumon
+- Vertical rhythm / spacing of the experience list after the longer entries

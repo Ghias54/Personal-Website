@@ -1,91 +1,74 @@
 # Cursor Task — Personal Website
-Date: 2026-08-08 22:57:21
+Date: 2026-08-08 23:12:11
 From: Claude (claude.ai)
 Repo: /home/rehan-ghias/personal-website
-Priority: high
+Priority: medium
 
 ## Context
-The earnings factor model case study was rewritten. The new copy is already in `src/content/work/earnings-factor-model.md` and contains four three-field `[IMAGE: /images/… | alt | caption]` placeholders. The figure syntax and rendering already support this form — it was built for the MOLL case study and is working in production. No parser or component work is needed.
+The experience page has four roles. Two of them have thinner bullets than the others and need expanding. This task changes those two and nothing else.
 
-Four screenshots were transferred to `public/images/` by scp:
+I have not been able to read the experience page source, so **step 1 is to read it and report what is there before changing anything.** Match its existing markup and conventions exactly.
 
-- `fig1-dashboard-summary.png`
-- `fig2-equity-drawdown.png`
-- `fig3-yearly-quant-tier.png`
-- `fig4-composite-scatter.png`
-
-The old version of this case study claimed the strategy lost 70.85% across 58,710 trades. That configuration is no longer the one being reported. The home page card still cites the old number and must be brought in line, or the site will contradict itself between the home page and the case study.
+Explicitly unchanged: the Truly Engaging analyst entry, the Machine Operator entry, all titles, all employers, all locations, all date ranges, the page heading, and every other page on the site. Do not reorder the entries.
 
 STANDING CONSTRAINT: you cannot visually verify anything. Your IDE browser cannot reach the dev server over Tailscale. Do not report visual outcomes as confirmed.
 
-Out of scope: the MOLL case study, the certifications page, the resume page, the figure parser, the Figure component, any new CSS. Do not rewrite, reword, or "improve" any prose beyond the two specific edits below. The copy is final.
+Out of scope: new CSS, new components, restructuring the page, logos, links, icons, client-side JS.
 
 ## Task
-Do these in order. Stop and report if a verification step fails.
+## 1. Read before writing
 
-## 1. Verify the images exist
+Locate and read the experience page. Report its current contents in `cursor_output.md` before making changes. Match its existing markup, classes, and bullet conventions.
 
-Confirm all four files are present in `public/images/` and non-zero:
+## 2. Glitz Decor LLC — replace the three bullets with these five
 
-- `fig1-dashboard-summary.png`
-- `fig2-equity-drawdown.png`
-- `fig3-yearly-quant-tier.png`
-- `fig4-composite-scatter.png`
+- Started as a crew member and was promoted to supervisor
+- Lead crews of 3 to 5 on event setups and takedowns
+- Serve as the point of contact between the owner and the crew on site
+- Manage project timelines to hit delivery dates on fixed, non-negotiable event days
+- Coordinate with clients, vendors and venues for South Asian weddings and large-scale events
 
-If any is missing, **STOP** and report. Do not proceed, do not rename anything, do not substitute a different file.
+Keep the title, employer, location, and date range exactly as they are.
 
-## 2. One copy change in `src/content/work/earnings-factor-model.md`
+## 3. Kumon North America — replace the four bullets with these five
 
-In the "How it works" section, in the paragraph beginning "The backtest simulates a real portfolio", replace:
+- Promoted to operations lead within three months of starting as a tutor
+- Managed daily center operations and coordinated a team of 12+ tutors
+- Owned progress tracking and parent communication for roughly 100 of the center's 130 students
+- Analyzed student progress data to adjust instructional approach
+- Assisted the owner with monthly reporting and inventory tracking
 
-`applies transaction costs on every round trip, and supports stop losses`
+Keep the title, employer, location, and date range exactly as they are.
 
-With:
+## 4. Do not touch the other two entries
 
-`applies a 0.2% transaction cost to every trade, and supports stop losses`
+The Truly Engaging analyst entry and the Machine Operator entry are out of scope for this task. Leave their bullets, titles, and dates exactly as they are. Confirm explicitly in the output that both are unchanged.
 
-Change nothing else in this file. The four `[IMAGE: …]` placeholders are already correct and must be left exactly as written.
+## 5. Use the copy as written
 
-## 3. Update the home page card
+Do not reword, shorten, expand, or reorder the bullets above. Do not add trailing periods if the existing bullets have none, and do not remove them if they do. Match the existing punctuation convention and report which one you found.
 
-In `src/content/home.md`, the second card (href `/projects/earnings-factor-model`) currently has this summary:
-
-`I built a research pipeline to test whether filtering earnings trades by company quality improves returns. Across 58,710 simulated trades, it doesn't. Here is how I know, and why I kept the result instead of tuning it until it looked good.`
-
-Replace it with:
-
-`I built a research pipeline to test whether filtering earnings trades by company quality improves returns. The best run gains 79%, and almost all of that comes from a single year and a handful of outlier trades. Here is how I know, and why I reported that instead of the headline number.`
-
-Do not change the card's eyebrow, title, or href. Do not touch the first card. Do not touch the body prose below the frontmatter.
-
-## 4. Build verification
+## 6. Verification
 
 - `npm run build` completes clean
-- Confirm zero occurrences of the literal string `[IMAGE:` in `dist/projects/earnings-factor-model/index.html`. Paste the actual grep output.
-- Confirm four `<img>` tags are present in that file, each with the correct `src`, a non-empty `alt`, and explicit `width` and `height` read from the real image files
-- Confirm zero occurrences of `58,710` and `70.85` anywhere in `dist/`
-- Confirm `dist/projects/die-cutter-capacity/index.html` and `dist/certifications/index.html` are unchanged from the previous build
-- Confirm all four new images were copied into `dist/images/` at full size, and that the three MOLL images are still there
-- Confirm zero client-side JS bundles
-- Confirm page count is still 7
+- Confirm the Glitz Decor entry now has exactly five bullets and the Kumon entry has exactly five
+- Confirm the Truly Engaging analyst and Machine Operator entries are byte-identical to the previous build
+- Confirm no new CSS rules were added
+- Diff the built experience page against the previous build. The only changes should be the two bullet lists. Paste the diff.
+- Confirm no other file in `dist/` changed
+- Confirm zero client-side JS bundles and page count still 7
 
-## 5. Commit and push
+## 7. Commit and push
 
-Commit with a message covering the earnings case study rewrite, the four figures, the transaction cost detail, and the home page card. Push to `main`. Do not force-push, do not rewrite history.
+Commit covering the Glitz Decor and Kumon bullet expansions. Push to `main`.
 
 Pushing triggers a Cloudflare Workers Build automatically. Do NOT run `npx wrangler pages deploy`. It fails with an opaque HTTP 500 because a Workers application named `personal-website` already exists on the account.
 
-## 6. Post-deploy verification
+## 8. Post-deploy
 
-Against the live domain:
-
-- `curl -sI` each of the four new image paths — expect 200 and `image/png`
-- `curl -s https://rehanghias.com/projects/earnings-factor-model/ | grep -c "\[IMAGE:"` — expect 0
-- `curl -s https://rehanghias.com/projects/earnings-factor-model/ | grep -o 'src="/images/[^"]*"'` — expect all four
-- `curl -s https://rehanghias.com/ | grep -c "58,710"` — expect 0
-- `curl -s https://rehanghias.com/projects/earnings-factor-model/ | grep -c "0.2%"` — expect at least 1
-
-If the build has not finished, say so plainly rather than reporting stale results.
+- `curl -sI https://rehanghias.com/experience/` — expect 200
+- `curl -s https://rehanghias.com/experience/ | grep -c "130 students"` — expect 1
+- `curl -s https://rehanghias.com/experience/ | grep -c "promoted to supervisor"` — expect 1
 
 ## Rules
 - Read existing files before editing
@@ -99,19 +82,20 @@ If the build has not finished, say so plainly rather than reporting stale result
 ## Expected Output in cursor_output.md
 Write results to `cursor_output.md` covering:
 
-1. The four image files with byte sizes and intrinsic dimensions
-2. The transaction cost sentence before and after
-3. The home page card summary before and after
-4. Grep output for `[IMAGE:` in the built earnings page — must be zero, paste actual output
-5. The four `<img>` tags from the built HTML with src, alt, width, height
-6. Confirmation zero occurrences of `58,710` and `70.85` anywhere in `dist/`
-7. Confirmation the MOLL case study page is byte-identical to the previous build
-8. Confirmation the certifications page is byte-identical to the previous build
-9. Build result, page count, `dist/` size before and after, zero JS bundles
-10. Confirmation `dist/images/` contains all seven images at full size
-11. Commit hash and confirmation of push to `main`
-12. Post-deploy curl results, or a plain statement that the build had not finished
-13. An explicit "NEEDS HUMAN CHECK" section. Include: legibility of the four dashboard screenshots at display width, particularly the quant tier table in fig3 and the axis labels in fig4; mobile rendering of all four; and the fact that these are dark-background screenshots placed on a light page, which may need a border or background treatment that has not been applied.
+1. The experience page contents before the change, verbatim
+2. Which file you modified and its path
+3. The Glitz Decor bullets before and after
+4. The Kumon bullets before and after
+5. Confirmation the Truly Engaging analyst entry and the Machine Operator entry are byte-identical to before
+6. Confirmation all four titles, employers, locations, and date ranges are unchanged
+7. Confirmation the entry order is unchanged
+8. Confirmation no new CSS rules were added
+9. Diff of the built experience page against the previous build, confirming only the two bullet lists changed
+10. Confirmation no other page in `dist/` changed
+11. Build result, page count, zero JS bundles
+12. Commit hash and confirmation of push to `main`
+13. Post-deploy curl output
+14. A "NEEDS HUMAN CHECK" section covering bullet wrapping at mobile width and vertical rhythm now that two entries have five bullets.
 
 ## Status
 [x] Complete
