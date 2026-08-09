@@ -74,11 +74,18 @@ exit 1
 
 ## 11. Commit / push
 
-Pending — filled after push.
+- Hash: `1dfaa88f00d3d1cd238c36f19974dcc13cf8143b`
+- Pushed to `main` (Cloudflare Workers Build; no wrangler pages deploy)
 
-## 12. Post-deploy
+## 12. Post-deploy (`https://rehanghias.com`)
 
-Pending — filled after Cloudflare Workers Build.
+| Check | Result |
+|---|---|
+| fig1–fig4 image HEAD | HTTP/2 200, `content-type: image/png` |
+| `[IMAGE:` on earnings page | **0** |
+| `src="/images/…"` on earnings page | all four present |
+| home `58,710` | **0** |
+| earnings `0.2%` | **1** |
 
 ## 13. NEEDS HUMAN CHECK
 
