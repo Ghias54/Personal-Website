@@ -1,74 +1,61 @@
 # Cursor Task — Personal Website
-Date: 2026-08-08 23:12:11
+Date: 2026-08-08 23:17:16
 From: Claude (claude.ai)
 Repo: /home/rehan-ghias/personal-website
 Priority: medium
 
 ## Context
-The experience page has four roles. Two of them have thinner bullets than the others and need expanding. This task changes those two and nothing else.
+The experience page now has five bullets on Glitz Decor and Kumon, four on Machine Operator, and five on the Truly Engaging analyst entry. Machine Operator reads thin next to its neighbours and is also the only entry missing the promotion arc that appears elsewhere on the site.
 
-I have not been able to read the experience page source, so **step 1 is to read it and report what is there before changing anything.** Match its existing markup and conventions exactly.
+This task rewrites the Machine Operator bullets only. The file is `src/pages/experience.astro` and the bullets live in the `experience` data array, rendered through `ExperienceItem.astro`. Bullets carry no trailing periods — match that.
 
-Explicitly unchanged: the Truly Engaging analyst entry, the Machine Operator entry, all titles, all employers, all locations, all date ranges, the page heading, and every other page on the site. Do not reorder the entries.
+Explicitly unchanged: the Truly Engaging analyst entry, Glitz Decor, Kumon, all titles, employers, locations, date ranges, entry order, and every other page on the site.
 
 STANDING CONSTRAINT: you cannot visually verify anything. Your IDE browser cannot reach the dev server over Tailscale. Do not report visual outcomes as confirmed.
 
-Out of scope: new CSS, new components, restructuring the page, logos, links, icons, client-side JS.
+Out of scope: new CSS, new components, restructuring, links, icons, client-side JS.
 
 ## Task
-## 1. Read before writing
+One change to `src/pages/experience.astro`. Nothing else.
 
-Locate and read the experience page. Report its current contents in `cursor_output.md` before making changes. Match its existing markup, classes, and bullet conventions.
+## 1. Machine Operator — replace the four bullets with these five
 
-## 2. Glitz Decor LLC — replace the three bullets with these five
-
-- Started as a crew member and was promoted to supervisor
-- Lead crews of 3 to 5 on event setups and takedowns
-- Serve as the point of contact between the owner and the crew on site
-- Manage project timelines to hit delivery dates on fixed, non-negotiable event days
-- Coordinate with clients, vendors and venues for South Asian weddings and large-scale events
+- Started in general assembly supporting machine operators, then trained to run CNC and die cutters
+- Operate CNC and die-cutting equipment through peak production season
+- Troubleshoot machine issues and assist other operators
+- Handle packaging and shipping through FedEx, UPS and USPS systems
+- Lead small teams to keep production moving
 
 Keep the title, employer, location, and date range exactly as they are.
 
-## 3. Kumon North America — replace the four bullets with these five
+## 2. Use the copy as written
 
-- Promoted to operations lead within three months of starting as a tutor
-- Managed daily center operations and coordinated a team of 12+ tutors
-- Owned progress tracking and parent communication for roughly 100 of the center's 130 students
-- Analyzed student progress data to adjust instructional approach
-- Assisted the owner with monthly reporting and inventory tracking
+Do not reword, shorten, expand, or reorder these bullets. No trailing periods, matching the existing convention.
 
-Keep the title, employer, location, and date range exactly as they are.
+## 3. Touch nothing else
 
-## 4. Do not touch the other two entries
+The Truly Engaging analyst entry, Glitz Decor, and Kumon are out of scope. Confirm explicitly that all three are unchanged.
 
-The Truly Engaging analyst entry and the Machine Operator entry are out of scope for this task. Leave their bullets, titles, and dates exactly as they are. Confirm explicitly in the output that both are unchanged.
-
-## 5. Use the copy as written
-
-Do not reword, shorten, expand, or reorder the bullets above. Do not add trailing periods if the existing bullets have none, and do not remove them if they do. Match the existing punctuation convention and report which one you found.
-
-## 6. Verification
+## 4. Verification
 
 - `npm run build` completes clean
-- Confirm the Glitz Decor entry now has exactly five bullets and the Kumon entry has exactly five
-- Confirm the Truly Engaging analyst and Machine Operator entries are byte-identical to the previous build
+- Confirm the Machine Operator entry has exactly five bullets
+- Confirm the other three entries are byte-identical to the previous build
 - Confirm no new CSS rules were added
-- Diff the built experience page against the previous build. The only changes should be the two bullet lists. Paste the diff.
+- Diff the built experience page against the previous build. The only change should be the Machine Operator bullet list. Paste the diff.
 - Confirm no other file in `dist/` changed
 - Confirm zero client-side JS bundles and page count still 7
 
-## 7. Commit and push
+## 5. Commit and push
 
-Commit covering the Glitz Decor and Kumon bullet expansions. Push to `main`.
+Commit covering the Machine Operator bullet expansion. Push to `main`.
 
 Pushing triggers a Cloudflare Workers Build automatically. Do NOT run `npx wrangler pages deploy`. It fails with an opaque HTTP 500 because a Workers application named `personal-website` already exists on the account.
 
-## 8. Post-deploy
+## 6. Post-deploy
 
 - `curl -sI https://rehanghias.com/experience/` — expect 200
-- `curl -s https://rehanghias.com/experience/ | grep -c "130 students"` — expect 1
-- `curl -s https://rehanghias.com/experience/ | grep -c "promoted to supervisor"` — expect 1
+- `curl -s https://rehanghias.com/experience/ | grep -c "general assembly"` — expect 1
 
 ## Rules
 - Read existing files before editing
@@ -82,20 +69,18 @@ Pushing triggers a Cloudflare Workers Build automatically. Do NOT run `npx wrang
 ## Expected Output in cursor_output.md
 Write results to `cursor_output.md` covering:
 
-1. The experience page contents before the change, verbatim
-2. Which file you modified and its path
-3. The Glitz Decor bullets before and after
-4. The Kumon bullets before and after
-5. Confirmation the Truly Engaging analyst entry and the Machine Operator entry are byte-identical to before
-6. Confirmation all four titles, employers, locations, and date ranges are unchanged
-7. Confirmation the entry order is unchanged
-8. Confirmation no new CSS rules were added
-9. Diff of the built experience page against the previous build, confirming only the two bullet lists changed
-10. Confirmation no other page in `dist/` changed
-11. Build result, page count, zero JS bundles
-12. Commit hash and confirmation of push to `main`
-13. Post-deploy curl output
-14. A "NEEDS HUMAN CHECK" section covering bullet wrapping at mobile width and vertical rhythm now that two entries have five bullets.
+1. The Machine Operator bullets before and after
+2. Confirmation the entry now has exactly five bullets
+3. Confirmation no bullet has a trailing period
+4. Confirmation the analyst, Glitz Decor, and Kumon entries are byte-identical to the previous build
+5. Confirmation all titles, employers, locations, dates, and entry order are unchanged
+6. Confirmation no new CSS rules were added
+7. Diff of the built experience page against the previous build, confirming only the Machine Operator bullet list changed
+8. Confirmation no other file in `dist/` changed
+9. Build result, page count, zero JS bundles
+10. Commit hash and confirmation of push to `main`
+11. Post-deploy curl output
+12. A "NEEDS HUMAN CHECK" section covering mobile wrapping on the longer first bullet.
 
 ## Status
 [x] Complete
