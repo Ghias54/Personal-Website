@@ -78,11 +78,21 @@ Full sizes match `public/images/`.
 
 ## 10. Commit / push
 
-Pending — filled after push.
+- Hash: `4b5e1fe405c907689ae65ff72341ff3ddf83a706`
+- Pushed to `main` (Cloudflare Workers Build; no wrangler pages deploy)
 
-## 11. Post-deploy
+## 11. Post-deploy (`https://rehanghias.com`)
 
-Pending — filled after Cloudflare Workers Build.
+After ~60s the new build was live:
+
+| Check | Result |
+|---|---|
+| `fig1-whiteboard.jpg` | HTTP/2 200, `content-type: image/jpeg` |
+| `fig2-eventlog.png` | HTTP/2 200, `content-type: image/png` |
+| `fig3-summary.png` | HTTP/2 200, `content-type: image/png` |
+| `grep -c "\[IMAGE:"` on die-cutter page | **0** |
+| `src="/images/…"` on die-cutter page | all three paths present |
+| sheets-per-hour copy | `920 sheets per hour` present |
 
 ## 12. NEEDS HUMAN CHECK
 
