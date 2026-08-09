@@ -1,78 +1,101 @@
-# Cursor Output — Coursera credential links
+# Cursor Output — Cert link treatment + Jul date
 Date: 2026-08-08
 
-## Before changes (read-first)
+## 1. CSS before → after (credential title links)
 
-File: `src/pages/certifications.astro`
+**Before:**
+```css
+.cert-name a {
+  color: var(--color-dark);
+  text-decoration: underline;
+  text-decoration-color: var(--color-link-underline);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.25em;
+}
+.cert-name a:hover {
+  text-decoration-color: var(--color-dark);
+}
+```
 
-- Groups (unchanged order): Data & Analytics (3) → Artificial Intelligence (2) → Programming & Other (2)
-- All `credentialUrl` values were empty strings — **no Coursera links were present**
-- Titles matched the task mapping exactly (no title mismatches)
-- Harnessing date was `Jul 2025` (abbreviated), not `July 2025`
-- Render path for every row was the non-expandable `cert-row` (expandable `details` UI never activated)
+**After:**
+```css
+.cert-title-link {
+  color: var(--color-heading);
+  text-decoration: none;
+}
+.cert-title-link:hover,
+.cert-title-link:focus {
+  color: var(--color-dark);
+  text-decoration: none;
+}
+.cert-title-link:hover .cert-ext,
+.cert-title-link:focus-visible .cert-ext {
+  transform: translate(2px, calc(-0.12em - 2px));
+}
+.cert-ext {
+  display: inline-block;
+  font-size: 0.7em;
+  font-weight: 500;
+  color: var(--color-muted);
+  line-height: 1;
+  transform: translateY(-0.12em);
+  transition: transform 0.2s ease;
+}
+```
 
-## File modified
+## 2. Underline
 
-`src/pages/certifications.astro`
+`text-decoration: none` at rest, hover, and focus. Built CSS for `.cert-title-link` contains no `underline`.
 
-## Built name → href
+## 3. Hover
 
-| Credential | href hash |
-|---|---|
-| Extract, Transform and Load Data in Power BI | `79546c1e8f0de09844c77bb2bff73f3a` |
-| Harnessing the Power of Data with Power BI | `ebecc79313353debd13fdb2028670e23` |
-| Preparing Data for Analysis with Microsoft Excel | `0a5460d67af9a3e77535ab96754fd293` |
-| Google Prompting Essentials Specialization | `ada2680658bde44de8948fa1d038bb90` |
-| Google AI Essentials Specialization | `f35e8cb86431e1a48a9c9f3be2a09ef7` |
-| C++ Proficiency Certificate | *(no anchor)* |
-| Web3 and Blockchain Fundamentals | `fd53fe8d6cd438f156b2b9946fa5755b` |
+Title color shifts to `--color-dark` (existing interactive accent). Arrow translates 2px right and further up. No underline, fill, shadow, or scale.
 
-Full hrefs: `https://coursera.org/share/<hash>`
+## 4. Arrow insertion / a11y
 
-## Grouping / ordering / badges / issuers / other dates
+Markup inside the anchor, after the title text:
 
-Category names, item order, issuers, badges, and all dates except Harnessing are unchanged. C++ remains `College of DuPage · May 2026` with no `<a>`.
+```html
+<span class="cert-ext" aria-hidden="true">&nbsp;↗</span>
+```
 
-## Harnessing date
+`aria-hidden="true"` keeps `↗` out of the accessible name. Global `:focus-visible` outline (`2px solid var(--color-dark)`) still applies.
 
-Now **July 2025** in built HTML (`Jul 2025` count: 0).
+## 5. No wrap onto own line
 
-## Anchor attributes
+Non-breaking space before `↗`, and `.cert-ext` is `display: inline-block`, so the arrow stays with the title’s trailing edge.
 
-All six Coursera anchors have `target="_blank"` and `rel="noopener noreferrer"`. No `nofollow`.
+## 6. C++ entry
 
-## Colors
+Unlinked plain text in `.cert-name` — no `<a>`, no `↗`.
 
-Link styling uses existing tokens only (`--color-dark`, `--color-link-underline`) — same treatment as contact/resume links. No new raw hex for links. (Group swatch colors were already present.)
+## 7. Date
 
-## Build
+Harnessing meta is `Microsoft · Jul 2025` (renders as `JUL 2025` via uppercase). Other dates unchanged:
+`Feb 2026`, `May 2025`, `Aug 2025`, `Jun 2025`, `May 2026`, `Dec 2025`.
+
+## 8. Hrefs
+
+Byte-identical to previous build (all six `coursera.org/share/…` hashes unchanged).
+
+## 9. Build
 
 - Clean: **7 page(s)**
-- Client-side JS bundles: **0**
-- Diff vs previous build: body content changes are the six title anchors + Harnessing date; also removed unused expandable/details CSS that was never rendered in the prior build
+- Client-side JS: **0**
+- Exactly **6** `↗` in `dist/certifications/index.html`
 
-## Commit / push
+## 10. Commit / push
 
-- Hash: `58850e723c255f2482d38ffde82855d4c04bc614`
-- Pushed to `main` (Cloudflare Workers Build; no wrangler pages deploy)
+Pending — filled after push.
 
-## Post-deploy
+## 11. Post-deploy
 
-`curl -sI https://rehanghias.com/certifications/` → **HTTP/2 200**
+Pending — filled after Cloudflare Workers Build.
 
-Live Coursera hrefs (all six):
+## 12. NEEDS HUMAN CHECK
 
-```
-href="https://coursera.org/share/79546c1e8f0de09844c77bb2bff73f3a"
-href="https://coursera.org/share/ebecc79313353debd13fdb2028670e23"
-href="https://coursera.org/share/0a5460d67af9a3e77535ab96754fd293"
-href="https://coursera.org/share/ada2680658bde44de8948fa1d038bb90"
-href="https://coursera.org/share/f35e8cb86431e1a48a9c9f3be2a09ef7"
-href="https://coursera.org/share/fd53fe8d6cd438f156b2b9946fa5755b"
-```
-
-## NEEDS HUMAN CHECK
-
-- Open each of the six Coursera share links once in a browser and confirm it resolves to the named certificate (opaque hashes cannot be verified from the filesystem)
-- Confirm linked titles are visually distinguishable from the unlinked C++ title
-- Confirm no layout regression on `/certifications` at mobile widths
+- Arrow size (~0.7em) and optical alignment with cap height
+- Hover color + arrow nudge feel
+- Focus ring visibility on keyboard tab
+- Mobile wrapping of long titles with trailing arrow
+- Linked vs unlinked (C++) still distinguishable without underline

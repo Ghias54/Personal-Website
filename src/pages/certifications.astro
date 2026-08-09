@@ -29,7 +29,7 @@ const groups: CertGroup[] = [
       {
         name: "Harnessing the Power of Data with Power BI",
         issuer: "Microsoft",
-        date: "July 2025",
+        date: "Jul 2025",
         credentialUrl: "https://coursera.org/share/ebecc79313353debd13fdb2028670e23",
       },
       {
@@ -123,11 +123,15 @@ function groupId(name: string) {
                         <span class="cert-name">
                           {titleHref ? (
                             <a
+                              class="cert-title-link"
                               href={titleHref}
                               target="_blank"
                               rel="noopener noreferrer"
                             >
                               {cert.name}
+                              <span class="cert-ext" aria-hidden="true"
+                                >&nbsp;↗</span
+                              >
                             </a>
                           ) : (
                             cert.name
@@ -225,16 +229,30 @@ function groupId(name: string) {
     color: var(--color-heading);
   }
 
-  .cert-name a {
-    color: var(--color-dark);
-    text-decoration: underline;
-    text-decoration-color: var(--color-link-underline);
-    text-decoration-thickness: 1px;
-    text-underline-offset: 0.25em;
+  .cert-title-link {
+    color: var(--color-heading);
+    text-decoration: none;
   }
 
-  .cert-name a:hover {
-    text-decoration-color: var(--color-dark);
+  .cert-title-link:hover,
+  .cert-title-link:focus {
+    color: var(--color-dark);
+    text-decoration: none;
+  }
+
+  .cert-title-link:hover .cert-ext,
+  .cert-title-link:focus-visible .cert-ext {
+    transform: translate(2px, calc(-0.12em - 2px));
+  }
+
+  .cert-ext {
+    display: inline-block;
+    font-size: 0.7em;
+    font-weight: 500;
+    color: var(--color-muted);
+    line-height: 1;
+    transform: translateY(-0.12em);
+    transition: transform 0.2s ease;
   }
 
   .cert-meta {
