@@ -53,11 +53,13 @@ Only `experience/index.html` changed.
 
 ## 10. Commit / push
 
-Pending — filled after push.
+- Hash: `b0e3ad62adf479ef902c1e4e8798249e3eaf0906`
+- Pushed to `main` (Cloudflare Workers Build; no wrangler pages deploy)
 
 ## 11. Post-deploy
 
-Pending — filled after Cloudflare Workers Build.
+- `curl -sI https://rehanghias.com/experience/` → **HTTP/2 200**
+- `grep -c "general assembly"` → **1**
 
 ## 12. NEEDS HUMAN CHECK
 
