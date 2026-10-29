@@ -13,9 +13,9 @@ cards:
     title: Testing whether earnings volatility can be traded
     summary: I built a research pipeline to test whether filtering earnings trades by company quality improves returns. The best run gains 79%, and almost all of that comes from a single year and a handful of outlier trades. Here is how I know, and why I reported that instead of the headline number.
     href: /projects/earnings-factor-model
-  - eyebrow: PERSONAL PROJECT
+  - eyebrow: DATA ENGINEERING
     title: Building a point-in-time stock database
-    summary: A 68 GB database of 8,700+ U.S. stocks back to 1970, including companies that no longer exist, built so every number reflects only what was public on the day it's used. An audit still found 44,752 rows dated too early. Here is how I caught them and stopped it from happening again.
+    summary: Every quant project I ran used to pull and clean its own data. I replaced that with one platform. A resumable crawler collected 1.9 million raw files, and validated loaders turned them into a 68 GB PostgreSQL warehouse of 8,700+ U.S. stocks back to 1970, where every number is dated to when it became public. New research now starts with a SQL query.
     href: /projects/stock-database
   - eyebrow: PERSONAL PROJECT
     title: Building the server my research runs on
