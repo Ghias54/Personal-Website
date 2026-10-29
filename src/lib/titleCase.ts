@@ -10,6 +10,7 @@ const SMALL = new Set([
   "a", "an", "the",
   "and", "but", "or", "nor", "for", "so", "yet",
   "as", "at", "by", "in", "of", "off", "on", "per", "to", "up", "via", "vs", "vs.",
+  "with", "from", "into", "onto", "over", "than",
 ]);
 
 const capFirst = (w: string) => w.replace(/^([^A-Za-z]*)([a-z])/, (_, pre, c) => pre + c.toUpperCase());
@@ -25,15 +26,14 @@ export function titleCase(input: string): string {
     .map((word, i) => {
       if (word.trim() === "") return word;
       const forceCap = i === firstIdx || i === lastIdx || afterColon;
-      afterColon = /[:.]$/.test(word);
+      afterColon = /:$/.test(word);
 
       return word
         .split("-")
         .map((part, pi) => {
           const bare = part.toLowerCase().replace(/[^a-z.]/g, "");
           const isSmall = SMALL.has(bare);
-          // Leave words that already contain capitals or digits-only alone except first letter
-          if (isSmall && !(forceCap && pi === 0)) return part;
+          if (isSmall && !(forceCap && pi === 0)) return part.toLowerCase();
           return capFirst(part);
         })
         .join("-");
