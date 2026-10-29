@@ -1,11 +1,15 @@
 ---
+import { titleCase } from "../lib/titleCase";
+
 interface Props {
   label: string;
   as?: "section" | "div";
 }
 
-const { label, as: Tag = "section" } = Astro.props;
-const id = label
+const { label: rawLabel, as: Tag = "section" } = Astro.props;
+const label = titleCase(rawLabel);
+// Anchor id comes from the original text so existing links keep working
+const id = rawLabel
   .toLowerCase()
   .replace(/[^a-z0-9]+/g, "-")
   .replace(/^-|-$/g, "");

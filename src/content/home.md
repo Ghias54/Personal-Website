@@ -4,6 +4,8 @@ tagline: INFORMATION SCIENCE & ECONOMICS
 description: Data and operations analyst. Dual degree in Information Science and Economics at UIUC. Seeking internships as a Data Analyst, Operations Analyst, or Data Scientist.
 email: rehanghias54@gmail.com
 github: https://github.com/Ghias54
+# Cards appear on the Projects page in this order. The profile page shows only
+# the first 4 cards that don't have `featured: false`.
 cards:
   - eyebrow: TRULY ENGAGING
     title: Finding the real capacity of a die-cutting machine
@@ -21,6 +23,7 @@ cards:
     title: Building the server my research runs on
     summary: One self-hosted Linux server runs every project I build. Tailscale keeps it private with a single login-protected public route, an Obsidian vault on it commits and syncs itself, and an MCP bridge lets Claude plan the work while Cursor writes and commits the code.
     href: /projects/home-research-server
+    featured: false
   - eyebrow: LOCAL AI
     title: Running coding models locally
     summary: Can a free model on my own CPU do real coding work? I built an agent pipeline around one and benchmarked three models. More CPU cores made them slower, reading long prompts was the real bottleneck, and turning reasoning off was the difference between a correct result and no code at all.

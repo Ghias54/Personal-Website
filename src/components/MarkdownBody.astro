@@ -2,6 +2,7 @@
 import Figure from "./Figure.astro";
 import { splitFigures } from "../lib/processMarkdownHtml";
 import { getPublicImageSize } from "../lib/imageSize";
+import { titleCaseH3 } from "../lib/titleCase";
 
 interface Props {
   html: string;
@@ -15,7 +16,7 @@ const segments = splitFigures(html);
   {
     segments.map((segment) => {
       if (segment.type === "html") {
-        return <Fragment set:html={segment.content} />;
+        return <Fragment set:html={titleCaseH3(segment.content)} />;
       }
 
       const dims = segment.src ? getPublicImageSize(segment.src) : undefined;

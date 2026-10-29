@@ -1,21 +1,27 @@
 ---
 /**
- * GitHub contribution heat map, fetched at BUILD time from the GitHub GraphQL API
- * and rendered as static SVG (no client-side JS, no third-party image service).
+ * GitHub contribution heat map for one calendar year, fetched at BUILD time from
+ * the GitHub GraphQL API and rendered as static SVG (no client-side JS).
  *
- * Needs a GITHUB_TOKEN build variable (classic token with `read:user`, or a
- * fine-grained token with no repo permissions). If the token is missing or the
- * request fails, the component renders nothing so the build never breaks.
+ * Needs a GITHUB_TOKEN build variable. If the token is missing or the request
+ * fails, the component renders nothing so the build never breaks.
  */
 interface Props {
   username: string;
+  year?: number;
 }
 
-const { username } = Astro.props;
+const { username, year = 2026 } = Astro.props;
 const token = import.meta.env.GITHUB_TOKEN ?? process.env.GITHUB_TOKEN;
 
 type Day = { date: string; contributionCount: number; contributionLevel: string };
 type Week = { contributionDays: Day[] };
+
+// Calendar year, but never ask for days that haven't happened yet
+const from = new Date(Date.UTC(year, 0, 1));
+const yearEnd = new Date(Date.UTC(year, 11, 31, 23, 59, 59));
+const now = new Date();
+const to = now < yearEnd ? now : yearEnd;
 
 let weeks: Week[] = [];
 let total = 0;
@@ -30,9 +36,9 @@ if (token) {
         "User-Agent": "rehanghias.com-build",
       },
       body: JSON.stringify({
-        query: `query($login: String!) {
+        query: `query($login: String!, $from: DateTime!, $to: DateTime!) {
           user(login: $login) {
-            contributionsCollection {
+            contributionsCollection(from: $from, to: $to) {
               contributionCalendar {
                 totalContributions
                 weeks { contributionDays { date contributionCount contributionLevel } }
@@ -40,7 +46,7 @@ if (token) {
             }
           }
         }`,
-        variables: { login: username },
+        variables: { login: username, from: from.toISOString(), to: to.toISOString() },
       }),
     });
     const json = await res.json();
@@ -58,11 +64,31 @@ if (token) {
   console.warn("[GitHubHeatmap] GITHUB_TOKEN not set; skipping heat map.");
 }
 
+// Pad the grid out to Dec 31 with empty future days so the year reads complete
+const lastDate = weeks.at(-1)?.contributionDays.at(-1)?.date;
+if (lastDate) {
+  const d = new Date(lastDate + "T00:00:00Z");
+  const end = new Date(Date.UTC(year, 11, 31));
+  let week = weeks.at(-1)!;
+  while (d < end) {
+    d.setUTCDate(d.getUTCDate() + 1);
+    if (d.getUTCDay() === 0) {
+      week = { contributionDays: [] };
+      weeks.push(week);
+    }
+    week.contributionDays.push({
+      date: d.toISOString().slice(0, 10),
+      contributionCount: -1,
+      contributionLevel: "FUTURE",
+    });
+  }
+}
+
 const CELL = 11;
 const GAP = 3;
 const STEP = CELL + GAP;
-const TOP = 18; // room for month labels
-const LEFT = 28; // room for weekday labels
+const TOP = 18;
+const LEFT = 28;
 
 const levelClass: Record<string, string> = {
   NONE: "l0",
@@ -70,28 +96,19 @@ const levelClass: Record<string, string> = {
   SECOND_QUARTILE: "l2",
   THIRD_QUARTILE: "l3",
   FOURTH_QUARTILE: "l4",
+  FUTURE: "lf",
 };
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-// Month label at the first week whose first day starts a new month
-const monthLabels: { x: number; text: string }[] = [];
-let lastMonth = -1;
+// One label per month, placed at the week containing the 1st
+const labels: { x: number; text: string }[] = [];
 weeks.forEach((w, i) => {
-  const first = w.contributionDays[0];
-  if (!first) return;
-  const m = new Date(first.date + "T00:00:00Z").getUTCMonth();
-  if (m !== lastMonth) {
-    if (i > 0 || w.contributionDays.length === 7) {
-      monthLabels.push({ x: LEFT + i * STEP, text: MONTHS[m] });
-    }
-    lastMonth = m;
+  const firstOfMonth = w.contributionDays.find((d) => d.date.endsWith("-01"));
+  if (firstOfMonth) {
+    const m = Number(firstOfMonth.date.slice(5, 7)) - 1;
+    labels.push({ x: LEFT + i * STEP, text: MONTHS[m] });
   }
-});
-// Drop a label crowded against the next one
-const labels = monthLabels.filter((l, i) => {
-  const next = monthLabels[i + 1];
-  return !next || next.x - l.x >= STEP * 2;
 });
 
 const width = LEFT + weeks.length * STEP;
@@ -115,7 +132,7 @@ const fmt = (d: string) =>
           width={width}
           height={height}
           role="img"
-          aria-label={`${total.toLocaleString("en-US")} GitHub contributions in the last year`}
+          aria-label={`${total.toLocaleString("en-US")} GitHub contributions in ${year}`}
         >
           {labels.map((l) => (
             <text x={l.x} y={11} class="lbl">
@@ -137,10 +154,12 @@ const fmt = (d: string) =>
                   rx={2}
                   class={levelClass[d.contributionLevel] ?? "l0"}
                 >
-                  <title>
-                    {d.contributionCount === 0 ? "No" : d.contributionCount} contribution
-                    {d.contributionCount === 1 ? "" : "s"} on {fmt(d.date)}
-                  </title>
+                  {d.contributionCount >= 0 && (
+                    <title>
+                      {d.contributionCount === 0 ? "No" : d.contributionCount} contribution
+                      {d.contributionCount === 1 ? "" : "s"} on {fmt(d.date)}
+                    </title>
+                  )}
                 </rect>
               );
             })
@@ -149,7 +168,7 @@ const fmt = (d: string) =>
       </div>
       <figcaption>
         <span>
-          <strong>{total.toLocaleString("en-US")}</strong> contributions in the last year, public and private
+          <strong>{total.toLocaleString("en-US")}</strong> contributions in {year}, public and private
         </span>
         <span class="legend" aria-hidden="true">
           Less
@@ -189,11 +208,14 @@ const fmt = (d: string) =>
     fill: var(--color-muted);
   }
 
+  /* Navy scale matching the site header. Change these five to retheme. */
   .l0 { fill: #ebedf0; background: #ebedf0; }
   .l1 { fill: #b7c3d1; background: #b7c3d1; }
   .l2 { fill: #7d91a8; background: #7d91a8; }
   .l3 { fill: #46607d; background: #46607d; }
   .l4 { fill: #1f2a36; background: #1f2a36; }
+  /* Days later in the year that haven't happened yet */
+  .lf { fill: none; stroke: #e1e4ea; stroke-width: 1; }
 
   figcaption {
     display: flex;
