@@ -1,0 +1,227 @@
+---
+/**
+ * GitHub contribution heat map, fetched at BUILD time from the GitHub GraphQL API
+ * and rendered as static SVG (no client-side JS, no third-party image service).
+ *
+ * Needs a GITHUB_TOKEN build variable (classic token with `read:user`, or a
+ * fine-grained token with no repo permissions). If the token is missing or the
+ * request fails, the component renders nothing so the build never breaks.
+ */
+interface Props {
+  username: string;
+}
+
+const { username } = Astro.props;
+const token = import.meta.env.GITHUB_TOKEN ?? process.env.GITHUB_TOKEN;
+
+type Day = { date: string; contributionCount: number; contributionLevel: string };
+type Week = { contributionDays: Day[] };
+
+let weeks: Week[] = [];
+let total = 0;
+
+if (token) {
+  try {
+    const res = await fetch("https://api.github.com/graphql", {
+      method: "POST",
+      headers: {
+        Authorization: `bearer ${token}`,
+        "Content-Type": "application/json",
+        "User-Agent": "rehanghias.com-build",
+      },
+      body: JSON.stringify({
+        query: `query($login: String!) {
+          user(login: $login) {
+            contributionsCollection {
+              contributionCalendar {
+                totalContributions
+                weeks { contributionDays { date contributionCount contributionLevel } }
+              }
+            }
+          }
+        }`,
+        variables: { login: username },
+      }),
+    });
+    const json = await res.json();
+    const cal = json?.data?.user?.contributionsCollection?.contributionCalendar;
+    if (cal) {
+      weeks = cal.weeks;
+      total = cal.totalContributions;
+    } else {
+      console.warn("[GitHubHeatmap] No calendar in response:", JSON.stringify(json?.errors ?? json));
+    }
+  } catch (err) {
+    console.warn("[GitHubHeatmap] Fetch failed:", err);
+  }
+} else {
+  console.warn("[GitHubHeatmap] GITHUB_TOKEN not set; skipping heat map.");
+}
+
+const CELL = 11;
+const GAP = 3;
+const STEP = CELL + GAP;
+const TOP = 18; // room for month labels
+const LEFT = 28; // room for weekday labels
+
+const levelClass: Record<string, string> = {
+  NONE: "l0",
+  FIRST_QUARTILE: "l1",
+  SECOND_QUARTILE: "l2",
+  THIRD_QUARTILE: "l3",
+  FOURTH_QUARTILE: "l4",
+};
+
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+// Month label at the first week whose first day starts a new month
+const monthLabels: { x: number; text: string }[] = [];
+let lastMonth = -1;
+weeks.forEach((w, i) => {
+  const first = w.contributionDays[0];
+  if (!first) return;
+  const m = new Date(first.date + "T00:00:00Z").getUTCMonth();
+  if (m !== lastMonth) {
+    if (i > 0 || w.contributionDays.length === 7) {
+      monthLabels.push({ x: LEFT + i * STEP, text: MONTHS[m] });
+    }
+    lastMonth = m;
+  }
+});
+// Drop a label crowded against the next one
+const labels = monthLabels.filter((l, i) => {
+  const next = monthLabels[i + 1];
+  return !next || next.x - l.x >= STEP * 2;
+});
+
+const width = LEFT + weeks.length * STEP;
+const height = TOP + 7 * STEP;
+
+const fmt = (d: string) =>
+  new Date(d + "T00:00:00Z").toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    timeZone: "UTC",
+  });
+---
+
+{
+  weeks.length > 0 && (
+    <figure class="heatmap">
+      <div class="heatmap-scroll">
+        <svg
+          viewBox={`0 0 ${width} ${height}`}
+          width={width}
+          height={height}
+          role="img"
+          aria-label={`${total.toLocaleString("en-US")} GitHub contributions in the last year`}
+        >
+          {labels.map((l) => (
+            <text x={l.x} y={11} class="lbl">
+              {l.text}
+            </text>
+          ))}
+          <text x={0} y={TOP + 1 * STEP + 9} class="lbl">Mon</text>
+          <text x={0} y={TOP + 3 * STEP + 9} class="lbl">Wed</text>
+          <text x={0} y={TOP + 5 * STEP + 9} class="lbl">Fri</text>
+          {weeks.map((w, wi) =>
+            w.contributionDays.map((d) => {
+              const dow = new Date(d.date + "T00:00:00Z").getUTCDay();
+              return (
+                <rect
+                  x={LEFT + wi * STEP}
+                  y={TOP + dow * STEP}
+                  width={CELL}
+                  height={CELL}
+                  rx={2}
+                  class={levelClass[d.contributionLevel] ?? "l0"}
+                >
+                  <title>
+                    {d.contributionCount === 0 ? "No" : d.contributionCount} contribution
+                    {d.contributionCount === 1 ? "" : "s"} on {fmt(d.date)}
+                  </title>
+                </rect>
+              );
+            })
+          )}
+        </svg>
+      </div>
+      <figcaption>
+        <span>
+          <strong>{total.toLocaleString("en-US")}</strong> contributions in the last year, public and private
+        </span>
+        <span class="legend" aria-hidden="true">
+          Less
+          <i class="l0" />
+          <i class="l1" />
+          <i class="l2" />
+          <i class="l3" />
+          <i class="l4" />
+          More
+        </span>
+      </figcaption>
+    </figure>
+  )
+}
+
+<style>
+  .heatmap {
+    margin: 0;
+    max-width: 100%;
+  }
+
+  .heatmap-scroll {
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+
+  .heatmap svg {
+    display: block;
+    width: 100%;
+    min-width: 640px;
+    height: auto;
+  }
+
+  .lbl {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    fill: var(--color-muted);
+  }
+
+  .l0 { fill: #ebedf0; background: #ebedf0; }
+  .l1 { fill: #b7c3d1; background: #b7c3d1; }
+  .l2 { fill: #7d91a8; background: #7d91a8; }
+  .l3 { fill: #46607d; background: #46607d; }
+  .l4 { fill: #1f2a36; background: #1f2a36; }
+
+  figcaption {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 8px 24px;
+    margin-top: 12px;
+    font-size: var(--fs-body-sm);
+    color: var(--color-dimmed);
+  }
+
+  figcaption strong {
+    color: var(--color-text);
+  }
+
+  .legend {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+    color: var(--color-muted);
+  }
+
+  .legend i {
+    display: inline-block;
+    width: 11px;
+    height: 11px;
+    border-radius: 2px;
+  }
+</style>

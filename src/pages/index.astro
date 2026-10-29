@@ -3,6 +3,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import RailSection from "../components/RailSection.astro";
 import SectionHeader from "../components/SectionHeader.astro";
 import WorkListItem from "../components/WorkListItem.astro";
+import GitHubHeatmap from "../components/GitHubHeatmap.astro";
 import * as home from "../content/home.md";
 
 const { description, email, github, cards } = home.frontmatter;
@@ -10,6 +11,7 @@ const heroHtml = await home.compiledContent();
 const paragraphs = heroHtml.match(/<p>[\s\S]*?<\/p>/g) ?? [];
 const aboutHtml = paragraphs.slice(0, 4).join("");
 const seekingHtml = paragraphs[4] ?? "";
+const githubUser = github.replace(/\/+$/, "").split("/").pop();
 ---
 
 <BaseLayout
@@ -34,6 +36,10 @@ const seekingHtml = paragraphs[4] ?? "";
         <span class="sep" aria-hidden="true">·</span>
         <a href="/resume">Resume</a>
       </nav>
+    </RailSection>
+
+    <RailSection label="GitHub activity">
+      <GitHubHeatmap username={githubUser} />
     </RailSection>
 
     <section class="projects-block" id="selected-work" aria-labelledby="projects-heading">
