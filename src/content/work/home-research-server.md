@@ -1,63 +1,133 @@
 ---
 title: Building the Server My Research Runs On
 meta: INFRASTRUCTURE · LINUX, TAILSCALE, OAUTH, MCP, OBSIDIAN, CURSOR
-description: A self-hosted Linux server that every one of my projects runs on, reachable from anywhere over a private network, with a version-controlled knowledge base and a bridge that pairs a reasoning model to plan the work with a fast coding agent to build it.
+description: A self-hosted Linux server that runs all of my projects. Private networking with Tailscale, an Obsidian vault that versions itself with git, and an MCP server that lets Claude plan tasks and Cursor carry them out.
 ---
 
 ## The setup
 
-Everything I build runs on one machine: a Minisforum MS-02 Ultra with a 24-core Intel Core Ultra 9 and 1 TB of NVMe storage, running Ubuntu Server headless. It hosts my 68 GB stock database, my research projects and their dashboards, my trading bot's paper desk, and my notes.
+All of my projects run on one machine: a Minisforum MS-02 Ultra (24-core Intel Core Ultra 9, 1 TB NVMe) running Ubuntu Server without a desktop. It hosts my 68 GB stock database, my research projects and their dashboards, my trading bot's paper desk, and my notes.
 
-I moved everything onto it from an older server one project at a time, under one rule: **every service runs in exactly one place.** A trading bot on two machines places two sets of orders, and two database copies drift apart. So each service was stopped on the old machine before it started on the new one. The database alone was restored and checked row by row: all 438 production tables matched before I switched anything over.
+I moved everything onto it from an older server one project at a time. Each service was shut down on the old machine before it started on the new one, so nothing ever ran in two places. For the database, I counted rows in every table on both machines before switching over. All 438 production tables matched.
 
-The server does three jobs, and each one is its own system.
+The server has three parts: networking, notes, and the AI tooling that ties them together.
 
 ## 1. Private networking with Tailscale
 
-**The server is never exposed directly to the internet.** It sits on a Tailscale private network, so my laptop and phone reach it from anywhere as if they were on the same desk. Dashboards, SSH, and dev servers stay private to my own devices.
+The server isn't exposed to the internet. It's on a Tailscale private network, so my laptop and phone can reach it from anywhere, while dashboards, SSH, and dev servers stay visible only to my own devices.
 
-**Only one thing is public, and it's behind a login.** Claude needs to reach the server from Anthropic's side, so I exposed exactly one route through Tailscale Funnel. It doesn't point at the tools themselves. It points at an OAuth 2.1 proxy I run, and only after a successful login does a request reach the tool server.
+Claude needs to reach the server from Anthropic's side, so there is one public route, through Tailscale Funnel. It goes to an OAuth 2.1 login proxy I run, not to the tools directly. A request only reaches the tool server after logging in.
 
-**Defense in depth behind that.** The tool server's port is blocked by a firewall rule unless the request comes from the machine itself, so even a misconfigured route can't skip the login. Every file tool is pinned to its own project folder and refuses `../` escapes and credential files. When I moved tools over from the old server, I audited them first and found whole tool groups with no path protection at all. They were fixed before they moved.
+Behind the proxy:
 
-**The hardest bug was invisible from the inside.** The public address worked on the old server and never appeared on the new one, with what looked like identical settings. Testing from the server itself was misleading, because it resolves its own name privately and never touches the internet. Checking against public DNS showed the record simply didn't exist. I diffed every Tailscale setting between the two machines and found the only difference: a hostname flag I had set during install. Clearing it brought the public record up in seconds.
+- A firewall rule blocks the tool server's port unless the request comes from the machine itself.
+- Each file tool is limited to its own project folder and refuses `../` paths and `.env` files.
+- Before moving tools from the old server, I audited them and found some tool groups had no path checks at all. I added them before the move.
 
-## 2. A second brain in Obsidian
+**One bug worth writing down.** The public address worked on the old server but never showed up on the new one. Testing from the server itself always passed, because the server resolves its own name over the private network. Checking public DNS directly showed the record didn't exist. I compared every Tailscale setting between the two machines and found one difference: a hostname flag I had set during install. Clearing it fixed it.
 
-**My notes are a git repository, not an app's private database.** I keep an Obsidian vault with project notes, reference docs, decision logs, and infrastructure write-ups. It lives on the server and syncs to GitHub, and my laptop has its own clone for Obsidian's graph view.
+## 2. An Obsidian vault on git
 
-**It saves itself.** A file watcher notices any change in the vault, waits a few seconds for edits to settle, and commits. Git hooks then do two more jobs: a pre-commit hook records which agent made the change (Claude, Cursor, or me) into a daily log and a running "current state" summary, and a post-commit hook pushes to GitHub. Nobody has to remember to save or sync.
+My notes live in an Obsidian vault: project notes, reference docs, decisions, and infrastructure write-ups. The vault is a git repository on the server, synced to GitHub, with a second clone on my laptop for Obsidian's graph view.
 
-**It's written for AI as much as for me.** Every reference note starts with a short "for future Claude" summary, so an assistant opening a note cold knows what it covers and what's already been decided. One map note records where every project, repo, and tool physically lives. When something breaks, the answer is usually already in the vault.
+[IMAGE: /images/obsidian-graph.png | Obsidian graph view of the vault. Hundreds of notes appear as dots. Two large star-shaped clusters are daily logs, and a dense cluster of linked notes at the top right covers projects such as the Earnings Surprise Model and its feature notes. | Fig 1. The vault in Obsidian's graph view. Each dot is a note and each line is a link between notes.]
 
-**Lesson learned in the move:** git hooks are not copied by `git clone`. The first move of the vault quietly lost its auto-push until the hooks were copied over by hand. That gotcha is now written at the top of the map note.
+Saving is automatic:
 
-## 3. The bridge: a reasoning model to plan, a coding agent to build
+- A file watcher sees a change, waits a few seconds, and commits.
+- A pre-commit hook records who made the change (Claude, Cursor, or me) in that day's log.
+- A post-commit hook pushes to GitHub.
 
-**Two kinds of AI, each used for what it's best at.** Reasoning models like Claude are strongest at understanding a problem: reading a codebase and its history, weighing approaches, catching the edge case, and deciding exactly what should change. Coding agents like Cursor are strongest at execution: making edits across many files quickly, running the tests, and iterating until they pass. Asking one tool to do both gives you either slow, expensive typing or fast, careless planning. Splitting the job gives you both strengths at once.
+Reference notes start with a short summary written for an AI assistant reading the note for the first time, so it knows what the note covers and what has already been decided. Here's the top of a real one:
 
-**Claude scopes the work.** Through an MCP server on the server (the protocol AI assistants use to call tools), Claude reads the actual repo, the database schema, and the vault notes directly, with 56 tools across eight project areas. It turns a goal into a precise task: the context the agent needs, the exact changes, files that must not be touched, the tests to run, and what to report back. Because Claude has already done the thinking, the task leaves very little for the agent to guess about.
+```markdown
+---
+date: 2026-10-24
+type: reference
+topic: infrastructure
+tags: [ms02, local-ai, llm]
+related-projects:
+  - "[[Knowledge/MS-02 Server Setup]]"
+  - "[[Projects/Life-Dashboard]]"
+ai-first: true
+---
 
-**Cursor executes it.** The task lands as a file in the repo. Cursor picks it up, works on its own branch, makes the changes, runs the tests, commits, and writes a report back to an output file. Claude reads that report, checks the result against the plan, and either approves the merge or writes the next task. Every handoff is a plain file, so the whole loop is readable and stays in git history.
+# MS-02 Local AI Setup
 
-**Why it works so well.** A well-scoped task means the fast agent spends its time building instead of exploring. Hard reasoning happens once, up front, on the strongest model. Mistakes get caught at the review step, before they're merged.
+## For future Claude
+Plan for running local coding models on the MS-02 (CPU-only for now).
+Conclusion: local gets close on benchmarks, not on speed; the box works
+best as a background executor, and a GPU is the only real speed lever.
+```
 
-### Cursor Rules: guardrails the agent can't forget
+One thing I learned moving the vault: `git clone` doesn't copy git hooks. After the move, the vault stopped pushing until I copied the hooks over by hand.
 
-**Every repo has a rules file** in `.cursor/rules/` that Cursor loads automatically on every task. Where a task describes one job, the rules describe how every job in that repo must be done. They turn lessons I learned the hard way into constraints that apply every time.
+## 3. Claude plans, Cursor builds
 
-**Git discipline.** A branch per task and a commit per step. The agent never merges on its own; merges only happen when I approve them in the task file or in chat. Live trading and broker code is listed as off-limits.
+I use two tools for coding, each for a different part of the job. Claude, a reasoning model, figures out what needs to change: it reads the code, the database schema, and my notes, then writes a detailed task. Cursor, a coding agent, makes the changes: it edits the files, runs the tests, and commits.
 
-**Compute limits.** On my laptop, total memory use has to stay under a set budget. The agent measures what the system is already using, sizes its parallel workers to fit the rest, and runs a watchdog that stops the job if it crosses the line.
+Claude reaches my projects through an MCP server on the machine. MCP is the protocol AI assistants use to call tools, and mine has 56 tools across eight project areas: the stock database, the earnings models, the factor model, the trading bot, my dashboard, this website, and the vault.
 
-**Research integrity.** The rules for my earnings model encode the methodology itself: every test is pre-registered before results are seen, features may only use data that was public before the trade, a held-out test period stays sealed until the very end, and fixed vocabulary keeps "the company beat estimates" separate from "the stock went up."
+The handoff goes like this:
 
-**They hold under pressure.** In one data-quality task, the obvious way to make a failing database check pass was to loosen the check. Cursor refused, because the rules say constraints protecting point-in-time data don't get weakened. The real problem turned out to be about 84,000 rows dated weeks too early, which a loosened check would have hidden.
+1. Claude writes `cursor_task.md` in the repo: background, the exact changes, files not to touch, tests to run, and what to report.
+2. Cursor does the work on a new branch, commits each step, and writes `cursor_output.md`.
+3. Claude reads the output and checks it against the task. I decide whether it gets merged.
+
+Both files are plain text in the repo, so every handoff is in the git history.
+
+### Cursor rules
+
+Each repo also has a rules file in `.cursor/rules/` that Cursor loads on every task. The task file says what to do this time. The rules file covers what applies to every task in that repo. Here's part of the one for my earnings model:
+
+```markdown
+---
+description: Git workflow, compute limits, and non-negotiable
+  modeling rules for the earnings-surprise-model repo
+alwaysApply: true
+---
+
+## Git workflow
+**Never commit directly to `main`.** `main` changes only by
+merging a branch Rehan has approved.
+
+1. Branch from an up-to-date `main` before making any change.
+   One branch per task.
+2. **Commit every change as you go.** If work is interrupted,
+   whatever exists must already be committed.
+4. **Merge only when Rehan says so.**
+5. Never `git push --force` and never `git reset --hard`
+   committed work.
+
+## Compute
+Use all cores by default. TOTAL SYSTEM RAM IN USE must never
+exceed 26 GB.
+
+**Watchdog (always on)**
+- At 25.0 GB it stops dispatching new chunks.
+- At 26.0 GB it stops workers cleanly and exits non-zero.
+
+## Database access
+Read from `public` and `market`. **Write only to the `esm`
+schema.** If you find a stock-database problem, report it.
+Do not fix it from this repo.
+
+## Modeling rules that do not bend
+Every feature must be knowable strictly before the decision
+time. The leakage test enforces this; never weaken it.
+
+**Pre-registration.** Every rule and threshold is fixed before
+results are seen.
+
+**Never drop silently.** Every missing label gets a reason.
+```
+
+The rules have stopped real mistakes. During one data task, a database check was failing, and the quick fix would have been to loosen it. Cursor didn't, because the rules say not to weaken checks that protect point-in-time data. The actual problem was about 84,000 rows of financial data dated weeks earlier than they were really published, which a looser check would have let through.
 
 ## What I'd do differently
 
-**Write the migration rules down first.** The one-place-per-service rule and the row-count check are what made the move safe. I worked them out partway through. Next time they come first.
+**Write the migration rules down first.** Moving one service at a time and counting rows on both machines are what made the move safe, but I only settled on them partway through.
 
-**Version the tool server.** It started as a single script with backup copies instead of a git repository. It's grown to 56 tools, and it should have had history from day one.
+**Put the tool server in git.** It started as one script with backup copies. It's now 56 tools and has no real history.
 
-**Wire it in.** The server runs on Wi-Fi today. Ethernet is the next fix.
+**Use Ethernet.** The server is on Wi-Fi.
