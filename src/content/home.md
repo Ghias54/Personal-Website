@@ -17,10 +17,14 @@ cards:
     title: Building a point-in-time stock database
     summary: Every quant project I ran used to pull and clean its own data. I replaced that with one platform. A resumable crawler collected 1.9 million raw files, and validated loaders turned them into a 68 GB PostgreSQL warehouse of 8,700+ U.S. stocks back to 1970, where every number is dated to when it became public. New research now starts with a SQL query.
     href: /projects/stock-database
-  - eyebrow: PERSONAL PROJECT
+  - eyebrow: INFRASTRUCTURE
     title: Building the server my research runs on
-    summary: A self-hosted server that holds my 68 GB market database, runs local AI models, and connects AI assistants directly to my data. I migrated every table without losing a row, then benchmarked local models and found that more CPU cores made them slower.
+    summary: One self-hosted Linux server runs every project I build. Tailscale keeps it private with a single login-protected public route, an Obsidian vault on it commits and syncs itself, and an MCP bridge lets Claude plan the work while Cursor writes and commits the code.
     href: /projects/home-research-server
+  - eyebrow: LOCAL AI
+    title: Running coding models locally
+    summary: Can a free model on my own CPU do real coding work? I built an agent pipeline around one and benchmarked three models. More CPU cores made them slower, reading long prompts was the real bottleneck, and turning reasoning off was the difference between a correct result and no code at all.
+    href: /projects/local-ai-models
 ---
 
 I'm a student at the University of Illinois Urbana-Champaign, pursuing a dual degree in Information Science and Economics. I transferred in from College of DuPage, where I completed an Associate of Arts and a C++ Proficiency Certification.
