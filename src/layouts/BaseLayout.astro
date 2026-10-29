@@ -50,5 +50,52 @@ const siteName = "Rehan A Ghias";
     <a class="skip-link" href="#main-content">Skip to content</a>
     <SiteHeader home={homeBand} title={bandTitle} meta={bandMeta} />
     <slot />
+
+    <dialog class="lightbox" aria-label="Full screen image">
+      <button class="lightbox-close" type="button" aria-label="Close full screen image">×</button>
+      <img class="lightbox-img" alt="" />
+      <p class="lightbox-caption"></p>
+    </dialog>
+
+    <script>
+      const dialog = document.querySelector<HTMLDialogElement>(".lightbox");
+      const big = dialog?.querySelector<HTMLImageElement>(".lightbox-img");
+      const cap = dialog?.querySelector<HTMLParagraphElement>(".lightbox-caption");
+      const closeBtn = dialog?.querySelector<HTMLButtonElement>(".lightbox-close");
+
+      if (dialog && big && cap && closeBtn) {
+        const open = (img: HTMLImageElement) => {
+          big.src = img.currentSrc || img.src;
+          big.alt = img.alt;
+          const figcap = img.closest("figure, .figure")?.querySelector("figcaption, .caption");
+          cap.textContent = figcap?.textContent?.trim() ?? "";
+          dialog.showModal();
+        };
+
+        document.querySelectorAll<HTMLImageElement>(".prose img, .figure img, figure img").forEach((img) => {
+          if (img.closest(".lightbox")) return;
+          img.classList.add("zoomable");
+          img.tabIndex = 0;
+          img.setAttribute("role", "button");
+          img.setAttribute("aria-label", `View full screen: ${img.alt || "image"}`);
+          img.addEventListener("click", () => open(img));
+          img.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              open(img);
+            }
+          });
+        });
+
+        closeBtn.addEventListener("click", () => dialog.close());
+        // Click anywhere outside the image closes it; Esc is handled by <dialog>
+        dialog.addEventListener("click", (e) => {
+          if (e.target !== big) dialog.close();
+        });
+        dialog.addEventListener("close", () => {
+          big.removeAttribute("src");
+        });
+      }
+    </script>
   </body>
 </html>

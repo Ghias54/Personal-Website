@@ -13,6 +13,14 @@ cards:
     title: Testing whether earnings volatility can be traded
     summary: I built a research pipeline to test whether filtering earnings trades by company quality improves returns. The best run gains 79%, and almost all of that comes from a single year and a handful of outlier trades. Here is how I know, and why I reported that instead of the headline number.
     href: /projects/earnings-factor-model
+  - eyebrow: PERSONAL PROJECT
+    title: Building a point-in-time stock database
+    summary: A 68 GB database of 8,700+ U.S. stocks back to 1970, including companies that no longer exist, built so every number reflects only what was public on the day it's used. An audit still found 44,752 rows dated too early. Here is how I caught them and stopped it from happening again.
+    href: /projects/stock-database
+  - eyebrow: PERSONAL PROJECT
+    title: Building the server my research runs on
+    summary: A self-hosted server that holds my 68 GB market database, runs local AI models, and connects AI assistants directly to my data. I migrated every table without losing a row, then benchmarked local models and found that more CPU cores made them slower.
+    href: /projects/home-research-server
 ---
 
 I'm a student at the University of Illinois Urbana-Champaign, pursuing a dual degree in Information Science and Economics. I transferred in from College of DuPage, where I completed an Associate of Arts and a C++ Proficiency Certification.

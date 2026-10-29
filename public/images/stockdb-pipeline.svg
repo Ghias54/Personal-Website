@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600" font-family="Manrope, Helvetica, Arial, sans-serif">
+  <style>
+    .box { fill: #ffffff; stroke: #c9cfd8; stroke-width: 1.2; }
+    .hdr { font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600; letter-spacing: 0.06em; fill: #1f2a36; }
+    .t { font-size: 14px; fill: #161a24; font-weight: 500; }
+    .s { font-size: 12.5px; fill: #4f5669; font-weight: 500; }
+    .m { font-family: 'IBM Plex Mono', monospace; font-size: 13px; fill: #161a24; font-weight: 500; }
+    .arrow { stroke: #1f2a36; stroke-width: 2; fill: none; }
+  </style>
+  <rect width="1200" height="600" fill="#fafbfc"/>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#1f2a36"/></marker>
+  </defs>
+
+  <!-- 1 Sources -->
+  <rect class="box" x="30" y="40" width="200" height="300" rx="4"/><rect x="30" y="40" width="200" height="4" fill="#1f2a36"/>
+  <text class="hdr" x="46" y="70">1 · SOURCES</text>
+  <text class="t" x="46" y="102">FMP Ultimate API</text>
+  <text class="s" x="46" y="120">one month, 85 endpoint families</text>
+  <text class="t" x="46" y="152">SEC EDGAR</text>
+  <text class="s" x="46" y="170">filings, acceptance times</text>
+  <text class="t" x="46" y="202">Databento OPRA</text>
+  <text class="s" x="46" y="220">options chains</text>
+  <text class="t" x="46" y="252">FINRA · FRED</text>
+  <text class="s" x="46" y="270">short data, credit spreads</text>
+  <text class="t" x="46" y="302">XNYS calendar</text>
+  <text class="s" x="46" y="320">the real trading days</text>
+
+  <!-- 2 Crawler -->
+  <rect class="box" x="270" y="40" width="200" height="300" rx="4"/><rect x="270" y="40" width="200" height="4" fill="#1f2a36"/>
+  <text class="hdr" x="286" y="70">2 · CRAWLER</text>
+  <text class="t" x="286" y="102">Job queue in Postgres</text>
+  <text class="s" x="286" y="120">resumable, never re-fetches</text>
+  <text class="t" x="286" y="152">Rate limiter</text>
+  <text class="s" x="286" y="170">2,615 req/min, zero 429s</text>
+  <text class="t" x="286" y="202">Date windowing</text>
+  <text class="s" x="286" y="220">walk back past row caps,</text>
+  <text class="s" x="286" y="236">seam-fill the gaps</text>
+  <text class="t" x="286" y="268">Pagination guards</text>
+  <text class="s" x="286" y="286">stop on duplicate pages</text>
+
+  <!-- 3 Raw archive -->
+  <rect x="510" y="40" width="200" height="300" rx="4" fill="#1f2a36"/>
+  <text x="526" y="70" font-family="'IBM Plex Mono', monospace" font-size="13" font-weight="600" letter-spacing="0.06em" fill="#ffffff">3 · RAW ARCHIVE</text>
+  <text x="526" y="104" font-size="26" font-weight="700" fill="#ffffff">1.9M files</text>
+  <text x="526" y="126" font-size="13" fill="#cfd8e0" font-weight="500">28 GB, gzipped JSON + DBN</text>
+  <text x="526" y="164" font-size="14" fill="#ffffff" font-weight="500">Never edited</text>
+  <text x="526" y="190" font-size="14" fill="#ffffff" font-weight="500">SHA-256 manifest,</text>
+  <text x="526" y="208" font-size="14" fill="#ffffff" font-weight="500">written as files land</text>
+  <text x="526" y="234" font-size="14" fill="#ffffff" font-weight="500">Offsite backup,</text>
+  <text x="526" y="252" font-size="14" fill="#ffffff" font-weight="500">hash verified</text>
+  <text x="526" y="300" font-size="12.5" fill="#cfd8e0" font-weight="500">the permanent record:</text>
+  <text x="526" y="318" font-size="12.5" fill="#cfd8e0" font-weight="500">can't be downloaded again</text>
+
+  <!-- 4 Loaders -->
+  <rect class="box" x="750" y="40" width="200" height="300" rx="4"/><rect x="750" y="40" width="200" height="4" fill="#1f2a36"/>
+  <text class="hdr" x="766" y="70">4 · LOADERS</text>
+  <text class="t" x="766" y="102">Parse each file</text>
+  <text class="t" x="766" y="134">Stamp date_available</text>
+  <text class="s" x="766" y="152">when it became public</text>
+  <text class="t" x="766" y="184">Reject bad rows</text>
+  <text class="s" x="766" y="202">with a logged reason</text>
+  <text class="t" x="766" y="234">Load into dev first</text>
+  <text class="s" x="766" y="252">tests + validation gates,</text>
+  <text class="s" x="766" y="268">then promote to prod</text>
+
+  <!-- 5 Database -->
+  <rect class="box" x="990" y="40" width="180" height="300" rx="4"/><rect x="990" y="40" width="180" height="4" fill="#1f2a36"/>
+  <text class="hdr" x="1006" y="70">5 · POSTGRES</text>
+  <text x="1006" y="104" font-size="26" font-weight="700" fill="#11151e">68 GB</text>
+  <text class="s" x="1006" y="126">3 databases:</text>
+  <text class="m" x="1006" y="150">stockdb</text>
+  <text class="m" x="1006" y="172">stockdb_dev</text>
+  <text class="m" x="1006" y="194">stockdb_fetch</text>
+  <text class="t" x="1006" y="232">52 migrations</text>
+  <text class="t" x="1006" y="258">486 tests</text>
+  <text class="s" x="1006" y="290">rebuildable from the</text>
+  <text class="s" x="1006" y="306">archive in ~3 hours</text>
+
+  <path class="arrow" d="M230,190 L268,190" marker-end="url(#a)"/>
+  <path class="arrow" d="M470,190 L508,190" marker-end="url(#a)"/>
+  <path class="arrow" d="M710,190 L748,190" marker-end="url(#a)"/>
+  <path class="arrow" d="M950,190 L988,190" marker-end="url(#a)"/>
+
+  <!-- 6 Research extracts -->
+  <path class="arrow" d="M1080,340 L1080,380 L600,380 L600,408" marker-end="url(#a)"/>
+  <rect class="box" x="30" y="410" width="1140" height="160" rx="4"/><rect x="30" y="410" width="1140" height="4" fill="#5c7186"/>
+  <text class="hdr" x="46" y="440">6 · RESEARCH EXTRACTS</text>
+  <text class="s" x="250" y="440">built from the database, never from live APIs</text>
+
+  <text class="t" x="46" y="476">Earnings event spine</text>
+  <text class="s" x="46" y="496">one row per earnings report, close(D−1) → close(D+1)</text>
+  <text class="s" x="46" y="514">labels, delisted exits kept</text>
+  <text class="s" x="46" y="532">features only from data public before D−1</text>
+
+  <text class="t" x="430" y="476">Options snapshots per event</text>
+  <text class="s" x="430" y="496">chains at t−1 · t · t+1, implied move</text>
+  <text class="s" x="430" y="514">point-in-time open interest</text>
+  <text class="s" x="430" y="532">quality flags, never silent zeros</text>
+
+  <text class="t" x="810" y="476">Monthly factor panel</text>
+  <text class="s" x="810" y="496">one row per stock per month, 1970 onward</text>
+  <text class="s" x="810" y="514">1.5M rows, shared as Parquet</text>
+  <text class="s" x="810" y="532">leakage tests on every build</text>
+</svg>

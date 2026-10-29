@@ -5,10 +5,16 @@ interface Props {
 }
 
 const { label, as: Tag = "section" } = Astro.props;
+const id = label
+  .toLowerCase()
+  .replace(/[^a-z0-9]+/g, "-")
+  .replace(/^-|-$/g, "");
 ---
 
-<Tag class="rail-section">
-  <h2 class="rail-label">{label}</h2>
+<Tag class="rail-section" id={id}>
+  <h2 class="rail-label">
+    <a class="rail-anchor" href={`#${id}`}>{label}</a>
+  </h2>
   <div class="rail-content">
     <slot />
   </div>
@@ -16,26 +22,36 @@ const { label, as: Tag = "section" } = Astro.props;
 
 <style>
   .rail-section {
-    display: grid;
-    grid-template-columns: var(--rail-width) minmax(0, 1fr);
-    gap: var(--rail-gap);
-    align-items: start;
+    scroll-margin-top: 24px;
   }
 
   .rail-section + .rail-section {
-    margin-top: 38px;
+    margin-top: 64px;
   }
 
   .rail-label {
-    margin: 0;
-    font-family: var(--font-mono);
-    font-size: var(--fs-label);
-    font-weight: 500;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--color-label);
-    padding-top: 3px;
-    line-height: 1.4;
+    margin: 0 0 22px;
+    padding-top: 22px;
+    border-top: 2px solid var(--color-rule-strong);
+    font-family: var(--font-sans);
+    font-size: clamp(26px, 1.9vw, 34px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    color: var(--color-heading);
+    max-width: var(--measure);
+  }
+
+  .rail-anchor {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .rail-anchor:hover {
+    text-decoration: underline;
+    text-decoration-color: var(--color-link-underline);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.18em;
   }
 
   .rail-content {
@@ -43,14 +59,13 @@ const { label, as: Tag = "section" } = Astro.props;
   }
 
   @media (max-width: 700px) {
-    .rail-section {
-      grid-template-columns: 1fr;
-      gap: 8px;
+    .rail-section + .rail-section {
+      margin-top: 48px;
     }
 
     .rail-label {
-      padding-top: 0;
-      margin-bottom: 0;
+      margin-bottom: 16px;
+      padding-top: 16px;
     }
   }
 </style>

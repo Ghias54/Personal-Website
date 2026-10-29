@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 940" font-family="Manrope, Helvetica, Arial, sans-serif">
+  <style>
+    .box { fill: #ffffff; stroke: #c9cfd8; stroke-width: 1.2; }
+    .accent { fill: #1f2a36; }
+    .hdr { font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600; letter-spacing: 0.06em; fill: #1f2a36; }
+    .sub { font-size: 12px; fill: #4f5669; font-weight: 500; }
+    .tbl { font-family: 'IBM Plex Mono', monospace; font-size: 14px; fill: #161a24; font-weight: 500; }
+    .desc { font-size: 14px; fill: #2c3242; font-weight: 500; }
+    .link { stroke: #1f2a36; stroke-width: 1.5; fill: none; }
+    .lbl { font-family: 'IBM Plex Mono', monospace; font-size: 11px; fill: #4f5669; }
+  </style>
+  <rect width="1200" height="940" fill="#fafbfc"/>
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1f2a36"/>
+    </marker>
+  </defs>
+
+  <!-- Links from hub -->
+  <path class="link" d="M460,278 L370,115"/>
+  <path class="link" d="M460,278 L370,300"/>
+  <path class="link" d="M460,278 L370,495"/>
+  <path class="link" d="M460,278 L370,680"/>
+  <path class="link" d="M740,278 L830,115"/>
+  <path class="link" d="M740,278 L830,325"/>
+  <path class="link" d="M740,278 L830,527"/>
+  <path class="link" d="M740,278 L830,705"/>
+  <path class="link" d="M600,166 L600,230"/>
+  <path class="link" d="M600,326 L600,400"/>
+
+  <!-- Earnings -> Options -->
+  <path class="link" d="M995,190 L995,213" marker-end="url(#arr)"/>
+  <text class="lbl" x="1005" y="206">event_id</text>
+
+  <!-- Hub: company / security / symbol_history -->
+  <rect class="box" x="500" y="110" width="200" height="56" rx="4"/>
+  <text class="tbl" x="600" y="135" text-anchor="middle">company</text>
+  <text class="sub" x="600" y="154" text-anchor="middle">CIK, name, SIC code</text>
+
+  <rect x="460" y="230" width="280" height="96" rx="4" fill="#1f2a36"/>
+  <text x="600" y="268" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="20" font-weight="600" fill="#ffffff">security</text>
+  <text x="600" y="293" text-anchor="middle" font-size="13" fill="#cfd8e0" font-weight="500">every U.S. common stock,</text>
+  <text x="600" y="311" text-anchor="middle" font-size="13" fill="#cfd8e0" font-weight="500">listed and delisted</text>
+
+  <rect class="box" x="480" y="400" width="240" height="74" rx="4"/>
+  <text class="tbl" x="600" y="426" text-anchor="middle">symbol_history</text>
+  <text class="sub" x="600" y="446" text-anchor="middle">ticker valid_from / valid_to</text>
+  <text class="sub" x="600" y="463" text-anchor="middle">recycled tickers blocked by constraint</text>
+
+  <!-- LEFT COLUMN -->
+  <rect class="box" x="40" y="40" width="330" height="150" rx="4"/><rect class="accent" x="40" y="40" width="330" height="4" rx="2"/>
+  <text class="hdr" x="58" y="70">PRICES</text>
+  <text class="sub" x="58" y="88">daily since 1970 · 29M rows</text>
+  <text class="tbl" x="58" y="118">price_daily</text>
+  <text class="desc" x="58" y="142">splits &amp; dividends</text>
+  <text class="tbl" x="58" y="166">price_quality</text>
+
+  <rect class="box" x="40" y="215" width="330" height="170" rx="4"/><rect class="accent" x="40" y="215" width="330" height="4" rx="2"/>
+  <text class="hdr" x="58" y="245">FUNDAMENTALS</text>
+  <text class="sub" x="58" y="263">dated by SEC filing time</text>
+  <text class="tbl" x="58" y="293">fundamental_quarterly</text>
+  <text class="tbl" x="58" y="317">fundamental_original</text>
+  <text class="tbl" x="58" y="341">revenue_segment</text>
+  <text class="tbl" x="58" y="365">owner_earnings</text>
+
+  <rect class="box" x="40" y="410" width="330" height="170" rx="4"/><rect class="accent" x="40" y="410" width="330" height="4" rx="2"/>
+  <text class="hdr" x="58" y="440">ANALYSTS</text>
+  <text class="sub" x="58" y="458">estimates, actions, targets</text>
+  <text class="tbl" x="58" y="488">analyst_estimate</text>
+  <text class="tbl" x="58" y="512">analyst_action</text>
+  <text class="tbl" x="58" y="536">analyst_price_target</text>
+  <text class="tbl" x="58" y="560">ratings_historical</text>
+
+  <rect class="box" x="40" y="605" width="330" height="150" rx="4"/><rect class="accent" x="40" y="605" width="330" height="4" rx="2"/>
+  <text class="hdr" x="58" y="635">OWNERSHIP</text>
+  <text class="sub" x="58" y="653">insiders and institutions</text>
+  <text class="desc" x="58" y="683">insider buys &amp; sells</text>
+  <text class="desc" x="58" y="707">13F totals per quarter</text>
+  <text class="tbl" x="58" y="731">holder</text><text class="sub" x="122" y="731">partitioned by year</text>
+
+  <!-- RIGHT COLUMN -->
+  <rect class="box" x="830" y="40" width="330" height="150" rx="4"/><rect class="accent" x="830" y="40" width="330" height="4" rx="2"/>
+  <text class="hdr" x="848" y="70">EARNINGS</text>
+  <text class="sub" x="848" y="88">actual vs. expected EPS</text>
+  <text class="tbl" x="848" y="118">earnings_event</text>
+  <text class="tbl" x="848" y="142">earnings_event_timing</text>
+  <text class="tbl" x="848" y="166">earnings_calendar_event</text>
+
+  <rect class="box" x="830" y="215" width="330" height="220" rx="4"/><rect class="accent" x="830" y="215" width="330" height="4" rx="2"/>
+  <text class="hdr" x="848" y="245">OPTIONS</text>
+  <text class="sub" x="848" y="263">OPRA chains around each earnings event</text>
+  <text class="tbl" x="848" y="293">options_snapshot</text><text class="sub" x="1006" y="293">t-1 · t · t+1</text>
+  <text class="tbl" x="848" y="317">options_quote_1m</text>
+  <text class="tbl" x="848" y="341">options_statistic</text>
+  <text class="tbl" x="848" y="365">options_open_interest_pit_v</text>
+  <text class="tbl" x="848" y="389">options_root_override</text>
+  <text class="sub" x="848" y="417">raw DBN files kept, tables re-parseable</text>
+
+  <rect class="box" x="830" y="460" width="330" height="135" rx="4"/><rect class="accent" x="830" y="460" width="330" height="4" rx="2"/>
+  <text class="hdr" x="848" y="490">TEXT</text>
+  <text class="sub" x="848" y="508">text stored on disk, DB holds path + hash</text>
+  <text class="tbl" x="848" y="538">transcript</text><text class="sub" x="944" y="538">196k calls</text>
+  <text class="tbl" x="848" y="562">sec_filing</text><text class="sub" x="944" y="562">8.1M filings</text>
+  <text class="desc" x="848" y="584">news, press releases</text>
+
+  <rect class="box" x="830" y="620" width="330" height="170" rx="4"/><rect class="accent" x="830" y="620" width="330" height="4" rx="2"/>
+  <text class="hdr" x="848" y="650">ALTDATA</text>
+  <text class="sub" x="848" y="668">short selling, credit, politics</text>
+  <text class="tbl" x="848" y="698">finra_short_volume_daily</text>
+  <text class="tbl" x="848" y="722">finra_short_interest</text>
+  <text class="tbl" x="848" y="746">fred_observation</text>
+  <text class="desc" x="848" y="770">congressional trades, ESG, M&amp;A</text>
+
+  <!-- MARKET (no stock link) -->
+  <rect class="box" x="40" y="790" width="540" height="125" rx="4"/><rect x="40" y="790" width="540" height="4" rx="2" fill="#5c7186"/>
+  <text class="hdr" x="58" y="820">MARKET</text><text class="sub" x="140" y="820">market-wide, not tied to a stock</text>
+  <text class="desc" x="58" y="850">427 indexes · S&amp;P 500 since 1970</text>
+  <text class="tbl" x="58" y="874">etf_price_daily</text>
+  <text class="desc" x="58" y="898">23 economic series · Treasury yields</text>
+  <text class="tbl" x="330" y="874">economic_calendar_event</text>
+
+  <!-- ARCHIVE (walled off) -->
+  <rect x="620" y="815" width="540" height="100" rx="4" fill="#ffffff" stroke="#9b2c2c" stroke-width="1.5" stroke-dasharray="7 5"/>
+  <text class="hdr" x="638" y="845" fill="#9b2c2c">ARCHIVE</text>
+  <text class="sub" x="728" y="845">no foreign key to security, verified by test</text>
+  <text class="tbl" x="638" y="875">stock_peers_snapshot</text>
+  <text class="desc" x="638" y="899">ratios, key metrics, current-only snapshots</text>
+</svg>

@@ -8,34 +8,45 @@
 :root {
   --color-dark: #1f2a36;
   --color-on-dark: #ffffff;
-  --color-on-dark-muted: #a9b6c2;
+  /* Lighter on the dark header so subtitles stay readable */
+  --color-on-dark-muted: #cfd8e0;
   --color-on-dark-rule: #5c7186;
   --color-bg: #ffffff;
   --color-card: #ffffff;
   --color-surface: #fafbfc;
-  --color-text: #1f2430;
-  --color-heading: #1f2430;
-  --color-dimmed: #4a5064;
-  --color-muted: #7a8195;
-  --color-label: #4a5064;
-  --color-border: #e1e4ea;
+  /* Darker text throughout for readability */
+  --color-text: #161a24;
+  --color-heading: #11151e;
+  --color-dimmed: #2c3242;
+  --color-muted: #4f5669;
+  --color-label: #343a4b;
+  --color-border: #d9dde5;
   --color-border-soft: #e1e4ea;
   --color-rule-strong: #1f2a36;
-  --color-link-underline: #b7c0c9;
+  --color-link-underline: #8f9aa6;
   --color-figure: #f7f8fa;
   --font-sans: "Manrope", sans-serif;
   --font-mono: "IBM Plex Mono", monospace;
-  --fs-page-title: 38px;
-  --fs-heading: 21px;
-  --fs-lead: 18px;
-  --fs-body: 17px;
+  /* Body text weight: Manrope 400 is thin on screen, 500 reads cleanly */
+  --fw-body: 500;
+  /* Type scales up gently on large screens */
+  --fs-page-title: clamp(38px, 2.6vw, 52px);
+  --fs-heading: clamp(21px, 1.35vw, 26px);
+  --fs-section: clamp(26px, 1.9vw, 34px);
+  --fs-lead: clamp(18px, 1.1vw, 21px);
+  --fs-body: clamp(17px, 1vw, 19px);
   --fs-body-sm: 16px;
   --fs-label: 13px;
-  --measure: 56ch;
-  --container-max: 720px;
-  --container-pad-x: 24px;
-  --rail-width: 96px;
-  --rail-gap: 34px;
+  /* Readable line length for long text */
+  --measure: 72ch;
+  /* Vertical rhythm between blocks */
+  --flow: 1.25em;
+  --flow-lg: 2em;
+  /* Container grows with the screen instead of a fixed 720px column */
+  --container-max: clamp(720px, 72vw, 1280px);
+  --container-pad-x: clamp(16px, 3vw, 48px);
+  --rail-width: 120px;
+  --rail-gap: 40px;
   --radius: 4px;
   --radius-logo: 2px;
 }
@@ -65,14 +76,15 @@ body {
   font-family: var(--font-sans);
   font-size: var(--fs-body);
   line-height: 1.8;
-  font-weight: 400;
+  font-weight: var(--fw-body);
+  -webkit-font-smoothing: antialiased;
 }
 
 h1,
 h2,
 h3 {
   color: var(--color-heading);
-  font-weight: 600;
+  font-weight: 700;
 }
 
 h1 {
@@ -106,32 +118,198 @@ a:hover {
   padding-bottom: 80px;
 }
 
-.prose {
+/* ---------- Case-study section headings ----------
+   Stacked above the content (not a side rail). Body-prefixed so these win
+   over any older per-component styles. */
+body .rail-section {
+  display: block !important;
+  grid-template-columns: none !important;
+  gap: 0 !important;
+  scroll-margin-top: 24px;
+}
+
+body .rail-section + .rail-section {
+  margin-top: 64px;
+}
+
+body .rail-section > .rail-label {
+  display: block;
+  margin: 0 0 22px;
+  padding: 22px 0 0;
+  border-top: 2px solid var(--color-rule-strong);
+  font-family: var(--font-sans) !important;
+  font-size: var(--fs-section) !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.02em !important;
+  text-transform: none !important;
+  line-height: 1.2;
+  color: var(--color-heading) !important;
   max-width: var(--measure);
 }
 
-.prose > * + * {
-  margin-top: 1.25em;
+body .rail-section > .rail-label a {
+  color: inherit;
+  text-decoration: none;
 }
 
-.prose p {
-  margin: 0;
+body .rail-section > .rail-label a:hover {
+  text-decoration: underline;
+  text-decoration-color: var(--color-link-underline);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.18em;
+}
+
+body .rail-section > .rail-content {
+  min-width: 0;
+}
+
+@media (max-width: 700px) {
+  body .rail-section + .rail-section {
+    margin-top: 48px;
+  }
+
+  body .rail-section > .rail-label {
+    margin-bottom: 16px;
+    padding-top: 16px;
+  }
+}
+
+/* ---------- Prose ---------- */
+/* Text stays at a readable width; figures, tables and code use the full column */
+.prose {
+  max-width: none;
+}
+
+.prose > * {
+  max-width: var(--measure);
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.prose > .figure,
+.prose > figure,
+.prose > table,
+.prose > pre {
+  max-width: 100%;
+}
+
+/* Spacing between every block. Written to outrank `.prose p` so nothing
+   after a table, figure or list gets squashed against it. */
+.prose > * + * {
+  margin-top: var(--flow);
+}
+
+/* Extra room around tables, figures and code blocks, on both sides */
+.prose > table,
+.prose > .figure,
+.prose > figure,
+.prose > pre,
+.prose > table + *,
+.prose > .figure + *,
+.prose > figure + *,
+.prose > pre + * {
+  margin-top: var(--flow-lg);
+}
+
+.prose p,
+.prose li {
   font-size: var(--fs-body);
+  font-weight: var(--fw-body);
   line-height: 1.75;
   color: var(--color-dimmed);
 }
 
-.prose p + p {
-  margin-top: 1.25em;
+.prose li + li {
+  margin-top: 0.4em;
 }
 
 .prose strong {
   color: var(--color-text);
+  font-weight: 700;
+}
+
+.prose .figure img {
+  width: 100%;
+  height: auto;
+}
+
+/* ---------- Tables ---------- */
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-body);
+  line-height: 1.5;
+  color: var(--color-text);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Markdown alignment markers are ignored: every column aligns left,
+   headers included, so headers sit directly over their data */
+.prose th,
+.prose td {
+  text-align: left !important;
+  vertical-align: top;
+  padding: 11px 18px 11px 0;
+}
+
+.prose th:last-child,
+.prose td:last-child {
+  padding-right: 0;
+}
+
+.prose thead th {
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-label);
+  border-bottom: 2px solid var(--color-rule-strong);
+  padding-bottom: 9px;
+}
+
+.prose tbody td {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.prose tbody tr:last-child td {
+  border-bottom: 1px solid var(--color-rule-strong);
+}
+
+.prose td:first-child {
+  color: var(--color-heading);
   font-weight: 600;
 }
 
-.prose .figure {
-  margin: 1.75em 0;
+/* Wide tables scroll sideways on phones instead of breaking the page */
+@media (max-width: 700px) {
+  .prose table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+}
+
+/* ---------- Code blocks ---------- */
+.prose pre {
+  overflow-x: auto;
+  padding: 18px 20px;
+  background: var(--color-figure);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.prose :not(pre) > code {
+  font-family: var(--font-mono);
+  font-size: 0.88em;
+  padding: 1px 5px;
+  background: var(--color-figure);
+  border: 1px solid var(--color-border-soft);
+  border-radius: 3px;
 }
 
 .hairline {
@@ -140,10 +318,95 @@ a:hover {
   margin: 0;
 }
 
+/* Project list becomes a grid on wide screens, one column on phones */
 .work-list {
   list-style: none;
   margin: 0;
   padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 440px), 1fr));
+  gap: 24px;
+}
+
+/* ---------- Click-to-fullscreen images ---------- */
+img.zoomable {
+  cursor: zoom-in;
+  transition: opacity 0.15s ease;
+}
+
+img.zoomable:hover {
+  opacity: 0.92;
+}
+
+.lightbox {
+  width: 100vw;
+  height: 100vh;
+  max-width: 100vw;
+  max-height: 100vh;
+  margin: 0;
+  padding: 56px 24px 24px;
+  border: 0;
+  background: rgba(17, 21, 30, 0.94);
+  cursor: zoom-out;
+}
+
+.lightbox[open] {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+}
+
+.lightbox::backdrop {
+  background: rgba(17, 21, 30, 0.94);
+}
+
+.lightbox-img {
+  max-width: 100%;
+  max-height: calc(100vh - 140px);
+  object-fit: contain;
+  background: #ffffff;
+  border-radius: var(--radius);
+  cursor: default;
+}
+
+.lightbox-caption {
+  margin: 0;
+  max-width: 90ch;
+  color: var(--color-on-dark-muted);
+  font-size: var(--fs-body-sm);
+  text-align: center;
+  line-height: 1.5;
+}
+
+.lightbox-caption:empty {
+  display: none;
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.lightbox-close:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  img.zoomable {
+    transition: none;
+  }
 }
 
 .skip-link {
@@ -175,5 +438,9 @@ a:hover {
 }
 
 .site-header :focus-visible {
+  outline-color: var(--color-on-dark);
+}
+
+.lightbox :focus-visible {
   outline-color: var(--color-on-dark);
 }
