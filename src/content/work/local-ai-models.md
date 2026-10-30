@@ -1,5 +1,5 @@
 ---
-title: Running Coding Models Locally
+title: Running AI Coding Models Locally
 meta: PERSONAL PROJECT · LOCAL AI · LLAMA.CPP, OPENCODE, BENCHMARKING, LINUX
 description: Can a free, open-weight model running on my own CPU do real coding work? I built an agent pipeline around one, benchmarked three models, and measured exactly where the time goes. The answer was yes for small background tasks, and the benchmarks showed why not for everything else.
 ---

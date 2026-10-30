@@ -1,4 +1,6 @@
 ---
+import { titleCase } from "../lib/titleCase";
+
 interface Props {
   eyebrow: string;
   title: string;
@@ -15,7 +17,7 @@ const TitleTag = headingLevel === 2 ? "h2" : "h3";
 <li class="work-entry">
   <a class="work-entry-link" href={href}>
     <p class="eyebrow">{eyebrow}</p>
-    <TitleTag class="title">{title}</TitleTag>
+    <TitleTag class="title">{titleCase(title)}</TitleTag>
     <p class="summary">{summary}</p>
     <span class="read-more" aria-hidden="true">Read case study →</span>
   </a>

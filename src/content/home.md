@@ -25,7 +25,7 @@ cards:
     href: /projects/home-research-server
     featured: false
   - eyebrow: LOCAL AI
-    title: Running coding models locally
+    title: Running AI coding models locally
     summary: Can a free model on my own CPU do real coding work? I built an agent pipeline around one and benchmarked three models. More CPU cores made them slower, reading long prompts was the real bottleneck, and turning reasoning off was the difference between a correct result and no code at all.
     href: /projects/local-ai-models
 ---
